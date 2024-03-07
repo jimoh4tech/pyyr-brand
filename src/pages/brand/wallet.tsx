@@ -266,7 +266,20 @@ const ViewWalletDrawer = ({
 									justifyContent={'space-between'}
 								>
 									<Text fontSize={'xs'}>Transation Status</Text>
-									<Text fontSize={'xs'}>{status}</Text>
+									<Badge
+										// eslint-disable-next-line no-constant-condition
+										bgColor={
+											status === 'Failed'
+												? '#ffd5d0'
+												: status === 'Pending'
+												? '#ffe3b2'
+												: '#d4f7e1'
+										}
+										textTransform={'capitalize'}
+										borderRadius={'10px'}
+									>
+										{status}
+									</Badge>{' '}
 								</Flex>
 								<Flex
 									borderTop={'1px solid #f3f2f1'}

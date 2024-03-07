@@ -11,6 +11,7 @@ import { BrandKYC } from '../pages/brand/kyc';
 import { BrandLayout } from '../layout/brand-layout';
 import { Voucher } from '../pages/brand/vouchers';
 import { Wallet } from '../pages/brand/wallet';
+import { Report } from '../pages/brand/report';
 export const Router = () => {
 	return (
 		<Routes>
@@ -24,6 +25,8 @@ export const Router = () => {
 				<Route path='kyc' element={<BrandKYC />} />
 				<Route path='vouchers' element={<Voucher />} />
 				<Route path='wallet' element={<Wallet />} />
+				<Route path='report' element={<Report />} />
+				
 				
 			</Route>
 

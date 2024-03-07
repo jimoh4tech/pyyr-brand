@@ -28,6 +28,8 @@ import authicon from '../../assets/authicon.svg';
 import person from '../../assets/person.svg';
 import group from '../../assets/group.svg';
 import awesome from '../../assets/awesome.svg';
+import pyyr from '../../assets/pyyr.svg';
+
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
@@ -101,19 +103,21 @@ export const PasswordInput = ({
 		</FormControl>
 	);
 };
+
 const Form1 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const isLessThan700 = useMediaQuery('(max-width: 750px)');
 	return (
 		<>
 			<Stack gap={8}>
 				<Flex justify={'center'}>
-					<Image boxSize={'40%'} src={authicon} />
+					<Image boxSize={'30%'} src={authicon} />
 				</Flex>
 				<Flex color={'black'} flexDir={'column'} alignItems={'center'} gap={2}>
-					<Text fontWeight={'bold'} fontSize={isLessThan700 ? 'sm' : 'md'}>
+					<Text textAlign={'center'} fontWeight={'bold'} fontSize='md'>
 						How do you intend to use this platform?
 					</Text>
-					<Text>We ask just so we fit the experience to your needs.</Text>
+					<Text textAlign={'center'} fontSize='md'>
+						We ask just so we fit the experience to your needs.
+					</Text>
 				</Flex>
 				<Flex justify={'center'} gap={3} flexWrap={'wrap'}>
 					<AccountTypeCard
@@ -321,6 +325,8 @@ const Verified = () => {
 };
 
 export const SignUpPage = () => {
+	const [isLessThan700] = useMediaQuery('(max-width: 700px)');
+
 	const [isloading, setLoading] = useState(true);
 	const [step, setStep] = useState(1);
 	const formik = useFormik({
@@ -350,21 +356,38 @@ export const SignUpPage = () => {
 			) : (
 				<Grid
 					minH='90vh'
-					templateColumns='repeat(4, 1fr)'
+					templateColumns={`repeat(${isLessThan700 ? 3 : 4}, 1fr)`}
 					gap={0}
 					color={'white'}
+					bgColor={'#825EE4'}
 				>
-					<GridItem colSpan={1} py={1} bgColor={'#825EE4'}>
+					<GridItem
+						colSpan={1}
+						py={1}
+						bgColor={'#825EE4'}
+						display={isLessThan700 ? 'none' : 'block'}
+					>
 						<Image src={splashing} boxSize={'85%'} alt='splash screen' />
 					</GridItem>
-					<GridItem colSpan={3} bg='white' p={10} gap={4}>
-						<Stack>
-							<Flex
+					<GridItem
+						colSpan={3}
+						bg={'white'}
+						p={isLessThan700 ? 2 : 10}
+						color={'black'}
+					>
+						<Stack direction={'row'} gap={'30%'} mb={10}>
+							<Image
 								onClick={() => (step > 1 ? setStep(step - 1) : null)}
 								cursor={'pointer'}
-							>
-								<Image src={back} />
-							</Flex>
+								boxSize={'10%'}
+								src={back}
+							/>
+							<Image
+								boxSize={'20%'}
+								src={pyyr}
+								alt='pyyr'
+								display={isLessThan700 ? 'block' : 'none'}
+							/>
 						</Stack>
 						{step === 1 ? (
 							<Form1 setStep={setStep} />

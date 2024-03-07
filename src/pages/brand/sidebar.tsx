@@ -13,6 +13,7 @@ import {
 import pyyr from '../../assets/pyyr.svg';
 import dashboard from '../../assets/dashboard.svg';
 import report from '../../assets/report.svg';
+import profile from '../../assets/profile.svg';
 import user from '../../assets/user.svg';
 import wallet from '../../assets/wallet.svg';
 import notification from '../../assets/voucher.svg';
@@ -21,24 +22,21 @@ import turn_left from '../../assets/turn_left.svg';
 
 import { useNavigate } from 'react-router-dom';
 import { INavItem } from '../../interface/interface.nav-items';
+import { useState } from 'react';
 
 interface SidebarProps extends BoxProps {
 	onClose: () => void;
 }
 
-function NavItem({ label, icon, href, isActive }: INavItem) {
+function NavItem({ label, icon, href, isActive, setActiveNav }: INavItem) {
 	const navigate = useNavigate();
 
 	return (
 		<>
-			<Flex gap={5}>
+			<Flex gap={5} onClick={() => setActiveNav(href)}>
 				<Flex alignItems={'center'}>
 					<Box
-						bgColor={
-							isActive
-								? '#825EE4'
-								: 'white'
-						}
+						bgColor={isActive ? '#825EE4' : 'white'}
 						w={'3px'}
 						h={'12px'}
 						borderRadius={'10px'}
@@ -46,11 +44,7 @@ function NavItem({ label, icon, href, isActive }: INavItem) {
 				</Flex>
 				<Flex
 					gap={2}
-					bg={
-						isActive
-							? '#E0D5FF'
-							: 'white'
-					}
+					bg={isActive ? '#E0D5FF' : 'white'}
 					flex={1}
 					p={2}
 					borderRadius={'md'}
@@ -70,42 +64,48 @@ function NavItem({ label, icon, href, isActive }: INavItem) {
 }
 
 export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-	// const [active, setActive] = useState<
-	// 	'Dashboard' | 'Vouchers' | 'Wallet' | 'Report' | 'User & Control'
-	// >('Dashboard');
+	const [activeNav, setActiveNav] = useState<
+		'/' | '/vouchers' | '/wallet' | '/report' | '/profile' | '/user'
+	>('/');
 	const navItems: INavItem[] = [
 		{
 			label: 'Dashboard',
 			icon: dashboard,
 			href: '/',
-			isActive: window.location.href?.endsWith('/'),
+			isActive: activeNav === '/',
 		},
 		{
 			href: '/vouchers',
 			icon: notification,
-			isActive: window.location.href?.includes('vouchers'),
+			isActive: activeNav === '/vouchers',
 			label: 'Vouchers',
 		},
 		{
 			href: '/wallet',
 			icon: wallet,
-			isActive: window.location.href?.includes('wallet'),
+			isActive: activeNav === '/wallet',
 			label: 'Wallet',
 		},
 		{
 			href: '/report',
 			icon: report,
-			isActive: window.location.href?.includes('report'),
+			isActive: activeNav === '/report',
 			label: 'Report',
 		},
 		{
 			href: '/profile',
+			icon: profile,
+			isActive: activeNav === '/profile',
+			label: 'Profile',
+		},
+		{
+			href: '/user',
 			icon: user,
-			isActive: window.location.href?.includes('profile'),
+			isActive: activeNav === '/user',
 			label: 'User & Control',
 		},
 	];
-	
+
 	return (
 		<Box
 			transition='3s ease'
@@ -126,7 +126,7 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 				<CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
 			</Flex>
 			{navItems.map((it) => (
-				<NavItem key={it.label} {...it} />
+				<NavItem key={it.label} {...it} setActiveNav={setActiveNav} />
 			))}
 			<Stack gap={3} px={2} mt={'40vh'}>
 				<Flex
