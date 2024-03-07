@@ -12,6 +12,7 @@ import { BrandLayout } from '../layout/brand-layout';
 import { Voucher } from '../pages/brand/vouchers';
 import { Wallet } from '../pages/brand/wallet';
 import { Report } from '../pages/brand/report';
+import { SalesDetails } from '../pages/brand/sales-details';
 export const Router = () => {
 	return (
 		<Routes>
@@ -26,8 +27,7 @@ export const Router = () => {
 				<Route path='vouchers' element={<Voucher />} />
 				<Route path='wallet' element={<Wallet />} />
 				<Route path='report' element={<Report />} />
-				
-				
+				<Route path='report/:id' element={<SalesDetails />} />
 			</Route>
 
 			<Route path='/merchants' element={<MerchantLayout />}>

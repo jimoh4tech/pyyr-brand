@@ -6,4 +6,6 @@ export interface IVoucherTable {
 	quantity: string;
 	price: string;
 	status: string;
+	expireDate?: string;
+	merchant?: string;
 }

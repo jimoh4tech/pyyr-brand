@@ -19,6 +19,7 @@ import { MdOutlineArrowOutward } from 'react-icons/md';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { ISalesTable } from '../../interface/report';
 import { IoEyeOutline } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 const ReportChart = () => {
 	const data = [
@@ -87,6 +88,7 @@ const ReportChart = () => {
 };
 
 const SalesTable = () => {
+	const navigate = useNavigate();
 	const transactionList: ISalesTable[] = [
 		{
 			id: 'ee',
@@ -164,7 +166,7 @@ const SalesTable = () => {
 								<Td fontSize={'xs'}>{t.expired}</Td>
 								<Td fontSize={'xs'}>{t.partialRedeemed}</Td>
 								<Td>
-									<IoEyeOutline size={'20px'} cursor={'pointer'} />
+									<IoEyeOutline size={'20px'} cursor={'pointer'} onClick={() => navigate(`/report/${t.id}`)} />
 								</Td>
 							</Tr>
 						))}
@@ -218,23 +220,26 @@ export const Report = () => {
 					</Stack>
 				</Flex>
 				<Flex
-					boxShadow={'md'}
+					boxShadow={'lg'}
 					borderRadius={'md'}
-					p={2}
+					bgColor={'white'}
+					p={4}
 					flexDir={'column'}
 					flex={1}
 					minH={'35vh'}
+					gap={3}
 				>
 					<Flex
 						justifyContent={'space-between'}
 						flex={1}
 						fontSize={'xs	'}
 						alignItems={'center'}
-						borderRadius={'md'}
 					>
-						<Text>Overall Sales Trend</Text>
-						<Stack direction='row' gap={0}>
+						<Text fontWeight={'bold'}>Overall Sales Trend</Text>
+						<Stack direction='row' gap={2} alignItems={'center'}>
+							<Box bg={'#9272e8'} width={'15px'} height={'5px'} />
 							<Text>Redeemed</Text>
+							<Box bg={'#d91313'} width={'15px'} height={'5px'} />
 							<Text>Unredeemed</Text>
 						</Stack>
 					</Flex>
@@ -242,7 +247,13 @@ export const Report = () => {
 						<ReportChart />
 					</Box>
 				</Flex>
-				<Stack bgColor={'white'} borderRadius={'lg'} p={4} gap={4}>
+				<Stack
+					bgColor={'white'}
+					borderRadius={'lg'}
+					p={4}
+					gap={4}
+					boxShadow={'lg'}
+				>
 					<Text fontSize={'sm'} fontWeight={'bold'}>
 						Sales History
 					</Text>
