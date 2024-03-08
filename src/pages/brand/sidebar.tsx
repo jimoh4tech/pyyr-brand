@@ -28,12 +28,25 @@ interface SidebarProps extends BoxProps {
 	onClose: () => void;
 }
 
-function NavItem({ label, icon, href, isActive, setActiveNav }: INavItem) {
+function NavItem({
+	label,
+	icon,
+	href,
+	isActive,
+	setActiveNav,
+	onClose,
+}: INavItem) {
 	const navigate = useNavigate();
 
 	return (
 		<>
-			<Flex gap={5} onClick={() => setActiveNav(href)}>
+			<Flex
+				gap={5}
+				onClick={() => {
+					setActiveNav(href);
+					onClose();
+				}}
+			>
 				<Flex alignItems={'center'}>
 					<Box
 						bgColor={isActive ? '#825EE4' : 'white'}
@@ -63,9 +76,33 @@ function NavItem({ label, icon, href, isActive, setActiveNav }: INavItem) {
 	);
 }
 
+const UserControlExtension = () => {
+	const [active, setActive] = useState<
+		'Users' | 'Role' | 'Privileges' | string
+	>('Users');
+	const controls = ['Users', 'Role', 'Privileges'];
+	return (
+		<Flex flexDir={'column'} gap={2} p={2}>
+			{controls.map((c) => (
+				<Flex
+					key={c}
+					p={2}
+					pl={6}
+					bgColor={active === c ? '#f8f8f8' : 'none'}
+					borderRadius={'xl'}
+					onClick={() => setActive(c)}
+
+				>
+					<Text>{c}</Text>
+				</Flex>
+			))}
+		</Flex>
+	);
+};
+
 export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	const [activeNav, setActiveNav] = useState<
-		'/' | '/vouchers' | '/wallet' | '/report' | '/profile' | '/user'
+		'/' | '/vouchers' | '/wallet' | '/report' | '/profile' | '/user-control'
 	>('/');
 	const navItems: INavItem[] = [
 		{
@@ -99,9 +136,9 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 			label: 'Profile',
 		},
 		{
-			href: '/user',
+			href: '/user-control',
 			icon: user,
-			isActive: activeNav === '/user',
+			isActive: activeNav === '/user-control',
 			label: 'User & Control',
 		},
 	];
@@ -126,8 +163,15 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 				<CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
 			</Flex>
 			{navItems.map((it) => (
-				<NavItem key={it.label} {...it} setActiveNav={setActiveNav} />
+				<NavItem
+					key={it.label}
+					{...it}
+					setActiveNav={setActiveNav}
+					onClose={onClose}
+				/>
 			))}
+			<UserControlExtension />
+
 			<Stack gap={3} px={2} mt={'40vh'}>
 				<Flex
 					gap={2}

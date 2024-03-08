@@ -322,7 +322,7 @@ const WalletTable = () => {
 			recipient: 'Dangote Plc',
 			amount: '₦200,000',
 			bank: 'Access Bank',
-			id: '105DU9192W',
+			id: '105DU192W',
 			type: 'Credit',
 			date: '09/11/23',
 			status: 'Successful',

@@ -13,6 +13,8 @@ import { Voucher } from '../pages/brand/vouchers';
 import { Wallet } from '../pages/brand/wallet';
 import { Report } from '../pages/brand/report';
 import { SalesDetails } from '../pages/brand/sales-details';
+import { Profile } from '../pages/brand/profile';
+import { UserControl } from '../pages/brand/user-control';
 export const Router = () => {
 	return (
 		<Routes>
@@ -28,6 +30,8 @@ export const Router = () => {
 				<Route path='wallet' element={<Wallet />} />
 				<Route path='report' element={<Report />} />
 				<Route path='report/:id' element={<SalesDetails />} />
+				<Route path='profile' element={<Profile />} />
+				<Route path='user-control' element={<UserControl />} />
 			</Route>
 
 			<Route path='/merchants' element={<MerchantLayout />}>
