@@ -14,7 +14,7 @@ import { Wallet } from '../pages/brand/wallet';
 import { Report } from '../pages/brand/report';
 import { SalesDetails } from '../pages/brand/sales-details';
 import { Profile } from '../pages/brand/profile';
-import { UserControl } from '../pages/brand/user-control';
+import { Privilege, Role, User } from '../pages/brand/user-control';
 export const Router = () => {
 	return (
 		<Routes>
@@ -31,7 +31,9 @@ export const Router = () => {
 				<Route path='report' element={<Report />} />
 				<Route path='report/:id' element={<SalesDetails />} />
 				<Route path='profile' element={<Profile />} />
-				<Route path='user-control' element={<UserControl />} />
+				<Route path='user' element={<User />} />
+				<Route path='role' element={<Role />} />
+				<Route path='privileges' element={<Privilege />} />
 			</Route>
 
 			<Route path='/merchants' element={<MerchantLayout />}>

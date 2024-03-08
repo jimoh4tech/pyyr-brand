@@ -23,19 +23,20 @@ import turn_left from '../../assets/turn_left.svg';
 import { useNavigate } from 'react-router-dom';
 import { INavItem } from '../../interface/interface.nav-items';
 import { useState } from 'react';
+import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 
 interface SidebarProps extends BoxProps {
 	onClose: () => void;
 }
 
-function NavItem({
+const NavItem = ({
 	label,
 	icon,
 	href,
 	isActive,
 	setActiveNav,
 	onClose,
-}: INavItem) {
+}: INavItem) => {
 	const navigate = useNavigate();
 
 	return (
@@ -74,26 +75,90 @@ function NavItem({
 			</Flex>
 		</>
 	);
-}
+};
 
+const NavMenuItem = ({
+	label,
+	icon,
+	isActive,
+	isControlVisible,
+	toggleControlVisibility,
+	setActiveNav,
+}: {
+	label: string;
+	icon: string;
+	isActive?: boolean;
+	isControlVisible: boolean;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	toggleControlVisibility: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setActiveNav?: any;
+}) => {
+	const navigate = useNavigate();
+
+	return (
+		<>
+			<Flex
+				gap={5}
+				onClick={() => {
+					toggleControlVisibility(!isControlVisible);
+					setActiveNav('/user');
+				}}
+			>
+				<Flex alignItems={'center'}>
+					<Box
+						bgColor={isActive ? '#825EE4' : 'white'}
+						w={'3px'}
+						h={'12px'}
+						borderRadius={'10px'}
+					/>
+				</Flex>
+				<Flex
+					gap={2}
+					bg={isActive ? '#E0D5FF' : 'white'}
+					flex={1}
+					p={2}
+					borderRadius={'md'}
+					alignItems={'center'}
+					cursor={'pointer'}
+					onClick={() => navigate('/user')}
+					_hover={{ bg: '#E0D5FF' }}
+				>
+					<Box>
+						<Image src={`${icon}`} />
+					</Box>
+					<Text color={'black'}>{label}</Text>
+					{isControlVisible ? <IoIosArrowDown /> : <IoIosArrowForward />}
+				</Flex>
+			</Flex>
+		</>
+	);
+};
 const UserControlExtension = () => {
 	const [active, setActive] = useState<
 		'Users' | 'Role' | 'Privileges' | string
 	>('Users');
-	const controls = ['Users', 'Role', 'Privileges'];
+	const controls = [
+		{ label: 'Users', href: '/user' },
+		{ label: 'Role', href: '/role' },
+		{ label: 'Privileges', href: '/privileges' },
+	];
+	const navigate = useNavigate();
 	return (
-		<Flex flexDir={'column'} gap={2} p={2}>
+		<Flex flexDir={'column'} gap={1} py={2} pl={6}>
 			{controls.map((c) => (
 				<Flex
-					key={c}
+					key={c.label}
 					p={2}
-					pl={6}
-					bgColor={active === c ? '#f8f8f8' : 'none'}
+					bgColor={active === c.label ? '#e4e4e4' : 'none'}
 					borderRadius={'xl'}
-					onClick={() => setActive(c)}
-
+					onClick={() => {
+						setActive(c.label);
+						navigate(c.href);
+					}}
+					cursor={'pointer'}
 				>
-					<Text>{c}</Text>
+					<Text>{c.label}</Text>
 				</Flex>
 			))}
 		</Flex>
@@ -102,8 +167,9 @@ const UserControlExtension = () => {
 
 export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	const [activeNav, setActiveNav] = useState<
-		'/' | '/vouchers' | '/wallet' | '/report' | '/profile' | '/user-control'
+		'/' | '/vouchers' | '/wallet' | '/report' | '/profile' | '/user'
 	>('/');
+	const [isControlVisible, toggleControlVisibility] = useState(false);
 	const navItems: INavItem[] = [
 		{
 			label: 'Dashboard',
@@ -135,12 +201,6 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 			isActive: activeNav === '/profile',
 			label: 'Profile',
 		},
-		{
-			href: '/user-control',
-			icon: user,
-			isActive: activeNav === '/user-control',
-			label: 'User & Control',
-		},
 	];
 
 	return (
@@ -170,7 +230,15 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 					onClose={onClose}
 				/>
 			))}
-			<UserControlExtension />
+			<NavMenuItem
+				icon={user}
+				isActive={activeNav.includes('/user')}
+				setActiveNav={setActiveNav}
+				label='User & Control'
+				isControlVisible={isControlVisible}
+				toggleControlVisibility={toggleControlVisibility}
+			/>
+			{isControlVisible && <UserControlExtension />}
 
 			<Stack gap={3} px={2} mt={'40vh'}>
 				<Flex
