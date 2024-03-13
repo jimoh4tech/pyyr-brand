@@ -5,7 +5,7 @@ import { ForgotPasswordPage } from '../pages/auth/forgot-password';
 import { ResetPasswordPage } from '../pages/auth/reset-password';
 import { MerchantLayout } from '../layout/merchant-layout';
 import { MerchantDashboard } from '../pages/merchant/dashboard';
-import { MerchantKYC } from '../pages/merchant/kyc';
+// import { MerchantKYC } from '../pages/merchant/kyc';
 import { BrandDashboard } from '../pages/brand/dashboard';
 import { BrandKYC } from '../pages/brand/kyc';
 import { BrandLayout } from '../layout/brand-layout';
@@ -38,7 +38,7 @@ export const Router = () => {
 
 			<Route path='/merchants' element={<MerchantLayout />}>
 				<Route index element={<MerchantDashboard />} />
-				<Route path='kyc' element={<MerchantKYC />} />
+				{/* <Route path='kyc' element={<MerchantKYC />} /> */}
 			</Route>
 		</Routes>
 	);

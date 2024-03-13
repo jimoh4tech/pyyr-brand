@@ -166,7 +166,11 @@ const SalesTable = () => {
 								<Td fontSize={'xs'}>{t.expired}</Td>
 								<Td fontSize={'xs'}>{t.partialRedeemed}</Td>
 								<Td>
-									<IoEyeOutline size={'20px'} cursor={'pointer'} onClick={() => navigate(`/report/${t.id}`)} />
+									<IoEyeOutline
+										size={'20px'}
+										cursor={'pointer'}
+										onClick={() => navigate(`/report/${t.id}`)}
+									/>
 								</Td>
 							</Tr>
 						))}
