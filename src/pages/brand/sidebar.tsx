@@ -209,7 +209,7 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 			bg={'white'}
 			w={{ base: 'full', md: 60 }}
 			pos='fixed'
-			h='full'
+			minH='100vh'
 			pr={7}
 			{...rest}
 		>
@@ -240,7 +240,7 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 			/>
 			{isControlVisible && <UserControlExtension />}
 
-			<Stack gap={3} px={2} mt={'40vh'}>
+			<Stack gap={3} px={2} mt={'20'}>
 				<Flex
 					gap={2}
 					cursor={'pointer'}

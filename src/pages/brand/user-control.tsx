@@ -6,6 +6,7 @@ import {
 	Card,
 	CardBody,
 	Center,
+	Checkbox,
 	Divider,
 	Flex,
 	FormControl,
@@ -14,6 +15,10 @@ import {
 	Input,
 	InputGroup,
 	InputLeftElement,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -36,7 +41,7 @@ import {
 } from '@chakra-ui/react';
 import { AiOutlineFileAdd } from 'react-icons/ai';
 import { FiSearch } from 'react-icons/fi';
-import { IoMdAdd } from 'react-icons/io';
+import { IoIosArrowDown, IoMdAdd } from 'react-icons/io';
 import { VscListFilter } from 'react-icons/vsc';
 import { IRole, IUser } from '../../interface/user';
 import { IoEyeOutline } from 'react-icons/io5';
@@ -399,6 +404,170 @@ const RoleTable = () => {
 	);
 };
 
+const PrivilegeTable = () => {
+	return (
+		<>
+			<TableContainer>
+				<Table variant='simple' size={'sm'}>
+					<Thead>
+						<Tr>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Privileges
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Create
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								View
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Add
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Edit
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Withdraw
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Delete
+							</Th>
+						</Tr>
+					</Thead>
+					<Tbody gap={5}>
+						<Tr>
+							<Td fontSize={'xs'}>Dashboard</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+						</Tr>
+						<Tr>
+							<Td fontSize={'xs'}>Vouchers</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+						</Tr>
+						<Tr>
+							<Td fontSize={'xs'}>Wallet</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+						</Tr>
+						<Tr>
+							<Td fontSize={'xs'}>Report</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+						</Tr>
+						<Tr>
+							<Td fontSize={'xs'}>Profile</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+						</Tr>
+						<Tr>
+							<Td fontSize={'xs'}>User & Controls</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+							<Td>
+								<Checkbox size={'sm'}></Checkbox>
+							</Td>
+						</Tr>
+					</Tbody>
+				</Table>
+			</TableContainer>
+		</>
+	);
+};
+
 const AddUserModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [step, setStep] = useState(1);
@@ -725,11 +894,11 @@ const AddRoleModal = () => {
 										fontWeight={'bold'}
 										textAlign={'center'}
 									>
-										User Successfully Added!
+										Role Successfully Created!
 									</Text>
 									<Text fontSize={'xs'} textAlign={'center'}>
-										You’ve successfully added a new user, an email has been sent
-										to this effect.{' '}
+										You’ve successfully added a new role, you can now assign
+										respective roles to users
 									</Text>
 								</Stack>
 							</ModalBody>
@@ -855,7 +1024,7 @@ export const Role = () => {
 								<FiSearch size={'15px'} />
 							</InputLeftElement>
 							<Input
-								placeholder='Search User'
+								placeholder='Search Role'
 								size={'sm'}
 								borderRadius={'md'}
 							/>
@@ -876,5 +1045,59 @@ export const Role = () => {
 };
 
 export const Privilege = () => {
-	return <>This is role page</>;
+	return (
+		<Stack>
+			<Text
+				p={3}
+				bgColor={'white'}
+				borderRadius={'md'}
+				boxShadow={'md'}
+				fontSize={'xs'}
+			>
+				Permissions & Control restricts users to certain functionalities and
+				action. The table below displays the certain kinds of Permission
+				(Create, View, Update,Withdraw, Delete etc.) that can be performed by
+				all kinds of Roles (Account Officer, Admin, Sales Rep, Etc). Checking
+				the boxes on each action means the specific role can perform the checked
+				action(s){' '}
+			</Text>
+			<Stack p={5} bgColor={'white'} borderRadius={'lg'} boxShadow={'lg'}>
+				<Flex justifyContent={'space-between'}>
+					<Flex alignItems={'center'}>
+						<InputGroup p={1} maxW={'sm'}>
+							<InputLeftElement alignItems={'center'}>
+								<FiSearch size={'15px'} />
+							</InputLeftElement>
+							<Input
+								placeholder='Search Role'
+								size={'sm'}
+								borderRadius={'md'}
+							/>
+						</InputGroup>
+						<Button size={'sm'} rightIcon={<VscListFilter />}>
+							Filter
+						</Button>
+					</Flex>
+					<Flex alignItems={'center'} gap={4}>
+						<Menu>
+							<MenuButton
+								size={'xs'}
+								as={Button}
+								rightIcon={<IoIosArrowDown />}
+							>
+								Sales Rep
+							</MenuButton>
+							<MenuList>
+								<MenuItem fontSize={'xs'}>Sales Rep</MenuItem>
+								<MenuItem fontSize={'xs'}>Account Officer</MenuItem>
+								<MenuItem fontSize={'xs'}>Admin</MenuItem>
+							</MenuList>
+						</Menu>
+					</Flex>
+				</Flex>
+
+				<PrivilegeTable />
+			</Stack>
+		</Stack>
+	);
 };
