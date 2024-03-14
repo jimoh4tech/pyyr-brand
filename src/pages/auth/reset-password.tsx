@@ -14,7 +14,8 @@ import authicon from '../../assets/authicon.svg';
 import awesome from '../../assets/awesome.svg';
 import { ChangeEvent, useState } from 'react';
 import { useFormik } from 'formik';
-import { PasswordInput } from './register';
+import { PasswordInput } from './password-input';
+
 
 const Verified = () => {
 	return (
