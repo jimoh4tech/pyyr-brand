@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom';
-import { SignInPage } from '../pages/auth/login';
 import { ForgotPasswordPage } from '../pages/auth/forgot-password';
 import { ResetPasswordPage } from '../pages/auth/reset-password';
 import { MerchantLayout } from '../layout/merchant-layout';
@@ -15,11 +14,12 @@ import { Profile } from '../pages/brand/profile';
 import { Privilege, Role, User } from '../pages/brand/user-control';
 import { MerchantKYC } from '../pages/merchant/kyc';
 import { RegistrationPage } from '../pages/auth/register/index';
+import { LoginPage } from '../pages/auth/login/index';
 export const Router = () => {
 	return (
 		<Routes>
 			<Route path='/signup' element={<RegistrationPage />} />
-			<Route path='/signin' element={<SignInPage />} />
+			<Route path='/signin' element={<LoginPage />} />
 			<Route path='/forgot-password' element={<ForgotPasswordPage />} />
 			<Route path='/reset-password' element={<ResetPasswordPage />} />
 

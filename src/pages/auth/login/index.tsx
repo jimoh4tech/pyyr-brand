@@ -11,29 +11,21 @@ import welcome from '../../../assets/welcome.svg';
 import splashing from '../../../assets/splashing1.svg';
 import back from '../../../assets/back.svg';
 import pyyr from '../../../assets/pyyr.svg';
-
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import { Form1, Form2, Form3 } from './Forms';
-import { VerifiedPage } from '../verified';
+import { LoginForm } from './form';
 
-
-
-export const RegistrationPage = () => {
+export const LoginPage = () => {
 	const [isLessThan700] = useMediaQuery('(max-width: 700px)');
 
 	const [isloading, setLoading] = useState(true);
-	const [step, setStep] = useState(1);
 	const formik = useFormik({
 		initialValues: {
-			name: '',
 			email: '',
 			password: '',
-			confirmPassword: '',
 		},
 		async onSubmit(values) {
 			console.log(values);
-			setStep(3);
 		},
 	});
 
@@ -75,12 +67,7 @@ export const RegistrationPage = () => {
 							alignItems={'center'}
 							justifyContent={'space-between'}
 						>
-							<Image
-								onClick={() => (step > 1 ? setStep(step - 1) : null)}
-								cursor={'pointer'}
-								boxSize={'50px'}
-								src={back}
-							/>
+							<Image cursor={'pointer'} boxSize={'50px'} src={back} />
 							<Image
 								boxSize={'70px'}
 								src={pyyr}
@@ -89,26 +76,13 @@ export const RegistrationPage = () => {
 							/>
 							<Box />
 						</Stack>
-						{step === 1 ? (
-							<Form1 setStep={setStep} />
-						) : step === 2 ? (
-							<Form2
-								name={formik.values.name}
-								email={formik.values.email}
-								confirmPassword={formik.values.confirmPassword}
-								password={formik.values.password}
-								onChange={formik.handleChange}
-								handleSubmit={formik.handleSubmit}
-								isSubmitting={formik.isSubmitting}
-							/>
-						) : step === 3 ? (
-							<Form3 setStep={setStep} />
-						) : (
-							<VerifiedPage
-								title='Account Verified!'
-								info='We’ve Successfully Verified your Account'
-							/>
-						)}
+						<LoginForm
+							email={formik.values.email}
+							password={formik.values.password}
+							onChange={formik.handleChange}
+							handleSubmit={formik.handleSubmit}
+							isSubmitting={formik.isSubmitting}
+						/>
 					</GridItem>
 				</Grid>
 			)}

@@ -190,9 +190,7 @@ export const Form2 = ({
 							</Checkbox>
 							<Button
 								loadingText='Submitting'
-								size='lg'
-								bg='#825EE4'
-								color={'white'}
+								colorScheme='purple'
 								type='submit'
 								isDisabled={!isChecked}
 								isLoading={isSubmitting}
@@ -242,9 +240,7 @@ export const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 						</Text>
 						<Button
 							loadingText='Submitting'
-							size='lg'
-							bg='#825EE4'
-							color={'white'}
+							colorScheme='purple'
 							type='submit'
 							isDisabled={value.length < 4}
 							isLoading={false}
