@@ -1,9 +1,12 @@
 import {
+	Box,
 	Button,
 	Card,
 	CardBody,
 	Center,
 	Checkbox,
+	CircularProgress,
+	CircularProgressLabel,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -24,7 +27,6 @@ import {
 import welcome from '../../assets/welcome.svg';
 import splashing from '../../assets/splashing1.svg';
 import back from '../../assets/back.svg';
-import authicon from '../../assets/authicon.svg';
 import person from '../../assets/person.svg';
 import group from '../../assets/group.svg';
 import awesome from '../../assets/awesome.svg';
@@ -67,7 +69,6 @@ const AccountTypeCard = ({
 					</Flex>
 				</CardBody>
 			</Card>
-			;
 		</>
 	);
 };
@@ -104,12 +105,22 @@ export const PasswordInput = ({
 	);
 };
 
-const Form1 = ({ setStep }: { setStep: (num: number) => void }) => {
+const Form1 = ({
+	step,
+	setStep,
+}: {
+	step: number;
+	setStep: (num: number) => void;
+}) => {
 	return (
 		<>
 			<Stack gap={8}>
 				<Flex justify={'center'}>
-					<Image boxSize={'30%'} src={authicon} />
+					<CircularProgress value={step * 33} size={'100px'} color='#825ee4'>
+						<CircularProgressLabel fontSize={'sm'}>
+							{step} of 3
+						</CircularProgressLabel>
+					</CircularProgress>
 				</Flex>
 				<Flex color={'black'} flexDir={'column'} alignItems={'center'} gap={2}>
 					<Text textAlign={'center'} fontWeight={'bold'} fontSize='md'>
@@ -164,7 +175,11 @@ const Form2 = ({
 		<>
 			<Stack gap={8}>
 				<Flex justify={'center'}>
-					<Image src={authicon} />
+					<CircularProgress value={67} size={'100px'} color='#825ee4'>
+						<CircularProgressLabel fontSize={'sm'}>
+							2 of 3
+						</CircularProgressLabel>
+					</CircularProgress>
 				</Flex>
 				<Flex color={'black'} flexDir={'column'} alignItems={'center'} gap={2}>
 					<Text fontWeight={'bold'}>Welcome to Pyyr</Text>
@@ -220,8 +235,8 @@ const Form2 = ({
 								onChange={() => setChecked(!isChecked)}
 							>
 								By signing up you agree to our{' '}
-								<Link color={'#825EE4'}>Terms</Link> and{' '}
-								<Link color={'#825EE4'}>Conditions</Link>
+								<Link color={'#825EE4'}>Terms & Conditions </Link> and{' '}
+								<Link color={'#825EE4'}>Privacy</Link>
 							</Checkbox>
 							<Button
 								loadingText='Submitting'
@@ -249,7 +264,11 @@ const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 		<>
 			<Stack gap={8}>
 				<Flex justify={'center'}>
-					<Image src={authicon} />
+					<CircularProgress value={100} size={'100px'} color='#825ee4'>
+						<CircularProgressLabel fontSize={'sm'}>
+							3 of 3
+						</CircularProgressLabel>
+					</CircularProgress>
 				</Flex>
 				<Flex color={'black'} flexDir={'column'} alignItems={'center'} gap={2}>
 					<Text fontWeight={'bold'}>OTP Verification</Text>
@@ -345,17 +364,16 @@ export const SignUpPage = () => {
 	useEffect(() => {
 		setTimeout(() => {
 			setLoading(false);
-		}, 2000);
+		}, 3000);
 	});
 	return (
 		<>
 			{isloading ? (
 				<Center bgColor={'#825EE4'}>
-					<Image src={welcome} boxSize={'85%'} alt='Welcome' />
+					<Image h={'96vh'} src={welcome} alt='Welcome' />
 				</Center>
 			) : (
 				<Grid
-					minH='90vh'
 					templateColumns={`repeat(${isLessThan700 ? 3 : 4}, 1fr)`}
 					gap={0}
 					color={'white'}
@@ -363,11 +381,11 @@ export const SignUpPage = () => {
 				>
 					<GridItem
 						colSpan={1}
-						py={1}
 						bgColor={'#825EE4'}
 						display={isLessThan700 ? 'none' : 'block'}
+						justifyContent={'center'}
 					>
-						<Image src={splashing} boxSize={'85%'} alt='splash screen' />
+						<Image h={'97vh'} src={splashing} alt='splash screen' />
 					</GridItem>
 					<GridItem
 						colSpan={3}
@@ -375,22 +393,28 @@ export const SignUpPage = () => {
 						p={isLessThan700 ? 2 : 10}
 						color={'black'}
 					>
-						<Stack direction={'row'} gap={'30%'} mb={10}>
+						<Stack
+							direction={'row'}
+							mb={10}
+							alignItems={'center'}
+							justifyContent={'space-between'}
+						>
 							<Image
 								onClick={() => (step > 1 ? setStep(step - 1) : null)}
 								cursor={'pointer'}
-								boxSize={'10%'}
+								boxSize={'50px'}
 								src={back}
 							/>
 							<Image
-								boxSize={'20%'}
+								boxSize={'70px'}
 								src={pyyr}
 								alt='pyyr'
 								display={isLessThan700 ? 'block' : 'none'}
 							/>
+							<Box />
 						</Stack>
 						{step === 1 ? (
-							<Form1 setStep={setStep} />
+							<Form1 setStep={setStep} step={step} />
 						) : step === 2 ? (
 							<Form2
 								name={formik.values.name}

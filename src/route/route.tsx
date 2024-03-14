@@ -15,6 +15,7 @@ import { Report } from '../pages/brand/report';
 import { SalesDetails } from '../pages/brand/sales-details';
 import { Profile } from '../pages/brand/profile';
 import { Privilege, Role, User } from '../pages/brand/user-control';
+import { MerchantKYC } from '../pages/merchant/kyc';
 export const Router = () => {
 	return (
 		<Routes>
@@ -36,9 +37,9 @@ export const Router = () => {
 				<Route path='privileges' element={<Privilege />} />
 			</Route>
 
-			<Route path='/merchants' element={<MerchantLayout />}>
+			<Route path='/merchant' element={<MerchantLayout />}>
 				<Route index element={<MerchantDashboard />} />
-				{/* <Route path='kyc' element={<MerchantKYC />} /> */}
+				<Route path='kyc' element={<MerchantKYC />} />
 			</Route>
 		</Routes>
 	);

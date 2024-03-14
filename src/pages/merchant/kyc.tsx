@@ -337,7 +337,7 @@ const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 			website: '',
 			rcNumber: '',
 			email: '',
-			logo: ''
+			logo: '',
 		},
 		async onSubmit(values) {
 			console.log(values);
@@ -361,7 +361,7 @@ const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 										{'Business Logo'}
 									</FormLabel>
 									<Text fontSize={'sm'}>Add a business logo</Text>
-									
+
 									{/* <Avatar src={add} as={Input} /> */}
 									<Input
 										id={'logo'}
@@ -370,7 +370,6 @@ const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 										size={'sm'}
 										value={formik.values.logo}
 										onChange={formik.handleChange}
-										
 									/>
 								</FormControl>
 								<FormControl isRequired>
@@ -408,7 +407,7 @@ const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 								</FormControl>
 								<FormControl isRequired>
 									<FormLabel fontSize={'sm'} htmlFor={'name'}>
-										{'Business Type'}
+										{'Location'}
 									</FormLabel>
 									<HStack>
 										<Select size={'sm'} placeholder='City'>
