@@ -4,7 +4,6 @@ import { ResetPasswordPage } from '../pages/auth/reset-password';
 import { MerchantLayout } from '../layout/merchant-layout';
 import { MerchantDashboard } from '../pages/merchant/dashboard';
 import { BrandDashboard } from '../pages/brand/dashboard';
-import { BrandKYC } from '../pages/brand/kyc';
 import { BrandLayout } from '../layout/brand-layout';
 import { Voucher } from '../pages/brand/vouchers';
 import { Wallet } from '../pages/brand/wallet';
@@ -15,6 +14,7 @@ import { Privilege, Role, User } from '../pages/brand/user-control';
 import { MerchantKYC } from '../pages/merchant/kyc';
 import { RegistrationPage } from '../pages/auth/register/index';
 import { LoginPage } from '../pages/auth/login/index';
+import { BrandKYC } from '../pages/brand/kyc/index';
 export const Router = () => {
 	return (
 		<Routes>

@@ -14,7 +14,7 @@ import pyyr from '../../../assets/pyyr.svg';
 
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
-import { Form1, Form2, Form3 } from './Forms';
+import { Form1, Form2, Form3 } from './forms';
 import { VerifiedPage } from '../verified';
 
 

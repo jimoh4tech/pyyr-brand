@@ -1,6 +1,8 @@
 import {
 	Button,
 	Circle,
+	CircularProgress,
+	CircularProgressLabel,
 	Divider,
 	Flex,
 	FormControl,
@@ -31,6 +33,7 @@ import {
 	Text,
 	Textarea,
 	useDisclosure,
+	useMediaQuery,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useState } from 'react';
@@ -281,9 +284,11 @@ const Form2 = ({ setStep }: { setStep: (num: number) => void }) => {
 										{'Select ID'}
 									</FormLabel>
 									<Select size={'xs'} placeholder='Select option'>
-										<option value='option1'>Option 1</option>
-										<option value='option2'>Option 2</option>
-										<option value='option3'>Option 3</option>
+										<option value='option1'>NIN</option>
+										<option value='option2'>BVN</option>
+										<option value='option2'>Driver's Lisence</option>
+										<option value='option2'>Internation Passport</option>
+										<option value='option3'>Voter's Card</option>
 									</Select>
 								</FormControl>
 								<FormControl isRequired>
@@ -413,7 +418,7 @@ const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 								</FormControl>
 								<FormControl isRequired>
 									<FormLabel fontSize={'xs'} htmlFor={'name'}>
-										{'Business Type'}
+										{'Location'}
 									</FormLabel>
 									<HStack>
 										<Select size={'xs'} placeholder='City'>
@@ -672,14 +677,9 @@ const Form4 = ({ setStep }: { setStep: (num: number) => void }) => {
 const Form5 = ({ setStep }: { setStep: (num: number) => void }) => {
 	const formik = useFormik({
 		initialValues: {
-			firstname: '',
-			lastname: '',
-			email: '',
-			phone: '',
-			role: '',
-			dob: '',
-			type: '',
-			idNumber: '',
+			certificate: '',
+			cac: '',
+			id: '',
 		},
 		async onSubmit(values) {
 			console.log(values);
@@ -696,105 +696,43 @@ const Form5 = ({ setStep }: { setStep: (num: number) => void }) => {
 						<Flex p={5} bg={'#fbfbfb'}>
 							<Flex flexDir={'column'} gap={3} w={'100%'}>
 								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'name'}>
-										{'Name'}
+									<FormLabel fontSize={'xs'} htmlFor={'certificate'}>
+										{'Certificate of Corporation'}
 									</FormLabel>
-									<HStack>
-										<Input
-											id={'name'}
-											name={'firstname'}
-											type='text'
-											w={'full'}
-											size={'xs'}
-											value={formik.values.firstname}
-											onChange={formik.handleChange}
-											placeholder='First Name'
-										/>
-										<Input
-											id={'name'}
-											name={'lastname'}
-											type='text'
-											w={'full'}
-											size={'xs'}
-											value={formik.values.lastname}
-											onChange={formik.handleChange}
-											placeholder='Last Name'
-										/>
-									</HStack>
+									<Input
+										id={'certificate'}
+										name={'certificate'}
+										type='file'
+										size={'xs'}
+										value={formik.values.certificate}
+										onChange={formik.handleChange}
+									/>
 								</FormControl>
 								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'email'}>
-										{'Email Address'}
+									<FormLabel fontSize={'xs'} htmlFor={'cac'}>
+										{'Form CAC'}
 									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'email'}
-											name={'email'}
-											type='email'
-											size={'xs'}
-											value={formik.values.email}
-											onChange={formik.handleChange}
-											placeholder='Enter Email'
-										/>
-									</InputGroup>
+									<Input
+										id={'cac'}
+										name={'cac'}
+										type='file'
+										size={'xs'}
+										value={formik.values.cac}
+										onChange={formik.handleChange}
+									/>
 								</FormControl>
 								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'phone'}>
-										{'Phone Number'}
+									<FormLabel fontSize={'xs'} htmlFor={'id'}>
+										{'National Identity'}
 									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'phone'}
-											name={'phone'}
-											type='phone'
-											size={'xs'}
-											value={formik.values.phone}
-											onChange={formik.handleChange}
-											placeholder='090908678000'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Role'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'role'}
-											name={'role'}
-											type='text'
-											size={'xs'}
-											value={formik.values.role}
-											onChange={formik.handleChange}
-											placeholder='Enter your role in the company'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Select ID'}
-									</FormLabel>
-									<Select size={'xs'} placeholder='Select option'>
-										<option value='option1'>Option 1</option>
-										<option value='option2'>Option 2</option>
-										<option value='option3'>Option 3</option>
-									</Select>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'idNumber'}>
-										{'ID Number'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'idNumber'}
-											name={'idNumber'}
-											type='text'
-											size={'xs'}
-											value={formik.values.idNumber}
-											onChange={formik.handleChange}
-											placeholder='Enter Select ID Number'
-										/>
-									</InputGroup>
+									<Input
+										id={'id'}
+										name={'id'}
+										type='file'
+										size={'xs'}
+										value={formik.values.id}
+										onChange={formik.handleChange}
+									/>
 								</FormControl>
 							</Flex>
 						</Flex>
@@ -809,7 +747,7 @@ const Form5 = ({ setStep }: { setStep: (num: number) => void }) => {
 								Back
 							</Button>
 							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
+								Submit
 							</Button>
 						</Flex>
 					</Flex>
@@ -818,8 +756,9 @@ const Form5 = ({ setStep }: { setStep: (num: number) => void }) => {
 		</>
 	);
 };
-export const MerchantKYC = () => {
-	const [step, setStep] = useState(1);
+export const BrandKYC = () => {
+	const [step, setStep] = useState(2);
+	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
 	return (
 		<>
 			<Flex
@@ -832,6 +771,17 @@ export const MerchantKYC = () => {
 				bgColor={'white'}
 			>
 				<Text>Account Validation</Text>
+				<Flex justify={'center'} display={isLessThan600 ? 'flex' : 'none'}>
+					<CircularProgress
+						value={(step - 1) * 25}
+						size={'70px'}
+						color='#825ee4'
+					>
+						<CircularProgressLabel fontSize={'xs'}>
+							{step - 1} of 4
+						</CircularProgressLabel>
+					</CircularProgress>
+				</Flex>
 				<Flex gap={2}>
 					<Flex
 						flex={1}
@@ -840,6 +790,7 @@ export const MerchantKYC = () => {
 						boxShadow={'md'}
 						fontSize={'xs'}
 						gap={3}
+						display={isLessThan600 ? 'none' : 'flex'}
 					>
 						<Text>Steps</Text>
 						<Flex
@@ -848,22 +799,22 @@ export const MerchantKYC = () => {
 							justifyContent={'space-between'}
 						>
 							<Progress
-								value={step * 20}
+								value={(step - 1) * 25}
 								colorScheme='purple'
 								w='130px'
 								size='xs'
 								borderRadius={'md'}
 							/>
-							<Text>{step} of 5</Text>
+							<Text width={'32px'}>{step - 1} of 4</Text>
 						</Flex>
 
-						<ItemCheck label='Consent' value={1} step={step} />
+						{/* <ItemCheck label='Consent' value={1} step={step} /> */}
 						<ItemCheck label='Key Contact Details' value={2} step={step} />
 						<ItemCheck label='Organisational Details' value={3} step={step} />
 						<ItemCheck label='Payment Account Info' value={4} step={step} />
 						<ItemCheck label='Documents/Verification' value={5} step={step} />
 					</Flex>
-					<Flex bg={'#fbfbfb'} flex={3} p={5}>
+					<Flex bg={'#fbfbfb'} flex={3} p={isLessThan600 ? 1: 5}>
 						{step === 1 ? (
 							<Form1 setStep={setStep} />
 						) : step === 2 ? (
