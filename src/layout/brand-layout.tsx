@@ -14,12 +14,14 @@ import pyyr from '../assets/pyyr.svg';
 import { Outlet } from 'react-router-dom';
 import { BrandSidebarContent } from '../pages/brand/sidebar';
 import { Header } from '../pages/brand/header';
+import { useEffect, useState } from 'react';
 
 interface MobileProps extends FlexProps {
 	onOpen: () => void;
+	currentNav: string;
 }
 
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({ onOpen, currentNav, ...rest }: MobileProps) => {
 	return (
 		<Flex
 			ml={{ base: 0, md: 60 }}
@@ -43,19 +45,45 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 			<Box cursor={'pointer'} ml={6} display={{ base: 'flex', md: 'none' }}>
 				<Image src={pyyr} alt='pyyr' />
 			</Box>
-			<Header />
+			<Header currentNav={currentNav} />
 		</Flex>
 	);
 };
 
 export const BrandLayout = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [currentNav, setCurrentNav] = useState<
+		| 'Dashboard'
+		| 'Vouchers'
+		| 'Wallet'
+		| 'Report'
+		| 'Profile'
+		| 'User & Control'
+	>('Dashboard');
+
+	useEffect(() => {
+		if (window.location.href.endsWith('/')) setCurrentNav('Dashboard');
+		else if (window.location.href.includes('/vouchers'))
+			setCurrentNav('Vouchers');
+		else if (window.location.href.includes('/wallet')) setCurrentNav('Wallet');
+		else if (window.location.href.includes('/report')) setCurrentNav('Report');
+		else if (window.location.href.includes('/profile'))
+			setCurrentNav('Profile');
+		else if (
+			window.location.href.includes('/user') ||
+			window.location.href.includes('/role') ||
+			window.location.href.includes('/privileges')
+		)
+			setCurrentNav('User & Control');
+	}, []);
 
 	return (
 		<Box minH='100vh' bg={'#fbfbfb'}>
 			<BrandSidebarContent
 				onClose={() => onClose}
 				display={{ base: 'none', md: 'block' }}
+				currentNav={currentNav}
+				setCurrentNav={setCurrentNav}
 			/>
 			<Drawer
 				isOpen={isOpen}
@@ -66,11 +94,15 @@ export const BrandLayout = () => {
 				size='full'
 			>
 				<DrawerContent>
-					<BrandSidebarContent onClose={onClose} />
+					<BrandSidebarContent
+						onClose={onClose}
+						currentNav={currentNav}
+						setCurrentNav={setCurrentNav}
+					/>
 				</DrawerContent>
 			</Drawer>
 			{/* mobilenav */}
-			<MobileNav onOpen={onOpen} />
+			<MobileNav onOpen={onOpen} currentNav={currentNav} />
 			<Box ml={{ base: 0, md: 60 }} p={{ base: 1, md: 4 }}>
 				<Outlet />
 			</Box>

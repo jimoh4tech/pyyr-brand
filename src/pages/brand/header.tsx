@@ -14,8 +14,7 @@ import image from '../../assets/Image.svg';
 import notification from '../../assets/notification.svg';
 import help from '../../assets/help.svg';
 
-
-export const Header = () => {
+export const Header = ({ currentNav }: { currentNav: string }) => {
 	return (
 		<>
 			<Flex
@@ -32,7 +31,7 @@ export const Header = () => {
 					fontSize={'sm'}
 					display={{ base: 'none', md: 'flex' }}
 				>
-					<Text>Dashboard</Text>
+					<Text width={'135px'}>{currentNav}</Text>
 					<InputGroup p={1}>
 						<InputLeftElement alignItems={'center'}>
 							<FiSearch size={'15px'} />

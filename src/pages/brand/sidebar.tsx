@@ -27,6 +27,9 @@ import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 
 interface SidebarProps extends BoxProps {
 	onClose: () => void;
+	currentNav: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setCurrentNav: any;
 }
 
 const NavItem = ({
@@ -34,7 +37,7 @@ const NavItem = ({
 	icon,
 	href,
 	isActive,
-	setActiveNav,
+	setCurrentNav,
 	onClose,
 }: INavItem) => {
 	const navigate = useNavigate();
@@ -44,7 +47,7 @@ const NavItem = ({
 			<Flex
 				gap={5}
 				onClick={() => {
-					setActiveNav(href);
+					setCurrentNav(label);
 					onClose();
 				}}
 			>
@@ -83,7 +86,7 @@ const NavMenuItem = ({
 	isActive,
 	isControlVisible,
 	toggleControlVisibility,
-	setActiveNav,
+	setCurrentNav,
 }: {
 	label: string;
 	icon: string;
@@ -92,7 +95,7 @@ const NavMenuItem = ({
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	toggleControlVisibility: any;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setActiveNav?: any;
+	setCurrentNav?: any;
 }) => {
 	const navigate = useNavigate();
 
@@ -102,7 +105,7 @@ const NavMenuItem = ({
 				gap={5}
 				onClick={() => {
 					toggleControlVisibility(!isControlVisible);
-					setActiveNav('/user');
+					setCurrentNav('User & Control');
 				}}
 			>
 				<Flex alignItems={'center'}>
@@ -134,7 +137,7 @@ const NavMenuItem = ({
 		</>
 	);
 };
-const UserControlExtension = () => {
+const UserControlExtension = ({ onClose }: { onClose: () => void }) => {
 	const [active, setActive] = useState<
 		'Users' | 'Role' | 'Privileges' | string
 	>('Users');
@@ -145,7 +148,7 @@ const UserControlExtension = () => {
 	];
 	const navigate = useNavigate();
 	return (
-		<Flex flexDir={'column'} gap={1} py={2} pl={6}>
+		<Flex flexDir={'column'} gap={0} pl={6}>
 			{controls.map((c) => (
 				<Flex
 					key={c.label}
@@ -155,6 +158,7 @@ const UserControlExtension = () => {
 					onClick={() => {
 						setActive(c.label);
 						navigate(c.href);
+						onClose();
 					}}
 					cursor={'pointer'}
 				>
@@ -165,82 +169,97 @@ const UserControlExtension = () => {
 	);
 };
 
-export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-	const [activeNav, setActiveNav] = useState<
-		'/' | '/vouchers' | '/wallet' | '/report' | '/profile' | '/user'
-	>('/');
+export const BrandSidebarContent = ({
+	onClose,
+	currentNav,
+	setCurrentNav,
+	...rest
+}: SidebarProps) => {
 	const [isControlVisible, toggleControlVisibility] = useState(false);
+	const navigate = useNavigate();
 	const navItems: INavItem[] = [
 		{
 			label: 'Dashboard',
 			icon: dashboard,
 			href: '/',
-			isActive: activeNav === '/',
 		},
 		{
 			href: '/vouchers',
 			icon: notification,
-			isActive: activeNav === '/vouchers',
 			label: 'Vouchers',
 		},
 		{
 			href: '/wallet',
 			icon: wallet,
-			isActive: activeNav === '/wallet',
 			label: 'Wallet',
 		},
 		{
 			href: '/report',
 			icon: report,
-			isActive: activeNav === '/report',
 			label: 'Report',
 		},
 		{
 			href: '/profile',
 			icon: profile,
-			isActive: activeNav === '/profile',
 			label: 'Profile',
 		},
 	];
 
 	return (
-		<Box
+		<Flex
 			transition='3s ease'
 			bg={'white'}
 			w={{ base: 'full', md: 60 }}
 			pos='fixed'
-			minH='100vh'
-			pr={7}
+			h={'full'}
+			pr={5}
+			display={'flex'}
+			flexDir={'column'}
 			{...rest}
+			gap={10}
+			justifyContent={'space-between'}
 		>
-			<Flex h='20' alignItems='center' ml='6' justifyContent='space-between'>
-				<Flex flex={1} flexDir={'column'} gap={2}>
-					<Box cursor={'pointer'} ml={6}>
-						<Image src={pyyr} alt='pyyr' />
-					</Box>
-					<Divider width={'full'} />
+			<Stack gap={1}>
+				<Flex h='20' alignItems='center' ml='6'>
+					<Flex
+						flex={1}
+						flexDir={'column'}
+						gap={2}
+						onClick={() => {
+							navigate('/');
+							setCurrentNav('Dashboard');
+						}}
+					>
+						<Box cursor={'pointer'} ml={6}>
+							<Image src={pyyr} alt='pyyr' />
+						</Box>
+						<Divider width={'full'} />
+					</Flex>
+					<CloseButton
+						display={{ base: 'flex', md: 'none' }}
+						onClick={onClose}
+					/>
 				</Flex>
-				<CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
-			</Flex>
-			{navItems.map((it) => (
-				<NavItem
-					key={it.label}
-					{...it}
-					setActiveNav={setActiveNav}
-					onClose={onClose}
+				{navItems.map((it) => (
+					<NavItem
+						key={it.label}
+						{...it}
+						isActive={currentNav == it.label}
+						setCurrentNav={setCurrentNav}
+						onClose={onClose}
+					/>
+				))}
+				<NavMenuItem
+					icon={user}
+					isActive={currentNav === 'User & Control'}
+					setCurrentNav={setCurrentNav}
+					label='User & Control'
+					isControlVisible={isControlVisible}
+					toggleControlVisibility={toggleControlVisibility}
 				/>
-			))}
-			<NavMenuItem
-				icon={user}
-				isActive={activeNav.includes('/user')}
-				setActiveNav={setActiveNav}
-				label='User & Control'
-				isControlVisible={isControlVisible}
-				toggleControlVisibility={toggleControlVisibility}
-			/>
-			{isControlVisible && <UserControlExtension />}
-
-			<Stack gap={3} px={2} mt={'20'}>
+				{isControlVisible && <UserControlExtension onClose={onClose} />}
+			</Stack>
+			<Stack gap={2} mt={'24'}>
 				<Flex
 					gap={2}
 					cursor={'pointer'}
@@ -267,6 +286,6 @@ export const BrandSidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 					LOG OUT
 				</Button>
 			</Stack>
-		</Box>
+		</Flex>
 	);
 };

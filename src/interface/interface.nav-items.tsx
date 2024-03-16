@@ -4,7 +4,7 @@ export interface INavItem {
 	href: string;
 	isActive?: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setActiveNav?: any;
+	setCurrentNav?: any;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	onClose?: any;
 }
