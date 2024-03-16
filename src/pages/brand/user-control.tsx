@@ -926,15 +926,15 @@ const AddRoleModal = () => {
 export const User = () => {
 	return (
 		<Stack gap={5}>
-			<Card maxW={'25vw'}>
+			<Card>
 				<CardBody>
 					<Stack gap={10}>
 						<Flex justifyContent={'space-between'}>
 							<Text fontWeight={'bold'}>0</Text>
 							<Text>...</Text>
 						</Flex>
-						<Flex justifyContent={'space-between'}>
-							<Text fontSize={'sm'}>Total Amount of Users</Text>
+						<Flex justifyContent={'space-between'} flexWrap={'wrap'}>
+							<Text fontSize={'xs'}>Total Amount of Users</Text>
 							<AvatarGroup size='sm'>
 								<Avatar
 									name='Segun Adebayo'
@@ -955,7 +955,7 @@ export const User = () => {
 				</CardBody>
 			</Card>
 			<Stack p={5} bgColor={'white'} borderRadius={'lg'} boxShadow={'lg'}>
-				<Flex justifyContent={'space-between'}>
+				<Flex justifyContent={'space-between'} flexWrap={'wrap'} gap={2}>
 					<Flex alignItems={'center'}>
 						<InputGroup p={1} maxW={'sm'}>
 							<InputLeftElement alignItems={'center'}>
@@ -988,14 +988,14 @@ export const User = () => {
 export const Role = () => {
 	return (
 		<Stack gap={5}>
-			<Card maxW={'25vw'}>
+			<Card>
 				<CardBody>
 					<Stack gap={10}>
 						<Flex justifyContent={'space-between'}>
 							<Text fontWeight={'bold'}>0</Text>
 							<Text>...</Text>
 						</Flex>
-						<Flex justifyContent={'space-between'}>
+						<Flex justifyContent={'space-between'} flexWrap={'wrap'}>
 							<Text fontSize={'sm'}>Total Roles Created</Text>
 							<AvatarGroup size='sm'>
 								<Avatar
@@ -1017,7 +1017,7 @@ export const Role = () => {
 				</CardBody>
 			</Card>
 			<Stack p={5} bgColor={'white'} borderRadius={'lg'} boxShadow={'lg'}>
-				<Flex justifyContent={'space-between'}>
+				<Flex justifyContent={'space-between'} flexWrap={'wrap'} gap={2}>
 					<Flex alignItems={'center'}>
 						<InputGroup p={1} maxW={'sm'}>
 							<InputLeftElement alignItems={'center'}>
@@ -1062,7 +1062,7 @@ export const Privilege = () => {
 				action(s){' '}
 			</Text>
 			<Stack p={5} bgColor={'white'} borderRadius={'lg'} boxShadow={'lg'}>
-				<Flex justifyContent={'space-between'}>
+				<Flex justifyContent={'space-between'} flexWrap={'wrap'} gap={2}>
 					<Flex alignItems={'center'}>
 						<InputGroup p={1} maxW={'sm'}>
 							<InputLeftElement alignItems={'center'}>

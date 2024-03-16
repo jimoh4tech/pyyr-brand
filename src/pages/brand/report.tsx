@@ -193,15 +193,17 @@ export const Report = () => {
 					justifyContent={'space-between'}
 					flex={1}
 					bgColor={'white'}
-					py={2}
-					px={5}
+					p={2}
 					boxShadow={'md'}
 					alignItems={'center'}
+					flexWrap={'wrap'}
 				>
-					<Text fontWeight={'bold'}>Sales Report</Text>
-					<Stack direction={'row'}>
+					<Text fontWeight={'bold'} fontSize={'sm'}>
+						Sales Report
+					</Text>
+					<Stack direction={'row'} gap={0}>
 						<Button
-							size={'sm'}
+							size={'xs'}
 							variant={'outline'}
 							leftIcon={<MdOutlineArrowOutward />}
 						>
@@ -212,13 +214,13 @@ export const Report = () => {
 								type='date'
 								value={fromDate}
 								onChange={(e) => setFromDate(e.target.value)}
-								size={'xs	'}
+								size={'xs'}
 							/>
 							<Input
 								type='date'
 								value={toDate}
 								onChange={(e) => setToDate(e.target.value)}
-								size={'xs	'}
+								size={'xs'}
 							/>
 						</Stack>
 					</Stack>

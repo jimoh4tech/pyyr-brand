@@ -56,7 +56,7 @@ import gift from '../../assets/gift.svg';
 import verified from '../../assets/verified.svg';
 import { useState } from 'react';
 import { useFormik } from 'formik';
-import { ItemCheck } from './kyc/index'; 
+import { ItemCheck } from './kyc/index';
 import { DisplayCard } from './dashboard';
 import { FiSearch } from 'react-icons/fi';
 import { IoEyeOutline } from 'react-icons/io5';
@@ -691,13 +691,7 @@ const CreateVoucher = () => {
 	);
 };
 
-const ViewVoucherDrawer = ({
-	id,
-	name,
-	price,
-	type,
-	worth,
-}: IVoucherTable) => {
+const ViewVoucherDrawer = ({ id, name, price, type, worth }: IVoucherTable) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
@@ -812,7 +806,9 @@ const ViewVoucherDrawer = ({
 													fontSize={'xs'}
 													textDecor={'underline'}
 													textColor={'#825EE4'}
-												>View</Text>
+												>
+													View
+												</Text>
 											</Flex>
 											<Text fontSize={'xs'} fontWeight={'semibold'}>
 												5
@@ -955,7 +951,11 @@ const VoucherTable = () => {
 									</Badge>{' '}
 								</Td>
 								<Td>
-									<Flex justifyContent={'space-between'} alignItems={'center'} gap={2}>
+									<Flex
+										justifyContent={'space-between'}
+										alignItems={'center'}
+										gap={2}
+									>
 										<Switch colorScheme='purple' size={'sm'} />{' '}
 										<ViewVoucherDrawer {...v} />
 									</Flex>
@@ -996,7 +996,7 @@ const VoucherContent = () => {
 				flexDir={'column'}
 				gap={3}
 			>
-				<Flex justifyContent={'space-between'} flex={1}>
+				<Flex justifyContent={'space-between'} flex={1} alignItems={'center'}>
 					<Text fontSize={'sm'}>Vouchers</Text>
 					<HStack>
 						<InputGroup p={1}>
