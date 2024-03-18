@@ -12,12 +12,12 @@ import {
 } from '@chakra-ui/react';
 import pyyr from '../../assets/pyyr.svg';
 import dashboard from '../../assets/dashboard.svg';
-import customer from '../../assets/customer.svg';
-import campaign from '../../assets/campaign.svg';
-import wallet from '../../assets/wallet.svg';
 import market from '../../assets/market.svg';
-import notification from '../../assets/voucher.svg';
 import profile from '../../assets/profile.svg';
+import customer from '../../assets/customer.svg';
+import wallet from '../../assets/wallet.svg';
+import campaign from '../../assets/campaign.svg';
+import notification from '../../assets/voucher.svg';
 import image from '../../assets/image.svg';
 import turn_left from '../../assets/turn_left.svg';
 
@@ -26,21 +26,33 @@ import { INavItem } from '../../interface/interface.nav-items';
 
 interface SidebarProps extends BoxProps {
 	onClose: () => void;
+	currentNav: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setCurrentNav: any;
 }
 
-function NavItem({ label, icon, href, isActive }: INavItem) {
+const NavItem = ({
+	label,
+	icon,
+	href,
+	isActive,
+	setCurrentNav,
+	onClose,
+}: INavItem) => {
 	const navigate = useNavigate();
 
 	return (
 		<>
-			<Flex gap={5}>
+			<Flex
+				gap={5}
+				onClick={() => {
+					setCurrentNav(label);
+					onClose();
+				}}
+			>
 				<Flex alignItems={'center'}>
 					<Box
-						bgColor={
-							isActive
-								? '#825EE4'
-								: 'white'
-						}
+						bgColor={isActive ? '#825EE4' : 'white'}
 						w={'3px'}
 						h={'12px'}
 						borderRadius={'10px'}
@@ -48,11 +60,7 @@ function NavItem({ label, icon, href, isActive }: INavItem) {
 				</Flex>
 				<Flex
 					gap={2}
-					bg={
-						isActive
-							? '#E0D5FF'
-							: 'white'
-					}
+					bg={isActive ? '#E0D5FF' : 'white'}
 					flex={1}
 					p={2}
 					borderRadius={'md'}
@@ -62,84 +70,106 @@ function NavItem({ label, icon, href, isActive }: INavItem) {
 					_hover={{ bg: '#E0D5FF' }}
 				>
 					<Box>
-						<Image src={`${icon}`} onClick={() => navigate('/home')} />
+						<Image src={`${icon}`} />
 					</Box>
 					<Text color={'black'}>{label}</Text>
 				</Flex>
 			</Flex>
 		</>
 	);
-}
+};
 
-export const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+export const MerchantSidebarContent = ({
+	onClose,
+	currentNav,
+	setCurrentNav,
+	...rest
+}: SidebarProps) => {
+	const navigate = useNavigate();
 	const navItems: INavItem[] = [
 		{
 			label: 'Dashboard',
 			icon: dashboard,
-			href: '/',
-			isActive: window.location.href?.includes('/'),
+			href: '/merchant',
 		},
 		{
-			href: '/customers',
-			icon: customer,
-			isActive: window.location.href?.includes('/customers'),
 			label: 'Customers',
+			icon: customer,
+			href: '/merchant/customers',
 		},
-
 		{
-			href: '/campaigns',
-			icon: campaign,
-			isActive: window.location.href?.includes('/campaigns'),
 			label: 'Campaigns',
+			icon: campaign,
+			href: '/merchant/campaigns',
 		},
 		{
-			href: '/wallet',
+			href: '/merchant/wallet',
 			icon: wallet,
-			isActive: window.location.href?.includes('/wallet'),
 			label: 'Wallet',
 		},
 		{
-			href: '/vouchers',
+			href: '/merchant/vouchers',
 			icon: notification,
-			isActive: window.location.href?.includes('/vouchers'),
 			label: 'Vouchers',
 		},
 		{
-			href: '/marketplace',
+			href: '/merchant/marketplace',
 			icon: market,
-			isActive: window.location.href?.includes('/marketplace'),
 			label: 'Marketplace',
 		},
 		{
-			href: '/profile',
+			href: '/merchant/profile',
 			icon: profile,
-			isActive: window.location.href?.includes('/profile'),
 			label: 'Profile',
 		},
 	];
+
 	return (
-		<Box
+		<Flex
 			transition='3s ease'
 			bg={'white'}
 			w={{ base: 'full', md: 60 }}
 			pos='fixed'
-			h='full'
-			pr={7}
+			h={'full'}
+			pr={5}
+			display={'flex'}
+			flexDir={'column'}
 			{...rest}
+			gap={10}
+			justifyContent={'space-between'}
 		>
-			<Flex h='20' alignItems='center' ml='6' justifyContent='space-between'>
-				<Flex flex={1} flexDir={'column'} gap={2}>
-					<Box cursor={'pointer'} ml={6}>
-						<Image src={pyyr} alt='pyyr' />
-					</Box>
-					<Divider width={'full'} />
+			<Stack gap={1}>
+				<Flex h='20' alignItems='center' ml='6'>
+					<Flex
+						flex={1}
+						flexDir={'column'}
+						gap={2}
+						onClick={() => {
+							navigate('/');
+							setCurrentNav('Dashboard');
+						}}
+					>
+						<Box cursor={'pointer'} ml={6}>
+							<Image src={pyyr} alt='pyyr' />
+						</Box>
+						<Divider width={'full'} />
+					</Flex>
+					<CloseButton
+						display={{ base: 'flex', md: 'none' }}
+						onClick={onClose}
+					/>
 				</Flex>
-				<CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
-			</Flex>
-			{navItems.map((it) => (
-				<NavItem key={it.label} {...it} />
-			))}
-			<Stack gap={3} px={2} mt={'30vh'}>
+				{navItems.map((it) => (
+					<NavItem
+						key={it.label}
+						{...it}
+						isActive={currentNav == it.label}
+						setCurrentNav={setCurrentNav}
+						onClose={onClose}
+					/>
+				))}
+			</Stack>
+			<Stack gap={2} mt={'40'}>
 				<Flex
 					gap={2}
 					cursor={'pointer'}
@@ -166,6 +196,6 @@ export const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 					LOG OUT
 				</Button>
 			</Stack>
-		</Box>
+		</Flex>
 	);
 };

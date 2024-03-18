@@ -115,6 +115,7 @@ export const ResetPasswordPage = () => {
 						<VerifiedPage
 							title='Password Successfully Created! '
 							info='You’ve successfully created a new password for your authentications'
+							href='/signin'
 						/>
 					)}
 				</GridItem>

@@ -17,8 +17,6 @@ import { useFormik } from 'formik';
 import { Form1, Form2, Form3 } from './forms';
 import { VerifiedPage } from '../verified';
 
-
-
 export const RegistrationPage = () => {
 	const [isLessThan700] = useMediaQuery('(max-width: 700px)');
 
@@ -30,6 +28,7 @@ export const RegistrationPage = () => {
 			email: '',
 			password: '',
 			confirmPassword: '',
+			type: '',
 		},
 		async onSubmit(values) {
 			console.log(values);
@@ -90,11 +89,16 @@ export const RegistrationPage = () => {
 							<Box />
 						</Stack>
 						{step === 1 ? (
-							<Form1 setStep={setStep} />
+							<Form1
+								setStep={setStep}
+								values={formik.values}
+								setValues={formik.setValues}
+							/>
 						) : step === 2 ? (
 							<Form2
 								name={formik.values.name}
 								email={formik.values.email}
+								type={formik.values.type}
 								confirmPassword={formik.values.confirmPassword}
 								password={formik.values.password}
 								onChange={formik.handleChange}
@@ -107,6 +111,7 @@ export const RegistrationPage = () => {
 							<VerifiedPage
 								title='Account Verified!'
 								info='We’ve Successfully Verified your Account'
+								href={formik.values.type === 'brand' ? '/kyc' : '/merchant/kyc'}
 							/>
 						)}
 					</GridItem>

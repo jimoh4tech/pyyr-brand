@@ -31,12 +31,20 @@ const AccountTypeCard = ({
 	description,
 	isActive,
 	setStep,
+	type,
+	values,
+	setValues
 }: {
 	icon: string;
 	title: string;
 	description: string;
 	isActive?: boolean;
 	setStep: (num: number) => void;
+	type: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	values: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setValues: any;
 }) => {
 	return (
 		<>
@@ -45,7 +53,10 @@ const AccountTypeCard = ({
 				cursor={'pointer'}
 				borderColor={'#825EE4'}
 				borderWidth={isActive ? '1px' : 'none'}
-				onClick={() => setStep(2)}
+				onClick={() => {
+					setStep(2);
+					setValues({...values, type})
+				}}
 			>
 				<CardBody>
 					<Flex flexDir={'column'} alignItems={'center'}>
@@ -61,7 +72,18 @@ const AccountTypeCard = ({
 	);
 };
 
-export const Form1 = ({ setStep }: { setStep: (num: number) => void }) => {
+export const Form1 = ({
+	setStep,
+	values,
+	setValues
+}: {
+	setStep: (num: number) => void;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	values: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setValues: any;
+}) => {
 	return (
 		<>
 			<Stack gap={8}>
@@ -88,6 +110,9 @@ export const Form1 = ({ setStep }: { setStep: (num: number) => void }) => {
 						key={'As a Merchant'}
 						isActive={true}
 						setStep={setStep}
+						values={values}
+						setValues={setValues}
+						type='merchant'
 					/>
 					<AccountTypeCard
 						icon={group}
@@ -95,6 +120,9 @@ export const Form1 = ({ setStep }: { setStep: (num: number) => void }) => {
 						description='Here to Sell Vouchers/Rewards'
 						key={'As a Brand'}
 						setStep={setStep}
+						values={values}
+						setValues={setValues}
+						type='brand'
 					/>
 				</Flex>
 			</Stack>
@@ -107,6 +135,7 @@ export const Form2 = ({
 	email,
 	password,
 	confirmPassword,
+	type,
 	onChange,
 	isSubmitting,
 	handleSubmit,
@@ -115,6 +144,7 @@ export const Form2 = ({
 	email: string;
 	password: string;
 	confirmPassword: string;
+	type: string;
 	onChange: (e: ChangeEvent) => void;
 	isSubmitting: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -142,7 +172,9 @@ export const Form2 = ({
 					<form onSubmit={handleSubmit}>
 						<Stack minW={'30vw'} gap={3}>
 							<FormControl>
-								<FormLabel htmlFor={'name'}>{'Brand Name'}</FormLabel>
+								<FormLabel htmlFor={'name'}>
+									{type === 'brand' ? 'Brand Name' : 'Fullname'}
+								</FormLabel>
 								<InputGroup>
 									<Input
 										id={'name'}
@@ -150,7 +182,9 @@ export const Form2 = ({
 										type='text'
 										value={name}
 										onChange={onChange}
-										placeholder='Enter Brand'
+										placeholder={`Enter ${
+											type === 'brand' ? 'Brand' : 'Fullname'
+										}`}
 									/>
 								</InputGroup>
 							</FormControl>

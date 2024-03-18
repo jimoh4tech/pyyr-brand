@@ -21,7 +21,7 @@ import { IVoucherTable } from '../../interface/voucher';
 import { IoIosArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 
-const SalesDetailsChart = () => {
+const CustomersDetailsChart = () => {
 	const data = [
 		{
 			name: 'Nov 12',
@@ -87,7 +87,7 @@ const SalesDetailsChart = () => {
 	);
 };
 
-const SalesDetailsTable = () => {
+const CustomerRewardTable = () => {
 	const vouchers: IVoucherTable[] = [
 		{
 			name: 'Emerald',
@@ -163,25 +163,20 @@ const SalesDetailsTable = () => {
 					<Thead>
 						<Tr>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Voucher Name
+								Voucher's Worth
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Voucher ID
+								ID
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Worth
+								Date Rewarded
 							</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Quantity
-							</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Merchant
-							</Th>
+
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
 								Expiry Date
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Amount
+								Brand
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
 								Status
@@ -194,8 +189,6 @@ const SalesDetailsTable = () => {
 								<Td fontSize={'xs'}>{v.name}</Td>
 								<Td fontSize={'xs'}>#{v.id}</Td>
 								<Td fontSize={'xs'}>{v.worth}</Td>
-								<Td fontSize={'xs'}>{v.quantity}</Td>
-								<Td fontSize={'xs'}>{v.merchant}</Td>
 								<Td fontSize={'xs'}>{v.expireDate}</Td>
 								<Td fontSize={'xs'}>{v.price}</Td>
 								<Td fontSize={'xs'}>
@@ -223,36 +216,50 @@ const SalesDetailsTable = () => {
 	);
 };
 
-export const SalesDetails = () => {
+export const CustomerDetails = () => {
 	const navigate = useNavigate();
 	const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'));
 	return (
 		<>
-			<Stack gap={3}>
+			<Stack gap={3} bgColor={'white'}>
 				<Flex py={2} px={5} alignItems={'center'} gap={2}>
 					<Button
 						leftIcon={<IoIosArrowBack />}
-						size={'sm'}
-						onClick={() => navigate('/report')}
+						size={'xs'}
+						onClick={() => navigate('/merchant/customers')}
 					>
-						Sales Report
+						Customer List
 					</Button>
 					<Text>|</Text>
-					<Button size={'sm'}>View Report</Button>
+					<Button size={'xs'}>View Single Customer</Button>
 				</Flex>
-				
+
+				<Stack p={5}>
+					<Text
+						fontSize={'xs'}
+						fontWeight={'bold'}
+					>{`Demi Charlse | demi@gms.com | #w2342`}</Text>
+					<Text fontSize={'xs'}>{`Added on 12/02/2012`}</Text>
+					<Badge w={'60px'} fontSize={'xs'} borderRadius={'lg'}>
+						Active
+					</Badge>
+				</Stack>
+
 				<Flex
 					boxShadow={'lg'}
 					borderRadius={'md'}
 					bgColor={'white'}
 					p={4}
 					flexDir={'column'}
-					flex={1}
 					minH={'35vh'}
 					gap={3}
 				>
-					<Flex flex={1} fontSize={'xs'} alignItems={'center'} justifyContent={'space-between'}>
-						<Text fontWeight={'bold'}>Voucher Sales</Text>
+					<Flex
+						fontSize={'xs	'}
+						alignItems={'center'}
+						justifyContent={'space-between'}
+					>
+						<Text fontWeight={'bold'}>Overall Reward Trend</Text>
 						<Input
 							type='date'
 							value={toDate}
@@ -262,7 +269,7 @@ export const SalesDetails = () => {
 						/>
 					</Flex>
 					<Box h={'30vh'}>
-						<SalesDetailsChart />
+						<CustomersDetailsChart />
 					</Box>
 				</Flex>
 				<Stack
@@ -275,7 +282,7 @@ export const SalesDetails = () => {
 					<Text fontSize={'sm'} fontWeight={'bold'}>
 						Sales History
 					</Text>
-					<SalesDetailsTable />
+					<CustomerRewardTable />
 				</Stack>
 			</Stack>
 		</>

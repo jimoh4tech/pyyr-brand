@@ -22,6 +22,7 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useMediaQuery,
 } from '@chakra-ui/react';
 import { LuAlertCircle } from 'react-icons/lu';
 import empty from '../../assets/empty.svg';
@@ -35,7 +36,8 @@ import { useState } from 'react';
 import moment from 'moment';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 
-const Pending = () => {
+const Empty = () => {
+	const [isLessthan500] = useMediaQuery('(max-width: 500px)');
 	return (
 		<>
 			<Alert
@@ -45,10 +47,16 @@ const Pending = () => {
 				borderRadius={'5px'}
 				gap={3}
 				color={'black'}
+				fontSize={isLessthan500 ? 'xs' : 'sm'}
 			>
 				<LuAlertCircle />
 				Welcome to Pyyr, kindly complete your profile to validate your account.
-				<Link textDecoration={'underline'} color={'#825EE4'}>
+				<Link
+					textDecoration={'underline'}
+					color={'#825EE4'}
+					fontSize={isLessthan500 ? 'xs' : 'sm'}
+					width={'100px'}
+				>
 					{' '}
 					Get started
 				</Link>
@@ -90,25 +98,33 @@ const Pending = () => {
 	);
 };
 
-const DisplayCard = ({
+export const DisplayCard = ({
 	value,
 	label,
 	icon,
+	title,
 }: {
 	value: string;
 	label: string;
 	icon: string;
+	title?: string;
 }) => {
 	return (
 		<>
 			<Card flex={1} size={{ base: 'sm', md: 'md' }}>
 				<CardHeader>
+					<Heading size={{ base: 'xs', md: 'sm' }} color={'#825EE4'}>
+						{' '}
+						{title}
+					</Heading>
 					<Heading size={{ base: 'sm', md: 'md' }}> {value}</Heading>
 				</CardHeader>
 				<CardBody>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={{ base: '2xs', md: 'xs' }}>{label}</Text>
-						<Avatar size={{ base: '2xs', md: 'sm' }} src={icon} />
+						<Box bgSize={{ base: '2xs', md: 'sm' }}>
+							<Image src={icon} alt={label} />
+						</Box>
 					</Flex>
 				</CardBody>
 			</Card>
@@ -213,15 +229,25 @@ const DashboardChart = () => {
 const CampaignsTable = () => {
 	return (
 		<>
-			<TableContainer  >
+			<TableContainer>
 				<Table variant='simple' size={'sm'}>
 					<Thead>
 						<Tr>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>Name</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>No of Winners</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>Voucher’s Worth</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>Brand</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>Status </Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Name
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								No of Winners
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Voucher’s Worth
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Brand
+							</Th>
+							<Th fontSize={'xs'} textTransform={'capitalize'}>
+								Status{' '}
+							</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
@@ -297,15 +323,15 @@ const DashboardContent = () => {
 				<DisplayCard value='N500,000' label='Amount Claimed' icon={progress} />
 				<DisplayCard value='10' label='Active Campaigns' icon={campaignIcon} />
 			</Flex>
-			<Flex color={'black'} gap={3}>
-				<Flex maxW={'48vw'} flexDir={'column'} gap={5} bgColor={'white'}>
+			<Flex color={'black'} gap={3} flexWrap={'wrap'}>
+				<Flex flexDir={'column'} gap={5} bgColor={'white'}>
 					<Flex
 						boxShadow={'md'}
 						borderRadius={'md'}
 						p={2}
 						flexDir={'column'}
-						flex={1}
 						minH={'35vh'}
+						maxW={'90vw'}
 					>
 						<Flex
 							justifyContent={'space-between'}
@@ -335,15 +361,15 @@ const DashboardContent = () => {
 						</Box>
 					</Flex>
 					<Flex
-						flex={1}
 						boxShadow={'md'}
 						borderRadius={'md'}
 						flexDir={'column'}
+						flexWrap={'wrap'}
+						maxW={'90vw'}
 					>
 						<Flex
 							justifyContent={'space-between'}
 							fontSize={'sm'}
-							flex={1}
 							alignItems={'center'}
 							p={2}
 						>
@@ -363,12 +389,12 @@ const DashboardContent = () => {
 						<CampaignsTable />
 					</Flex>
 				</Flex>
-				<Flex flexDir={'column'} gap={5}>
+				<Flex flexDir={'column'} gap={5} bgColor={'white'}>
 					<Flex
 						boxShadow={'md'}
 						borderRadius={'md'}
 						flexDir={'column'}
-						flex={1}
+						// flex={1}
 					>
 						<Flex
 							justifyContent={'space-between'}
@@ -419,11 +445,11 @@ const DashboardContent = () => {
 };
 
 export const MerchantDashboard = () => {
-	const [isVerified] = useState(false);
+	const [isEmpty] = useState(false);
 	return (
 		<>
 			<Flex flexDir={'column'} gap={3} justifyContent={'space-between'}>
-				{isVerified ? <Pending /> : <DashboardContent />}
+				{isEmpty ? <Empty /> : <DashboardContent />}
 			</Flex>
 		</>
 	);

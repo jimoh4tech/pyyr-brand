@@ -1003,7 +1003,7 @@ const VoucherContent = () => {
 							<InputLeftElement alignItems={'center'}>
 								<FiSearch size={'15px'} />
 							</InputLeftElement>
-							<Input placeholder='Search' size={'sm'} borderRadius={'30px'} />
+							<Input  placeholder='Search' size={'sm'} borderRadius={'30px'} />
 						</InputGroup>
 						<Menu>
 							<MenuButton

@@ -331,6 +331,7 @@ const DashboardContent = () => {
 						p={2}
 						flexDir={'column'}
 						minH={'35vh'}
+						maxW={'90vw'}
 					>
 						<Flex
 							justifyContent={'space-between'}
@@ -364,6 +365,7 @@ const DashboardContent = () => {
 						borderRadius={'md'}
 						flexDir={'column'}
 						flexWrap={'wrap'}
+						maxW={'90vw'}
 					>
 						<Flex
 							justifyContent={'space-between'}

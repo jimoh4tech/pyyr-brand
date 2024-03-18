@@ -1,5 +1,3 @@
-import { SidebarContent } from '../pages/merchant/sidebar';
-
 import {
 	IconButton,
 	Box,
@@ -13,14 +11,17 @@ import {
 } from '@chakra-ui/react';
 import { FiMenu } from 'react-icons/fi';
 import pyyr from '../assets/pyyr.svg';
-import { Header } from '../pages/merchant/header';
 import { Outlet } from 'react-router-dom';
+import { Header } from '../pages/brand/header';
+import { useEffect, useState } from 'react';
+import { MerchantSidebarContent } from '../pages/merchant/sidebar';
 
 interface MobileProps extends FlexProps {
 	onOpen: () => void;
+	currentNav: string;
 }
 
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({ onOpen, currentNav, ...rest }: MobileProps) => {
 	return (
 		<Flex
 			ml={{ base: 0, md: 60 }}
@@ -44,19 +45,44 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 			<Box cursor={'pointer'} ml={6} display={{ base: 'flex', md: 'none' }}>
 				<Image src={pyyr} alt='pyyr' />
 			</Box>
-			<Header />
+			<Header currentNav={currentNav} />
 		</Flex>
 	);
 };
 
 export const MerchantLayout = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [currentNav, setCurrentNav] = useState<
+		| 'Dashboard'
+		| 'Vouchers'
+		| 'Wallet'
+		| 'Customers'
+		| 'Campaigns'
+		| 'Profile'
+		| 'Marketplace'
+	>('Dashboard');
+
+	useEffect(() => {
+		if (window.location.href.endsWith('/')) setCurrentNav('Dashboard');
+		else if (window.location.href.includes('/vouchers'))
+			setCurrentNav('Vouchers');
+		else if (window.location.href.includes('/wallet')) setCurrentNav('Wallet');
+		else if (window.location.href.includes('/customers')) setCurrentNav('Customers');
+		else if (window.location.href.includes('/marketplace'))
+			setCurrentNav('Marketplace');
+		else if (window.location.href.includes('/profile'))
+			setCurrentNav('Profile');
+		else if (window.location.href.includes('/campaigns'))
+			setCurrentNav('Campaigns');
+	}, []);
 
 	return (
 		<Box minH='100vh' bg={'#fbfbfb'}>
-			<SidebarContent
+			<MerchantSidebarContent
 				onClose={() => onClose}
 				display={{ base: 'none', md: 'block' }}
+				currentNav={currentNav}
+				setCurrentNav={setCurrentNav}
 			/>
 			<Drawer
 				isOpen={isOpen}
@@ -67,11 +93,15 @@ export const MerchantLayout = () => {
 				size='full'
 			>
 				<DrawerContent>
-					<SidebarContent onClose={onClose} />
+					<MerchantSidebarContent
+						onClose={onClose}
+						currentNav={currentNav}
+						setCurrentNav={setCurrentNav}
+					/>
 				</DrawerContent>
 			</Drawer>
 			{/* mobilenav */}
-			<MobileNav onOpen={onOpen} />
+			<MobileNav onOpen={onOpen} currentNav={currentNav} />
 			<Box ml={{ base: 0, md: 60 }} p={{ base: 1, md: 4 }}>
 				<Outlet />
 			</Box>

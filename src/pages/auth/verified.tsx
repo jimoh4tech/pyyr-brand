@@ -7,9 +7,11 @@ import { useNavigate } from 'react-router-dom';
 export const VerifiedPage = ({
 	title,
 	info,
+	href
 }: {
 	title: string;
-	info: string;
+		info: string;
+	href: string
 }) => {
 	const navigate = useNavigate();
 	return (
@@ -30,7 +32,7 @@ export const VerifiedPage = ({
 							loadingText='Submitting'
 							colorScheme='purple'
 							mt={6}
-							onClick={() => navigate('/	')}
+							onClick={() => navigate(href)}
 						>
 							Proceed to Dashboard
 						</Button>

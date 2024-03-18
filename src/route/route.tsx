@@ -15,6 +15,13 @@ import { MerchantKYC } from '../pages/merchant/kyc';
 import { RegistrationPage } from '../pages/auth/register/index';
 import { LoginPage } from '../pages/auth/login/index';
 import { BrandKYC } from '../pages/brand/kyc/index';
+import { CustomerPage } from '../pages/merchant/customers';
+import { CampaignPage } from '../pages/merchant/campaigns';
+import { MerchantWalletPage } from '../pages/merchant/wallet';
+import { MerchantVoucherPage } from '../pages/merchant/vouchers';
+import { MarketPlacePage } from '../pages/merchant/market-place';
+import { MerchantProfile } from '../pages/merchant/profile';
+import { CustomerDetails } from '../pages/merchant/customer-details';
 export const Router = () => {
 	return (
 		<Routes>
@@ -39,6 +46,13 @@ export const Router = () => {
 			<Route path='/merchant' element={<MerchantLayout />}>
 				<Route index element={<MerchantDashboard />} />
 				<Route path='kyc' element={<MerchantKYC />} />
+				<Route path='customers' element={<CustomerPage />} />
+				<Route path='customers/:id' element={<CustomerDetails />} />
+				<Route path='campaigns' element={<CampaignPage />} />
+				<Route path='wallet' element={<MerchantWalletPage />} />
+				<Route path='vouchers' element={<MerchantVoucherPage />} />
+				<Route path='marketplace' element={<MarketPlacePage />} />
+				<Route path='profile' element={<MerchantProfile />} />
 			</Route>
 		</Routes>
 	);
