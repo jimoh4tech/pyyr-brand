@@ -1003,7 +1003,7 @@ const VoucherContent = () => {
 							<InputLeftElement alignItems={'center'}>
 								<FiSearch size={'15px'} />
 							</InputLeftElement>
-							<Input  placeholder='Search' size={'sm'} borderRadius={'30px'} />
+							<Input placeholder='Search' size={'sm'} borderRadius={'30px'} />
 						</InputGroup>
 						<Menu>
 							<MenuButton
@@ -1030,7 +1030,7 @@ const VoucherContent = () => {
 };
 
 export const Voucher = () => {
-	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('list');
+	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('create');
 	return (
 		<>
 			<Flex flexDir={'column'} gap={3} justifyContent={'space-between'}>
