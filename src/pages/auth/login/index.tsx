@@ -6,6 +6,7 @@ import {
 	Image,
 	Stack,
 	useMediaQuery,
+	useToast,
 } from '@chakra-ui/react';
 import welcome from '../../../assets/welcome.svg';
 import splashing from '../../../assets/splashing1.svg';
@@ -14,18 +15,51 @@ import pyyr from '../../../assets/pyyr.svg';
 import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { LoginForm } from './form';
+import authServices from '../../../services/auth';
+// import { useNavigate } from 'react-router-dom';
+import { Form3 } from '../register/forms';
 
 export const LoginPage = () => {
 	const [isLessThan700] = useMediaQuery('(max-width: 700px)');
+	const [step, setStep] = useState(1);
+	const toast = useToast();
 
 	const [isloading, setLoading] = useState(true);
 	const formik = useFormik({
 		initialValues: {
-			email: '',
+			username: '',
 			password: '',
 		},
 		async onSubmit(values) {
 			console.log(values);
+			try {
+				const res = await authServices.login(values);
+				console.log(res);
+					if (res.responseCode == 200) {
+						toast({
+							title: 'Login successful.',
+							description: res.responseMessage,
+							status: 'success',
+							duration: 9000,
+							isClosable: true,
+							position: 'top-right',
+						});
+						setStep(2);
+					} else {
+						toast({
+							title: 'Error',
+							description:
+								res.responseMessage ||
+								'Opps! Something went wrong, try again later',
+							status: 'error',
+							duration: 9000,
+							isClosable: true,
+							position: 'top-right',
+						});
+					}
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	});
 
@@ -76,13 +110,22 @@ export const LoginPage = () => {
 							/>
 							<Box />
 						</Stack>
-						<LoginForm
-							email={formik.values.email}
-							password={formik.values.password}
-							onChange={formik.handleChange}
-							handleSubmit={formik.handleSubmit}
-							isSubmitting={formik.isSubmitting}
-						/>
+						{step === 1 && (
+							<LoginForm
+								username={formik.values.username}
+								password={formik.values.password}
+								onChange={formik.handleChange}
+								handleSubmit={formik.handleSubmit}
+								isSubmitting={formik.isSubmitting}
+							/>
+						)}
+						{step === 2 && (
+							<Form3
+								setStep={setStep}
+								email={formik.values.username}
+								type='Login'
+							/>
+						)}
 					</GridItem>
 				</Grid>
 			)}

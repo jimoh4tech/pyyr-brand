@@ -17,6 +17,7 @@ import {
 	PinInputField,
 	Stack,
 	Text,
+	useToast,
 } from '@chakra-ui/react';
 
 import person from '../../../assets/person.svg';
@@ -24,6 +25,8 @@ import group from '../../../assets/group.svg';
 
 import { ChangeEvent, useState } from 'react';
 import { PasswordInput } from '../password-input';
+import authServices from '../../../services/auth';
+import { useNavigate } from 'react-router-dom';
 
 const AccountTypeCard = ({
 	icon,
@@ -33,7 +36,7 @@ const AccountTypeCard = ({
 	setStep,
 	type,
 	values,
-	setValues
+	setValues,
 }: {
 	icon: string;
 	title: string;
@@ -55,7 +58,7 @@ const AccountTypeCard = ({
 				borderWidth={isActive ? '1px' : 'none'}
 				onClick={() => {
 					setStep(2);
-					setValues({...values, type})
+					setValues({ ...values, account_type: type });
 				}}
 			>
 				<CardBody>
@@ -75,7 +78,7 @@ const AccountTypeCard = ({
 export const Form1 = ({
 	setStep,
 	values,
-	setValues
+	setValues,
 }: {
 	setStep: (num: number) => void;
 
@@ -178,7 +181,7 @@ export const Form2 = ({
 								<InputGroup>
 									<Input
 										id={'name'}
-										name={'name'}
+										name={`${type === 'brand' ? 'brand_name' : 'fname'}`}
 										type='text'
 										value={name}
 										onChange={onChange}
@@ -209,7 +212,7 @@ export const Form2 = ({
 							/>
 							<PasswordInput
 								label='Confirm Password'
-								name='confirmPassword'
+								name='cpassword'
 								value={confirmPassword}
 								onChange={onChange}
 							/>
@@ -240,8 +243,56 @@ export const Form2 = ({
 	);
 };
 
-export const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
+export const Form3 = ({
+	setStep,
+	email,
+	type,
+}: {
+	setStep: (num: number) => void;
+	email: string;
+	type?: string;
+}) => {
 	const [value, setValue] = useState('');
+	const [isLoading, toggleLoading] = useState(false);
+	const toast = useToast();
+	const navigate = useNavigate();
+
+	const handleSubmit = async () => {
+		toggleLoading(true);
+		try {
+			const res = await authServices.verifyOTP({ checkotp: value, email });
+			console.log(res);
+			if (res.responseCode == 200) {
+				toast({
+					title: `${type === 'Login' ? 'Login success' : 'Account verified.'}`,
+					description: res.responseMessage,
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+				type === 'Login'
+					? navigate('/')
+					: type === 'Forget'
+					? setStep(3)
+					: setStep(4);
+			} else {
+				toast({
+					title: 'Error',
+					description:
+						res.responseMessage ||
+						'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+				toggleLoading(false);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<>
 			<Stack gap={8}>
@@ -277,9 +328,9 @@ export const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
 							colorScheme='purple'
 							type='submit'
 							isDisabled={value.length < 4}
-							isLoading={false}
+							isLoading={isLoading}
 							mt={6}
-							onClick={() => setStep(4)}
+							onClick={handleSubmit}
 						>
 							Proceed
 						</Button>

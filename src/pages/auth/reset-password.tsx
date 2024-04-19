@@ -1,26 +1,16 @@
-import {
-	Box,
-	Button,
-	Flex,
-	Grid,
-	GridItem,
-	Image,
-	Stack,
-	Text,
-	useMediaQuery,
-} from '@chakra-ui/react';
-import splashing from '../../assets/splashing1.svg';
-import back from '../../assets/back.svg';
-import pyyr from '../../assets/pyyr.svg';
+import { Button, Flex, Stack, Text, useToast } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { PasswordInput } from './password-input';
-import { useState } from 'react';
-import { VerifiedPage } from './verified';
+import authServices from '../../services/auth';
 
-export const ResetPasswordPage = () => {
-	const [isLessThan700] = useMediaQuery('(max-width: 700px)');
-	const [step, setStep] = useState(1);
-
+export const ResetPasswordPage = ({
+	setStep,
+	email,
+}: {
+	setStep: (num: number) => void;
+	email: string;
+}) => {
+	const toast = useToast();
 	const formik = useFormik({
 		initialValues: {
 			password: '',
@@ -28,98 +18,79 @@ export const ResetPasswordPage = () => {
 		},
 		async onSubmit(values) {
 			console.log(values);
+			try {
+				const res = await authServices.changePassword({
+					email,
+					npassword: values.password,
+					cnpassword: values.confirmPassword,
+				});
+				console.log(res);
+				if (res.responseCode == 200) {
+					toast({
+						title: 'Password reset successful',
+						description: res.responseMessage,
+						status: 'success',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+					setStep(4);
+				} else {
+					toast({
+						title: 'Error',
+						description:
+							res.responseMessage ||
+							'Opps! Something went wrong, try again later',
+						status: 'error',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+				}
+			} catch (error) {
+				console.log(error);
+			}
 		},
 	});
 
 	return (
 		<>
-			<Grid
-				templateColumns={`repeat(${isLessThan700 ? 3 : 4}, 1fr)`}
-				gap={0}
-				color={'white'}
-				bgColor={'#825EE4'}
-			>
-				<GridItem
-					colSpan={1}
-					bgColor={'#825EE4'}
-					display={isLessThan700 ? 'none' : 'block'}
-					justifyContent={'center'}
-				>
-					<Image h={'97vh'} src={splashing} alt='splash screen' />
-				</GridItem>
-				<GridItem
-					colSpan={3}
-					bg={'white'}
-					p={isLessThan700 ? 2 : 10}
-					color={'black'}
-				>
-					<Stack
-						direction={'row'}
-						mb={10}
-						alignItems={'center'}
-						justifyContent={'space-between'}
-					>
-						<Image cursor={'pointer'} boxSize={'50px'} src={back} />
-						<Image
-							boxSize={'70px'}
-							src={pyyr}
-							alt='pyyr'
-							display={isLessThan700 ? 'block' : 'none'}
-						/>
-						<Box />
-					</Stack>
-					{step === 1 ? (
-						<Stack gap={8}>
-							<Flex
-								color={'black'}
-								flexDir={'column'}
-								alignItems={'center'}
-								gap={2}
-							>
-								<Text fontWeight={'bold'}>Reset Password</Text>
-								<Text textAlign={'center'} fontSize={'sm'}>
-									Create a new password for your authentications
-								</Text>
-							</Flex>
-							<Flex justify={'center'} color={'black'}>
-								<form onSubmit={formik.handleSubmit}>
-									<Stack minW={'30vw'} gap={3}>
-										<PasswordInput
-											label='Password'
-											name='password'
-											value={formik.values.password}
-											onChange={formik.handleChange}
-										/>
-										<PasswordInput
-											label='Confirm Password'
-											name='confirmedPassword'
-											value={formik.values.confirmPassword}
-											onChange={formik.handleChange}
-										/>
+			<Stack gap={8}>
+				<Flex color={'black'} flexDir={'column'} alignItems={'center'} gap={2}>
+					<Text fontWeight={'bold'}>Reset Password</Text>
+					<Text textAlign={'center'} fontSize={'sm'}>
+						Create a new password for your authentications
+					</Text>
+				</Flex>
+				<Flex justify={'center'} color={'black'}>
+					<form onSubmit={formik.handleSubmit}>
+						<Stack minW={'30vw'} gap={3}>
+							<PasswordInput
+								label='Password'
+								name='password'
+								value={formik.values.password}
+								onChange={formik.handleChange}
+							/>
+							<PasswordInput
+								label='Confirm Password'
+								name='confirmPassword'
+								value={formik.values.confirmPassword}
+								onChange={formik.handleChange}
+							/>
 
-										<Button
-											loadingText='Submitting'
-											colorScheme='purple'
-											type='submit'
-											isLoading={formik.isSubmitting}
-											mt={6}
-											onClick={() => setStep(2)}
-										>
-											Proceed
-										</Button>
-									</Stack>
-								</form>
-							</Flex>
+							<Button
+								loadingText='Submitting'
+								colorScheme='purple'
+								type='submit'
+								isLoading={formik.isSubmitting}
+								mt={6}
+							>
+								Proceed
+							</Button>
 						</Stack>
-					) : (
-						<VerifiedPage
-							title='Password Successfully Created! '
-							info='You’ve successfully created a new password for your authentications'
-							href='/signin'
-						/>
-					)}
-				</GridItem>
-			</Grid>
+					</form>
+				</Flex>
+			</Stack>
 		</>
 	);
 };

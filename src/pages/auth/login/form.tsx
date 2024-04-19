@@ -14,13 +14,13 @@ import { ChangeEvent } from 'react';
 import { PasswordInput } from '../password-input';
 
 export const LoginForm = ({
-	email,
+	username,
 	password,
 	onChange,
 	isSubmitting,
 	handleSubmit,
 }: {
-	email: string;
+	username: string;
 	password: string;
 	onChange: (e: ChangeEvent) => void;
 	isSubmitting: boolean;
@@ -40,13 +40,13 @@ export const LoginForm = ({
 					<form onSubmit={handleSubmit}>
 						<Stack minW={'30vw'} gap={3}>
 							<FormControl>
-								<FormLabel htmlFor={'email'}>{'Email Address'}</FormLabel>
+								<FormLabel htmlFor={'username'}>{'Email Address'}</FormLabel>
 								<InputGroup>
 									<Input
-										id={'email'}
-										name={'email'}
-										type='email'
-										value={email}
+										id={'username'}
+										name={'username'}
+										type='username'
+										value={username}
 										onChange={onChange}
 										placeholder='Enter Email'
 									/>
