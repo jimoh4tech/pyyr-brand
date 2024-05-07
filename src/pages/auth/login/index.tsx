@@ -46,7 +46,7 @@ export const LoginPage = () => {
 				localStorage.setItem('PYMAILYR', values.username);
 				authServices.setEmail(values.username);
 				console.log(user);
-				setCurrentUser(user)
+				setCurrentUser(user);
 				if (res.responseCode == 200) {
 					toast({
 						title: 'Login successful.',
@@ -56,7 +56,7 @@ export const LoginPage = () => {
 						isClosable: true,
 						position: 'top-right',
 					});
-					navigate('/');
+					user.account_type === 'brand' ? navigate('/') : navigate('/merchant');
 				} else {
 					toast({
 						title: 'Error',

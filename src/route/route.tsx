@@ -22,15 +22,31 @@ import { MerchantVoucherPage } from '../pages/merchant/vouchers';
 import { MarketPlacePage } from '../pages/merchant/market-place';
 import { MerchantProfile } from '../pages/merchant/profile';
 import { CustomerDetails } from '../pages/merchant/customer-details';
+import { CurrentUserProvider } from '../context/user.context';
+
 export const Router = () => {
 	return (
 		<Routes>
 			<Route path='/signup' element={<RegistrationPage />} />
-			<Route path='/signin' element={<LoginPage />} />
+			<Route
+				path='/signin'
+				element={
+					<CurrentUserProvider>
+						<LoginPage />
+					</CurrentUserProvider>
+				}
+			/>
 			<Route path='/forgot-password' element={<ForgotPasswordPage />} />
 			{/* <Route path='/reset-password' element={<ResetPasswordPage />} /> */}
 
-			<Route path='/' element={<BrandLayout />}>
+			<Route
+				path='/'
+				element={
+					<CurrentUserProvider>
+						<BrandLayout />
+					</CurrentUserProvider>
+				}
+			>
 				<Route index element={<BrandDashboard />} />
 				<Route path='kyc' element={<BrandKYC />} />
 				<Route path='vouchers' element={<Voucher />} />
@@ -43,7 +59,14 @@ export const Router = () => {
 				<Route path='privileges' element={<Privilege />} />
 			</Route>
 
-			<Route path='/merchant' element={<MerchantLayout />}>
+			<Route
+				path='/merchant'
+				element={
+					<CurrentUserProvider>
+						<MerchantLayout />
+					</CurrentUserProvider>
+				}
+			>
 				<Route index element={<MerchantDashboard />} />
 				<Route path='kyc' element={<MerchantKYC />} />
 				<Route path='customers' element={<CustomerPage />} />

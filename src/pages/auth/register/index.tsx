@@ -46,7 +46,7 @@ export const RegistrationPage = () => {
 						status: 'success',
 						duration: 9000,
 						isClosable: true,
-						position: 'top-right'
+						position: 'top-right',
 					});
 					setStep(3);
 				} else {
@@ -61,8 +61,6 @@ export const RegistrationPage = () => {
 						position: 'top-right',
 					});
 				}
-
-				
 			} catch (error) {
 				console.log(error);
 			}

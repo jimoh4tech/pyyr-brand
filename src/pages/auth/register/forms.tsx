@@ -128,6 +128,13 @@ export const Form1 = ({
 						type='brand'
 					/>
 				</Flex>
+
+				<Flex fontSize={'sm'} justifyContent={'center'}>
+					Already have an account? &nbsp;
+					<Link color={'#825EE4'} fontSize={'sm'} href='/signin'>
+						Login
+					</Link>
+				</Flex>
 			</Stack>
 		</>
 	);
@@ -235,6 +242,7 @@ export const Form2 = ({
 							>
 								Proceed
 							</Button>
+							
 						</Stack>
 					</form>
 				</Flex>

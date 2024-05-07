@@ -37,7 +37,7 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import {  useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import authService from '../../../services/auth';
 import { useNavigate } from 'react-router-dom';
@@ -225,16 +225,16 @@ const Form2 = ({
 								</HStack>
 							</FormControl>
 							<FormControl isRequired>
-								<FormLabel fontSize={'xs'} htmlFor={'email'}>
+								<FormLabel fontSize={'xs'} htmlFor={'mail'}>
 									{'Email Address'}
 								</FormLabel>
 								<InputGroup>
 									<Input
-										id={'email'}
-										name={'email'}
+										id={'mail'}
+										name={'mail'}
 										type='email'
 										size={'xs'}
-										value={formik.values.email}
+										value={formik.values.mail}
 										onChange={formik.handleChange}
 										placeholder='Enter Email'
 									/>
@@ -248,7 +248,7 @@ const Form2 = ({
 									<Input
 										id={'phone'}
 										name={'phone'}
-										type='phone'
+										type='number'
 										size={'xs'}
 										value={formik.values.phone}
 										onChange={formik.handleChange}
@@ -484,7 +484,7 @@ const Form3 = ({
 									<Input
 										id={'phone'}
 										name={'b_phone'}
-										type='phone'
+										type='number'
 										size={'xs'}
 										value={formik.values.b_phone}
 										onChange={formik.handleChange}
@@ -571,7 +571,7 @@ const Form4 = ({
 								<Input
 									id={'accountNumber'}
 									name={'accountNumber'}
-									type='text'
+									type='number'
 									w={'full'}
 									size={'xs'}
 									value={formik.values.accountNumber}
@@ -603,7 +603,7 @@ const Form4 = ({
 									<Input
 										id={'accountName'}
 										name={'accountName'}
-										type='phone'
+										type='text'
 										size={'xs'}
 										value={formik.values.accountName}
 										onChange={formik.handleChange}
@@ -799,7 +799,6 @@ export const BrandKYC = () => {
 			date: '',
 			website: '',
 			rc_number: '',
-			email: '',
 			logo: '',
 			id_type: '',
 			id_number: '',
@@ -807,12 +806,15 @@ export const BrandKYC = () => {
 			b_mail: '',
 			b_phone: '',
 			accountBank: '',
+			mail: '',
 		},
 		async onSubmit(values) {
 			console.log(values);
 
 			try {
-				const res = await authService.kyc(values);
+				const email = localStorage.getItem('PYMAILYR') || '';
+				console.log({ ...values, email });
+				const res = await authService.kyc({ ...values, email });
 				console.log(res);
 
 				const keep = await userService.getUserBusinessDetails({

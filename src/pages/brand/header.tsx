@@ -61,7 +61,7 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
 						<Avatar size={'sm'} src={image} />
 					</Box>
 					<Text display={{ base: 'none', md: 'flex' }} fontSize={'sm'}>
-						{`Hello ${currentUser?.firstName}`}
+						{`Hello ${currentUser?.first_name || currentUser?.brand_name}`}
 					</Text>
 				</Flex>
 			</Flex>

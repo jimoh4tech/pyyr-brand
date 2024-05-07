@@ -73,6 +73,14 @@ export const LoginForm = ({
 							>
 								Proceed
 							</Button>
+
+							<Flex fontSize={'sm'} justifyContent={'center'}>
+								Don't have an account? click &nbsp;
+								<Link color={'#825EE4'} fontSize={'sm'} href='/signup'>
+									here
+								</Link>
+								&nbsp;to register
+							</Flex>
 						</Stack>
 					</form>
 				</Flex>

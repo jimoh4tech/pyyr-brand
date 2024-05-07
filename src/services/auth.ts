@@ -146,6 +146,7 @@ const kyc = async ({
 	city,
 	date,
 	email,
+	mail,
 	state,
 	country,
 	b_mail,
@@ -155,7 +156,6 @@ const kyc = async ({
 	industry,
 	firstName,
 	lastName,
-	mail,
 	phone,
 	dob,
 	id_type,
@@ -172,8 +172,9 @@ const kyc = async ({
 	logo?: string;
 	businessType?: string;
 	businessName: string;
-	email: string;
 	city?: string;
+	email: string;
+	mail: string;
 	date: string;
 	state?: string;
 	country?: string;
@@ -184,7 +185,6 @@ const kyc = async ({
 	industry?: string;
 	firstName?: string;
 	lastName?: string;
-	mail?: string;
 	phone?: string;
 	dob?: string;
 	id_type?: string;

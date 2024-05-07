@@ -25,9 +25,10 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CiEdit, CiLocationOn, CiMobile2 } from 'react-icons/ci';
 import { CurrentUserContext } from '../../context/user.context';
+import userService from '../../services/user';
 
 const Form1 = () => {
 	const formik = useFormik({
@@ -503,6 +504,20 @@ const EditProfileDrawer = () => {
 export const Profile = () => {
 	const { currentUser } = useContext(CurrentUserContext);
 
+	const [accountDetails, setAccountDetails] = useState([]);
+
+	useEffect(() => {
+		const fetchAccountDetails = async () => {
+			const res = await userService.getBankDetails({
+				get_bank: currentUser?.email || '',
+			});
+			console.log(res[1][0]);
+			setAccountDetails(res[1][0]);
+		};
+
+		fetchAccountDetails();
+	});
+
 	return (
 		<Stack p={5} borderRadius={'lg'} boxShadow={'lg'} bg={'white'} gap={7}>
 			<Stack gap={4}>
@@ -519,14 +534,16 @@ export const Profile = () => {
 						<Text
 							fontSize={'xs'}
 							fontWeight={'bold'}
-						>{`${currentUser?.businessName} | RC:${currentUser?.rc_number} | ${currentUser?.email}`}</Text>
+						>{`${currentUser?.businessName} | ${currentUser?.rc_number} | ${currentUser?.email}`}</Text>
 						<Flex gap={1}>
 							<CiMobile2 />
 							<Text fontSize={'xs'}>{currentUser?.phone}</Text>
 						</Flex>
 						<Flex gap={1}>
 							<CiLocationOn />
-							<Text fontSize={'xs'}></Text>
+							<Text
+								fontSize={'xs'}
+							>{`${currentUser?.state}, ${currentUser?.country}`}</Text>
 						</Flex>
 					</Stack>
 				</Flex>
@@ -587,15 +604,15 @@ export const Profile = () => {
 				<Stack gap={3}>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Account Number</Text>
-						<Text fontSize={'xs'}>{currentUser?.businessName}</Text>
+						<Text fontSize={'xs'}>{accountDetails[0]}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Bank</Text>
-						<Text fontSize={'xs'}>Union Bank</Text>
+						<Text fontSize={'xs'}>{accountDetails[1]}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Account Name</Text>
-						<Text fontSize={'xs'}>Spotify Limited</Text>
+						<Text fontSize={'xs'}>{accountDetails[1]}</Text>
 					</Flex>
 				</Stack>
 			</Stack>
