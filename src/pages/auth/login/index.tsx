@@ -12,17 +12,20 @@ import welcome from '../../../assets/welcome.svg';
 import splashing from '../../../assets/splashing1.svg';
 import back from '../../../assets/back.svg';
 import pyyr from '../../../assets/pyyr.svg';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { LoginForm } from './form';
 import authServices from '../../../services/auth';
-// import { useNavigate } from 'react-router-dom';
-import { Form3 } from '../register/forms';
+
+import { useNavigate } from 'react-router-dom';
+import userService from '../../../services/user';
+import { CurrentUserContext } from '../../../context/user.context';
 
 export const LoginPage = () => {
 	const [isLessThan700] = useMediaQuery('(max-width: 700px)');
-	const [step, setStep] = useState(1);
 	const toast = useToast();
+	const navigate = useNavigate();
+	const { setCurrentUser } = useContext(CurrentUserContext);
 
 	const [isloading, setLoading] = useState(true);
 	const formik = useFormik({
@@ -35,28 +38,37 @@ export const LoginPage = () => {
 			try {
 				const res = await authServices.login(values);
 				console.log(res);
-					if (res.responseCode == 200) {
-						toast({
-							title: 'Login successful.',
-							description: res.responseMessage,
-							status: 'success',
-							duration: 9000,
-							isClosable: true,
-							position: 'top-right',
-						});
-						setStep(2);
-					} else {
-						toast({
-							title: 'Error',
-							description:
-								res.responseMessage ||
-								'Opps! Something went wrong, try again later',
-							status: 'error',
-							duration: 9000,
-							isClosable: true,
-							position: 'top-right',
-						});
-					}
+
+				const user = await userService.getUserInfo({
+					pyyr_user: values.username,
+				});
+
+				localStorage.setItem('PYMAILYR', values.username);
+				authServices.setEmail(values.username);
+				console.log(user);
+				setCurrentUser(user)
+				if (res.responseCode == 200) {
+					toast({
+						title: 'Login successful.',
+						description: res.responseMessage,
+						status: 'success',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+					navigate('/');
+				} else {
+					toast({
+						title: 'Error',
+						description:
+							res.responseMessage ||
+							'Opps! Something went wrong, try again later',
+						status: 'error',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+				}
 			} catch (error) {
 				console.log(error);
 			}
@@ -110,22 +122,13 @@ export const LoginPage = () => {
 							/>
 							<Box />
 						</Stack>
-						{step === 1 && (
-							<LoginForm
-								username={formik.values.username}
-								password={formik.values.password}
-								onChange={formik.handleChange}
-								handleSubmit={formik.handleSubmit}
-								isSubmitting={formik.isSubmitting}
-							/>
-						)}
-						{step === 2 && (
-							<Form3
-								setStep={setStep}
-								email={formik.values.username}
-								type='Login'
-							/>
-						)}
+						<LoginForm
+							username={formik.values.username}
+							password={formik.values.password}
+							onChange={formik.handleChange}
+							handleSubmit={formik.handleSubmit}
+							isSubmitting={formik.isSubmitting}
+						/>
 					</GridItem>
 				</Grid>
 			)}

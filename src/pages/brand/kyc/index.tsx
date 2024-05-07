@@ -34,10 +34,14 @@ import {
 	Textarea,
 	useDisclosure,
 	useMediaQuery,
+	useToast,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
+import authService from '../../../services/auth';
+import { useNavigate } from 'react-router-dom';
+import userService from '../../../services/user';
 
 const NoConsentModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -175,583 +179,595 @@ export const ItemCheck = ({
 	);
 };
 
-const Form2 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			firstname: '',
-			lastname: '',
-			email: '',
-			phone: '',
-			role: '',
-			dob: '',
-			type: '',
-			idNumber: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-			setStep(3);
-		},
-	});
+const Form2 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'xs'}>Key Contact Information</Heading>
-						<Text fontSize={'xs'}>
-							Kindly fill the field with required credentials
-						</Text>
-						<Divider />
-						<Flex p={5} bg={'#fbfbfb'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'name'}>
-										{'Name'}
-									</FormLabel>
-									<HStack>
-										<Input
-											id={'name'}
-											name={'firstname'}
-											type='text'
-											w={'full'}
-											size={'xs'}
-											value={formik.values.firstname}
-											onChange={formik.handleChange}
-											placeholder='First Name'
-										/>
-										<Input
-											id={'name'}
-											name={'lastname'}
-											type='text'
-											w={'full'}
-											size={'xs'}
-											value={formik.values.lastname}
-											onChange={formik.handleChange}
-											placeholder='Last Name'
-										/>
-									</HStack>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'email'}>
-										{'Email Address'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'email'}
-											name={'email'}
-											type='email'
-											size={'xs'}
-											value={formik.values.email}
-											onChange={formik.handleChange}
-											placeholder='Enter Email'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'phone'}>
-										{'Phone Number'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'phone'}
-											name={'phone'}
-											type='phone'
-											size={'xs'}
-											value={formik.values.phone}
-											onChange={formik.handleChange}
-											placeholder='090908678000'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Role'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'role'}
-											name={'role'}
-											type='text'
-											size={'xs'}
-											value={formik.values.role}
-											onChange={formik.handleChange}
-											placeholder='Enter your role in the company'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Select ID'}
-									</FormLabel>
-									<Select size={'xs'} placeholder='Select option'>
-										<option value='option1'>NIN</option>
-										<option value='option2'>BVN</option>
-										<option value='option2'>Driver's Lisence</option>
-										<option value='option2'>Internation Passport</option>
-										<option value='option3'>Voter's Card</option>
-									</Select>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'idNumber'}>
-										{'ID Number'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'idNumber'}
-											name={'idNumber'}
-											type='text'
-											size={'xs'}
-											value={formik.values.idNumber}
-											onChange={formik.handleChange}
-											placeholder='Enter Select ID Number'
-										/>
-									</InputGroup>
-								</FormControl>
-							</Flex>
-						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
-								onClick={() => setStep(1)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-							>
-								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
-							</Button>
-						</Flex>
-					</Flex>
-				</form>
-			</Flex>
-		</>
-	);
-};
-
-const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			firstname: '',
-			lastname: '',
-			businessName: '',
-			phone: '',
-			role: '',
-			dob: '',
-			city: '',
-			state: '',
-			country: '',
-			type: '',
-			idNumber: '',
-			date: '',
-			website: '',
-			rcNumber: '',
-			email: '',
-			logo: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-			setStep(4);
-		},
-	});
-	return (
-		<>
-			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'xs'}>Organisational Details</Heading>
-						<Text fontSize={'xs'}>
-							Kindly fill the field with required credentials
-						</Text>
-						<Divider />
-						<Flex p={5} bg={'#fbfbfb'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'logo'}>
-										{'Business Logo'}
-									</FormLabel>
-									<Text fontSize={'xs'}>Add a business logo</Text>
-
-									{/* <Avatar src={add} as={Input} /> */}
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'xs'}>Key Contact Information</Heading>
+					<Text fontSize={'xs'}>
+						Kindly fill the field with required credentials
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'#fbfbfb'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'name'}>
+									{'Name'}
+								</FormLabel>
+								<HStack>
 									<Input
-										id={'logo'}
-										name={'logo'}
-										type='file'
-										size={'xs'}
-										value={formik.values.logo}
-										onChange={formik.handleChange}
-									/>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'businessName'}>
-										{'Business Name'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'businessName'}
-											name={'businessName'}
-											type='text'
-											size={'xs'}
-											value={formik.values.businessName}
-											onChange={formik.handleChange}
-											placeholder='Business Name'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'name'}>
-										{'Business Type'}
-									</FormLabel>
-									<HStack>
-										<Select size={'xs'} placeholder='Select Type'>
-											<option value='option1'>Option 1</option>
-											<option value='option2'>Option 2</option>
-											<option value='option3'>Option 3</option>
-										</Select>
-										<Select size={'xs'} placeholder='Industry'>
-											<option value='option1'>Option 1</option>
-											<option value='option2'>Option 2</option>
-											<option value='option3'>Option 3</option>
-										</Select>
-									</HStack>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'name'}>
-										{'Location'}
-									</FormLabel>
-									<HStack>
-										<Select size={'xs'} placeholder='City'>
-											<option value='option1'>Option 1</option>
-											<option value='option2'>Option 2</option>
-											<option value='option3'>Option 3</option>
-										</Select>
-										<Select size={'xs'} placeholder='State'>
-											<option value='option1'>Option 1</option>
-											<option value='option2'>Option 2</option>
-											<option value='option3'>Option 3</option>
-										</Select>
-										<Select size={'xs'} placeholder='Country'>
-											<option value='option1'>Option 1</option>
-											<option value='option2'>Option 2</option>
-											<option value='option3'>Option 3</option>
-										</Select>
-									</HStack>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'date'}>
-										{'Date of Establishment'}
-									</FormLabel>
-									<Input
-										id={'date'}
-										name={'date'}
-										type='date'
-										size={'xs'}
-										value={formik.values.date}
-										onChange={formik.handleChange}
-										placeholder='Enter Date'
-									/>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'email'}>
-										{'Email Address'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'email'}
-											name={'email'}
-											type='email'
-											size={'xs'}
-											value={formik.values.email}
-											onChange={formik.handleChange}
-											placeholder='Enter Email'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'phone'}>
-										{'Phone Number'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'phone'}
-											name={'phone'}
-											type='phone'
-											size={'xs'}
-											value={formik.values.phone}
-											onChange={formik.handleChange}
-											placeholder='090908678000'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl>
-									<FormLabel fontSize={'xs'} htmlFor={'website'}>
-										{'Website'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'website'}
-											name={'website'}
-											type='text'
-											size={'xs'}
-											value={formik.values.website}
-											onChange={formik.handleChange}
-											placeholder='www.enteryourwebsite.com'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'rcNumber'}>
-										{'RC Number'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'rcNumber'}
-											name={'rcNumber'}
-											type='text'
-											size={'xs'}
-											value={formik.values.rcNumber}
-											onChange={formik.handleChange}
-											placeholder='Enter RC Number'
-										/>
-									</InputGroup>
-								</FormControl>
-							</Flex>
-						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
-								onClick={() => setStep(2)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-							>
-								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
-							</Button>
-						</Flex>
-					</Flex>
-				</form>
-			</Flex>
-		</>
-	);
-};
-const Form4 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			accountNumber: '',
-			accountName: '',
-			bvn: '',
-			bank: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-			setStep(5);
-		},
-	});
-	return (
-		<>
-			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'xs'}>Payment Account Information</Heading>
-						<Text fontSize={'xs'}>
-							Kindly fill the field with required credentials
-						</Text>
-						<Divider />
-						<Flex p={5} bg={'#fbfbfb'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'accountNumber'}>
-										{'Account Number'}
-									</FormLabel>
-									<Input
-										id={'accountNumber'}
-										name={'accountNumber'}
+										id={'name'}
+										name={'firstName'}
 										type='text'
 										w={'full'}
 										size={'xs'}
-										value={formik.values.accountNumber}
+										value={formik.values.firstName}
 										onChange={formik.handleChange}
-										placeholder='Enter Account Number'
+										placeholder='First Name'
 									/>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'bank'}>
-										{'Bank'}
-									</FormLabel>
-									<Select size={'xs'} placeholder='Select Back'>
+									<Input
+										id={'name'}
+										name={'lastName'}
+										type='text'
+										w={'full'}
+										size={'xs'}
+										value={formik.values.lastName}
+										onChange={formik.handleChange}
+										placeholder='Last Name'
+									/>
+								</HStack>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'email'}>
+									{'Email Address'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'email'}
+										name={'email'}
+										type='email'
+										size={'xs'}
+										value={formik.values.email}
+										onChange={formik.handleChange}
+										placeholder='Enter Email'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'phone'}>
+									{'Phone Number'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'phone'}
+										name={'phone'}
+										type='phone'
+										size={'xs'}
+										value={formik.values.phone}
+										onChange={formik.handleChange}
+										placeholder='090908678000'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'dob'}>
+									{'Date of Birth'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'dob'}
+										name={'dob'}
+										type='date'
+										size={'xs'}
+										value={formik.values.dob}
+										onChange={formik.handleChange}
+										placeholder='Enter date'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'id_type'}>
+									{'Select ID'}
+								</FormLabel>
+
+								<Select
+									size={'xs'}
+									onChange={formik.handleChange}
+									name='id_type'
+									placeholder='Select option'
+								>
+									<option value='NIN'>NIN</option>
+									<option value='BVN'>BVN</option>
+									<option value='Driver Lisence'>Driver's Lisence</option>
+									<option value='Internation Passport'>
+										Internation Passport
+									</option>
+									<option value='Voter Card'>Voter's Card</option>
+								</Select>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'idNumber'}>
+									{'ID Number'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'idNumber'}
+										name={'id_number'}
+										type='text'
+										size={'xs'}
+										value={formik.values.id_number}
+										onChange={formik.handleChange}
+										placeholder='Enter Select ID Number'
+									/>
+								</InputGroup>
+							</FormControl>
+						</Flex>
+					</Flex>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(1)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(3)}>
+							Proceed
+						</Button>
+					</Flex>
+				</Flex>
+			</Flex>
+		</>
+	);
+};
+
+const Form3 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
+	return (
+		<>
+			<Flex bg={'white'} flex={1} flexDir={'column'}>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'xs'}>Organisational Details</Heading>
+					<Text fontSize={'xs'}>
+						Kindly fill the field with required credentials
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'#fbfbfb'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'logo'}>
+									{'Business Logo'}
+								</FormLabel>
+								<Text fontSize={'xs'}>Add a business logo</Text>
+								<Input
+									id={'logo'}
+									name={'logo'}
+									type='file'
+									size={'xs'}
+									onChange={(event) => {
+										formik.setFieldValue(
+											'logo',
+											event.currentTarget.files && event.currentTarget.files[0]
+										);
+									}}
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'businessName'}>
+									{'Business Name'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'businessName'}
+										name={'businessName'}
+										type='text'
+										size={'xs'}
+										value={formik.values.businessName}
+										onChange={formik.handleChange}
+										placeholder='Business Name'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'business Type'}>
+									{'Business Type'}
+								</FormLabel>
+								<HStack>
+									<Select
+										size={'xs'}
+										name='BusinessType'
+										placeholder='Select Type'
+									>
 										<option value='option1'>Option 1</option>
 										<option value='option2'>Option 2</option>
 										<option value='option3'>Option 3</option>
 									</Select>
-								</FormControl>
-
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'accountName'}>
-										{'Account Name'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'accountName'}
-											name={'accountName'}
-											type='phone'
-											size={'xs'}
-											value={formik.values.accountName}
-											onChange={formik.handleChange}
-											placeholder='Enter Account Name'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<Flex justifyContent={'space-between'}>
-										<FormLabel fontSize={'xs'} htmlFor={'bvn'}>
-											{'BVN'}
-										</FormLabel>
-										<Popover>
-											<PopoverTrigger>
-												<Text
-													color={'#825EE4'}
-													textDecor={'underline'}
-													cursor={'pointer'}
-													fontSize={'xs'}
-												>
-													Why we need your BVN?
-												</Text>
-											</PopoverTrigger>
-											<PopoverContent>
-												<PopoverArrow />
-												<PopoverCloseButton />
-												<PopoverHeader fontSize={'xs'}>
-													Why we need your BVN?
-												</PopoverHeader>
-												<PopoverBody fontSize={'xs'}>
-													We only need access to your: <br /> - Full Name <br />{' '}
-													- Date of Birth <br /> - House Address <br /> - BVN
-													Image <br /> <br />
-													Rest assured that your Bank Verification Number (BVN)
-													does not provide us with any access to your bank
-													accounts or transactions. <br /> The validation of
-													your BVN is solely handled by NIBBS.
-												</PopoverBody>
-											</PopoverContent>
-										</Popover>
-									</Flex>
-									<InputGroup>
-										<Input
-											id={'bvn'}
-											name={'bvn'}
-											type='text'
-											size={'xs'}
-											value={formik.values.bvn}
-											onChange={formik.handleChange}
-											placeholder='Enter BVN Number'
-										/>
-									</InputGroup>
-								</FormControl>
-							</Flex>
-						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
-								onClick={() => setStep(4)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-							>
-								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
-							</Button>
+									<Select
+										size={'xs'}
+										onChange={formik.handleChange}
+										name='industry'
+										placeholder='Industry'
+									>
+										<option value='option1'>Option 1</option>
+										<option value='option2'>Option 2</option>
+										<option value='option3'>Option 3</option>
+									</Select>
+								</HStack>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'name'}>
+									{'Location'}
+								</FormLabel>
+								<HStack>
+									<Select
+										size={'xs'}
+										onChange={formik.handleChange}
+										name='city'
+										placeholder='City'
+									>
+										<option value='option1'>Option 1</option>
+										<option value='option2'>Option 2</option>
+										<option value='option3'>Option 3</option>
+									</Select>
+									<Select
+										size={'xs'}
+										onChange={formik.handleChange}
+										name='state'
+										placeholder='State'
+									>
+										<option value='option1'>Option 1</option>
+										<option value='option2'>Option 2</option>
+										<option value='option3'>Option 3</option>
+									</Select>
+									<Select
+										size={'xs'}
+										onChange={formik.handleChange}
+										name='country'
+										placeholder='Country'
+									>
+										<option value='option1'>Option 1</option>
+										<option value='option2'>Option 2</option>
+										<option value='option3'>Option 3</option>
+									</Select>
+								</HStack>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'date'}>
+									{'Date of Establishment'}
+								</FormLabel>
+								<Input
+									id={'date'}
+									name={'date'}
+									type='date'
+									size={'xs'}
+									value={formik.values.date}
+									onChange={formik.handleChange}
+									placeholder='Enter Date'
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'email'}>
+									{'Email Address'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'email'}
+										name={'b_mail'}
+										type='email'
+										size={'xs'}
+										value={formik.values.b_mail}
+										onChange={formik.handleChange}
+										placeholder='Enter Email'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'phone'}>
+									{'Phone Number'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'phone'}
+										name={'b_phone'}
+										type='phone'
+										size={'xs'}
+										value={formik.values.b_phone}
+										onChange={formik.handleChange}
+										placeholder='090908678000'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl>
+								<FormLabel fontSize={'xs'} htmlFor={'website'}>
+									{'Website'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'website'}
+										name={'website'}
+										type='text'
+										size={'xs'}
+										value={formik.values.website}
+										onChange={formik.handleChange}
+										placeholder='www.enteryourwebsite.com'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'rcNumber'}>
+									{'RC Number'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'rcNumber'}
+										name={'rc_number'}
+										type='text'
+										size={'xs'}
+										value={formik.values.rc_number}
+										onChange={formik.handleChange}
+										placeholder='Enter RC Number'
+									/>
+								</InputGroup>
+							</FormControl>
 						</Flex>
 					</Flex>
-				</form>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(2)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(4)}>
+							Proceed
+						</Button>
+					</Flex>
+				</Flex>
+			</Flex>
+		</>
+	);
+};
+const Form4 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
+	return (
+		<>
+			<Flex bg={'white'} flex={1} flexDir={'column'}>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'xs'}>Payment Account Information</Heading>
+					<Text fontSize={'xs'}>
+						Kindly fill the field with required credentials
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'#fbfbfb'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'accountNumber'}>
+									{'Account Number'}
+								</FormLabel>
+								<Input
+									id={'accountNumber'}
+									name={'accountNumber'}
+									type='text'
+									w={'full'}
+									size={'xs'}
+									value={formik.values.accountNumber}
+									onChange={formik.handleChange}
+									placeholder='Enter Account Number'
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'bank'}>
+									{'Bank'}
+								</FormLabel>
+								<Select
+									size={'xs'}
+									name='accountBank'
+									placeholder='Select Back'
+									onChange={formik.handleChange}
+								>
+									<option value='option1'>Option 1</option>
+									<option value='option2'>Option 2</option>
+									<option value='option3'>Option 3</option>
+								</Select>
+							</FormControl>
+
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'accountName'}>
+									{'Account Name'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'accountName'}
+										name={'accountName'}
+										type='phone'
+										size={'xs'}
+										value={formik.values.accountName}
+										onChange={formik.handleChange}
+										placeholder='Enter Account Name'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<Flex justifyContent={'space-between'}>
+									<FormLabel fontSize={'xs'} htmlFor={'bvn'}>
+										{'BVN'}
+									</FormLabel>
+									<Popover>
+										<PopoverTrigger>
+											<Text
+												color={'#825EE4'}
+												textDecor={'underline'}
+												cursor={'pointer'}
+												fontSize={'xs'}
+											>
+												Why we need your BVN?
+											</Text>
+										</PopoverTrigger>
+										<PopoverContent>
+											<PopoverArrow />
+											<PopoverCloseButton />
+											<PopoverHeader fontSize={'xs'}>
+												Why we need your BVN?
+											</PopoverHeader>
+											<PopoverBody fontSize={'xs'}>
+												We only need access to your: <br /> - Full Name <br /> -
+												Date of Birth <br /> - House Address <br /> - BVN Image{' '}
+												<br /> <br />
+												Rest assured that your Bank Verification Number (BVN)
+												does not provide us with any access to your bank
+												accounts or transactions. <br /> The validation of your
+												BVN is solely handled by NIBBS.
+											</PopoverBody>
+										</PopoverContent>
+									</Popover>
+								</Flex>
+								<InputGroup>
+									<Input
+										id={'bvn'}
+										name={'bvn'}
+										type='text'
+										size={'xs'}
+										value={formik.values.bvn}
+										onChange={formik.handleChange}
+										placeholder='Enter BVN Number'
+									/>
+								</InputGroup>
+							</FormControl>
+						</Flex>
+					</Flex>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(3)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(5)}>
+							Proceed
+						</Button>
+					</Flex>
+				</Flex>
 			</Flex>
 		</>
 	);
 };
 
-const Form5 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			certificate: '',
-			cac: '',
-			id: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-		},
-	});
+const Form5 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'xs'}>Documents/Verification</Heading>
-						<Text fontSize={'xs'}>Kindly upload the required document</Text>
-						<Divider />
-						<Flex p={5} bg={'#fbfbfb'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'certificate'}>
-										{'Certificate of Corporation'}
-									</FormLabel>
-									<Input
-										id={'certificate'}
-										name={'certificate'}
-										type='file'
-										size={'xs'}
-										value={formik.values.certificate}
-										onChange={formik.handleChange}
-									/>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'cac'}>
-										{'Form CAC'}
-									</FormLabel>
-									<Input
-										id={'cac'}
-										name={'cac'}
-										type='file'
-										size={'xs'}
-										value={formik.values.cac}
-										onChange={formik.handleChange}
-									/>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'id'}>
-										{'National Identity'}
-									</FormLabel>
-									<Input
-										id={'id'}
-										name={'id'}
-										type='file'
-										size={'xs'}
-										value={formik.values.id}
-										onChange={formik.handleChange}
-									/>
-								</FormControl>
-							</Flex>
-						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
-								onClick={() => setStep(4)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-							>
-								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Submit
-							</Button>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'xs'}>Documents/Verification</Heading>
+					<Text fontSize={'xs'}>Kindly upload the required document</Text>
+					<Divider />
+					<Flex p={5} bg={'#fbfbfb'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'certificate'}>
+									{'Certificate of Corporation'}
+								</FormLabel>
+								<Input
+									id={'certificate'}
+									name={'coc'}
+									type='file'
+									size={'xs'}
+									onChange={(event) => {
+										formik.setFieldValue(
+											'coc',
+											event.currentTarget.files && event.currentTarget.files[0]
+										);
+									}}
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'cac'}>
+									{'Form CAC'}
+								</FormLabel>
+								<Input
+									id={'cac'}
+									name={'cac'}
+									type='file'
+									size={'xs'}
+									onChange={(event) => {
+										formik.setFieldValue(
+											'cac',
+											event.currentTarget.files && event.currentTarget.files[0]
+										);
+									}}
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'id'}>
+									{'National Identity'}
+								</FormLabel>
+								<Input
+									id={'id'}
+									name={'idcard'}
+									type='file'
+									size={'xs'}
+									onChange={(event) => {
+										formik.setFieldValue(
+											'idcard',
+											event.currentTarget.files && event.currentTarget.files[0]
+										);
+									}}
+								/>
+							</FormControl>
 						</Flex>
 					</Flex>
-				</form>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(4)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button
+							colorScheme='purple'
+							size={'xs'}
+							type='submit'
+							isLoading={formik.isSubmitting}
+						>
+							Submit
+						</Button>
+					</Flex>
+				</Flex>
 			</Flex>
 		</>
 	);
@@ -759,6 +775,75 @@ const Form5 = ({ setStep }: { setStep: (num: number) => void }) => {
 export const BrandKYC = () => {
 	const [step, setStep] = useState(2);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
+	const toast = useToast();
+	const navigate = useNavigate();
+
+	const formik = useFormik({
+		initialValues: {
+			coc: '',
+			cac: '',
+			idcard: '',
+			accountNumber: '',
+			accountName: '',
+			bvn: '',
+			firstName: '',
+			lastName: '',
+			phone: '',
+			businessName: '',
+			dob: '',
+			city: '',
+			state: '',
+			country: '',
+			date: '',
+			website: '',
+			rc_number: '',
+			email: '',
+			logo: '',
+			id_type: '',
+			id_number: '',
+			industry: '',
+			b_mail: '',
+			b_phone: '',
+			accountBank: '',
+		},
+		async onSubmit(values) {
+			console.log(values);
+
+			try {
+				const res = await authService.kyc(values);
+				console.log(res);
+
+				const keep = await userService.getUserBusinessDetails({
+					business_user: '2lfbvg7kim@mailcurity.com',
+				});
+				console.log(keep);
+				if (res.responseCode == 200) {
+					toast({
+						title: 'KYC successfully submitted.',
+						description: res.responseMessage,
+						status: 'success',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+					navigate('/');
+				} else {
+					toast({
+						title: 'Error',
+						description:
+							res.responseMessage ||
+							'Opps! Something went wrong, try again later',
+						status: 'error',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+	});
 	return (
 		<>
 			<Flex
@@ -814,18 +899,20 @@ export const BrandKYC = () => {
 						<ItemCheck label='Payment Account Info' value={4} step={step} />
 						<ItemCheck label='Documents/Verification' value={5} step={step} />
 					</Flex>
-					<Flex bg={'#fbfbfb'} flex={3} p={isLessThan600 ? 1: 5}>
-						{step === 1 ? (
-							<Form1 setStep={setStep} />
-						) : step === 2 ? (
-							<Form2 setStep={setStep} />
-						) : step === 3 ? (
-							<Form3 setStep={setStep} />
-						) : step === 4 ? (
-							<Form4 setStep={setStep} />
-						) : (
-							<Form5 setStep={setStep} />
-						)}
+					<Flex bg={'#fbfbfb'} flex={3} p={isLessThan600 ? 1 : 5}>
+						<form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
+							{step === 1 ? (
+								<Form1 setStep={setStep} />
+							) : step === 2 ? (
+								<Form2 setStep={setStep} formik={formik} />
+							) : step === 3 ? (
+								<Form3 setStep={setStep} formik={formik} />
+							) : step === 4 ? (
+								<Form4 setStep={setStep} formik={formik} />
+							) : (
+								<Form5 setStep={setStep} formik={formik} />
+							)}
+						</form>
 					</Flex>
 				</Flex>
 			</Flex>

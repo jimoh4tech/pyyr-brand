@@ -13,8 +13,11 @@ import { FiSearch } from 'react-icons/fi';
 import image from '../../assets/Image.svg';
 import notification from '../../assets/notification.svg';
 import help from '../../assets/help.svg';
+import { CurrentUserContext } from '../../context/user.context';
+import { useContext } from 'react';
 
 export const Header = ({ currentNav }: { currentNav: string }) => {
+	const { currentUser } = useContext(CurrentUserContext);
 	return (
 		<>
 			<Flex
@@ -58,7 +61,7 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
 						<Avatar size={'sm'} src={image} />
 					</Box>
 					<Text display={{ base: 'none', md: 'flex' }} fontSize={'sm'}>
-						Hello Brand!
+						{`Hello ${currentUser?.firstName}`}
 					</Text>
 				</Flex>
 			</Flex>

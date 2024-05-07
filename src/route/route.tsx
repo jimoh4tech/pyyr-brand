@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { ForgotPasswordPage } from '../pages/auth/forgot-password';
-import { ResetPasswordPage } from '../pages/auth/reset-password';
+// import { ResetPasswordPage } from '../pages/auth/reset-password';
 import { MerchantLayout } from '../layout/merchant-layout';
 import { MerchantDashboard } from '../pages/merchant/dashboard';
 import { BrandDashboard } from '../pages/brand/dashboard';
@@ -28,7 +28,7 @@ export const Router = () => {
 			<Route path='/signup' element={<RegistrationPage />} />
 			<Route path='/signin' element={<LoginPage />} />
 			<Route path='/forgot-password' element={<ForgotPasswordPage />} />
-			<Route path='/reset-password' element={<ResetPasswordPage />} />
+			{/* <Route path='/reset-password' element={<ResetPasswordPage />} /> */}
 
 			<Route path='/' element={<BrandLayout />}>
 				<Route index element={<BrandDashboard />} />

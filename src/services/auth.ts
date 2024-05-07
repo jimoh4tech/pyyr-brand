@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const baseUrl = import.meta.env.VITE_BASE_URL;
+export const baseUrl = import.meta.env.VITE_BASE_URL;
+
+export let email = '';
+
+ const setEmail = (userMail: string): void => {
+	email = userMail;
+};
 
 const register = async ({
 	fname,
@@ -114,7 +120,6 @@ const changePassword = async ({
 	email,
 	npassword,
 	cnpassword,
-	
 }: {
 	email: string;
 	npassword: string;
@@ -126,7 +131,6 @@ const changePassword = async ({
 			email,
 			npassword,
 			cnpassword,
-			
 		},
 		{
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -134,6 +138,105 @@ const changePassword = async ({
 	);
 	return res.data;
 };
+
+const kyc = async ({
+	logo,
+	businessType,
+	businessName,
+	city,
+	date,
+	email,
+	state,
+	country,
+	b_mail,
+	b_phone,
+	website,
+	rc_number,
+	industry,
+	firstName,
+	lastName,
+	mail,
+	phone,
+	dob,
+	id_type,
+	id_nummber,
+	accountNumber,
+	accountBank,
+	accountName,
+	bankCode,
+	bvn,
+	coc,
+	cac,
+	idcard,
+}: {
+	logo?: string;
+	businessType?: string;
+	businessName: string;
+	email: string;
+	city?: string;
+	date: string;
+	state?: string;
+	country?: string;
+	b_mail?: string;
+	b_phone?: string;
+	website?: string;
+	rc_number?: string;
+	industry?: string;
+	firstName?: string;
+	lastName?: string;
+	mail?: string;
+	phone?: string;
+	dob?: string;
+	id_type?: string;
+	id_nummber?: string;
+	accountNumber?: string;
+	accountBank?: string;
+	accountName?: string;
+	bankCode?: string;
+	bvn?: string;
+	coc?: string;
+	cac?: string;
+	idcard?: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			logo,
+			businessType,
+			businessName,
+			city,
+			date,
+			email,
+			state,
+			country,
+			b_mail,
+			b_phone,
+			website,
+			rc_number,
+			industry,
+			firstName,
+			lastName,
+			mail,
+			phone,
+			dob,
+			id_type,
+			id_nummber,
+			accountNumber,
+			accountBank,
+			accountName,
+			bankCode,
+			bvn,
+			coc,
+			cac,
+			idcard,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
 export default {
 	register,
 	verifyOTP,
@@ -141,4 +244,6 @@ export default {
 	forgetPassword,
 	resetPassword,
 	changePassword,
+	kyc,
+	setEmail
 };
