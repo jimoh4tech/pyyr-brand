@@ -389,8 +389,9 @@ const Form3 = ({
 								<HStack>
 									<Select
 										size={'xs'}
-										name='BusinessType'
+										name='businessType'
 										placeholder='Select Type'
+										onChange={formik.handleChange}
 									>
 										<option value='option1'>Option 1</option>
 										<option value='option2'>Option 2</option>
@@ -790,6 +791,7 @@ export const BrandKYC = () => {
 			lastName: '',
 			phone: '',
 			businessName: '',
+			businessType: '',
 			dob: '',
 			city: '',
 			state: '',

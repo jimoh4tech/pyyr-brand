@@ -17,10 +17,12 @@ export const CurrentUserProvider = ({ ...props }) => {
 		async function validateToken() {
 			try {
         const email = localStorage.getItem('PYMAILYR') || '';
-        console.log(email);
+				console.log(email);
+				if (!email)
+					navigate('/signin');
 				// Validate token with the server and set isAuthenticated accordingly
 				authServices.setEmail(email);
-				const res = await userServices.getUserInfo({pyyr_user: email});
+				const res = await userServices.getFullUserDetail({full_user: email});
         console.log(res);
 				setCurrentUser({ ...res });
 			} catch (error) {

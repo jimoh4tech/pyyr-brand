@@ -14,6 +14,19 @@ const getUserInfo = async ({ pyyr_user }: { pyyr_user: string }) => {
 	return res.data;
 };
 
+const getFullUserDetail = async ({ full_user }: { full_user: string }) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			full_user,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
 const getUserBusinessDetails = async ({
 	business_user,
 }: {
@@ -107,4 +120,5 @@ export default {
 	topUp,
 	verifyTopUp,
 	getUserBusinessDetails,
+	getFullUserDetail,
 };

@@ -39,8 +39,8 @@ export const LoginPage = () => {
 				const res = await authServices.login(values);
 				console.log(res);
 
-				const user = await userService.getUserInfo({
-					pyyr_user: values.username,
+				const user = await userService.getFullUserDetail({
+					full_user: values.username,
 				});
 
 				localStorage.setItem('PYMAILYR', values.username);

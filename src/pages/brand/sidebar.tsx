@@ -177,6 +177,7 @@ export const BrandSidebarContent = ({
 }: SidebarProps) => {
 	const [isControlVisible, toggleControlVisibility] = useState(false);
 	const navigate = useNavigate();
+
 	const navItems: INavItem[] = [
 		{
 			label: 'Dashboard',
@@ -204,6 +205,11 @@ export const BrandSidebarContent = ({
 			label: 'Profile',
 		},
 	];
+
+	const handleLogout = () => {
+		localStorage.removeItem('PYMAILYR');
+		navigate('/signin')
+	}
 
 	return (
 		<Flex
@@ -282,6 +288,7 @@ export const BrandSidebarContent = ({
 					boxShadow={'md'}
 					bgColor={'white'}
 					color={'red'}
+					onClick={handleLogout}
 				>
 					LOG OUT
 				</Button>

@@ -25,7 +25,9 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
+import { useContext } from 'react';
 import { CiEdit, CiLocationOn, CiMobile2 } from 'react-icons/ci';
+import { CurrentUserContext } from '../../context/user.context';
 
 const Form1 = () => {
 	const formik = useFormik({
@@ -499,6 +501,8 @@ const EditProfileDrawer = () => {
 };
 
 export const Profile = () => {
+	const { currentUser } = useContext(CurrentUserContext);
+
 	return (
 		<Stack p={5} borderRadius={'lg'} boxShadow={'lg'} bg={'white'} gap={7}>
 			<Stack gap={4}>
@@ -510,19 +514,19 @@ export const Profile = () => {
 				</Flex>
 
 				<Flex gap={4} alignItems={'center'}>
-					<Avatar name='Spotify' />
+					<Avatar name={currentUser?.businessName} />
 					<Stack>
 						<Text
 							fontSize={'xs'}
 							fontWeight={'bold'}
-						>{`Spotify | RC:223345 | hellospotify@ai.com`}</Text>
+						>{`${currentUser?.businessName} | RC:${currentUser?.rc_number} | ${currentUser?.email}`}</Text>
 						<Flex gap={1}>
 							<CiMobile2 />
-							<Text fontSize={'xs'}>+212 67000 000</Text>
+							<Text fontSize={'xs'}>{currentUser?.phone}</Text>
 						</Flex>
 						<Flex gap={1}>
 							<CiLocationOn />
-							<Text fontSize={'xs'}>California, US</Text>
+							<Text fontSize={'xs'}></Text>
 						</Flex>
 					</Stack>
 				</Flex>
@@ -535,19 +539,19 @@ export const Profile = () => {
 				<Stack gap={3}>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Business Type</Text>
-						<Text fontSize={'xs'}>LLC</Text>
+						<Text fontSize={'xs'}>{currentUser?.businessType}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Industry</Text>
-						<Text fontSize={'xs'}>Entertainment Technology</Text>
+						<Text fontSize={'xs'}>{currentUser?.industry}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Date of Establishment</Text>
-						<Text fontSize={'xs'}>25/01/23</Text>
+						<Text fontSize={'xs'}>{currentUser?.date}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Weblink</Text>
-						<Text fontSize={'xs'}>hellospotify@ai.com</Text>
+						<Text fontSize={'xs'}>{currentUser?.website}</Text>
 					</Flex>
 				</Stack>
 			</Stack>
@@ -560,15 +564,17 @@ export const Profile = () => {
 				<Stack gap={3}>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Full Name</Text>
-						<Text fontSize={'xs'}>Clark Gabriel</Text>
+						<Text
+							fontSize={'xs'}
+						>{`${currentUser?.firstName} ${currentUser?.lastName}`}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Date of Birth</Text>
-						<Text fontSize={'xs'}>25/01/23</Text>
+						<Text fontSize={'xs'}>{currentUser?.dob}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Nationality</Text>
-						<Text fontSize={'xs'}>Canada</Text>
+						<Text fontSize={'xs'}>{currentUser?.country}</Text>
 					</Flex>
 				</Stack>
 			</Stack>
@@ -581,7 +587,7 @@ export const Profile = () => {
 				<Stack gap={3}>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Account Number</Text>
-						<Text fontSize={'xs'}>0987654321</Text>
+						<Text fontSize={'xs'}>{currentUser?.businessName}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Bank</Text>

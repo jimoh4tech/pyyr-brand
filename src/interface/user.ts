@@ -16,14 +16,25 @@ export interface IUser {
 	lastName?: string;
 	mail?: string;
 	phone?: string;
+	businessName?: string;
+	businessType?: string;
+	cac?: string;
+	city?: string;
+	coc?: string;
+	country?: string;
+	idcard?: string;
+	industry?: string;
+	logo?: string;
+	rc_number?: string;
+	responseCode?: string;
+	responseMessage?: string;
+	state?: string;
+	website?: string;
 }
 
-
-
-
 export interface IRole {
-  id: string;
-  description: string;
-  role: string;
-  date: string;
+	id: string;
+	description: string;
+	role: string;
+	date: string;
 }
