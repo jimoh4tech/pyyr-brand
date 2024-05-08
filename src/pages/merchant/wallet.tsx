@@ -11,11 +11,8 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
-	FormLabel,
 	HStack,
 	Input,
-	InputGroup,
-	InputLeftAddon,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -43,194 +40,22 @@ import { useState } from 'react';
 import moment from 'moment';
 import { IWalletTable } from '../../interface/wallet';
 import { IoEyeOutline } from 'react-icons/io5';
-import { IoMdAdd, IoMdCopy } from 'react-icons/io';
 
 const ModalForm1 = () => {
 	return (
-		<Stack>
-			<Stack
-				bgColor={'#f9f4f8'}
-				p={2}
-				alignItems={'center'}
-				borderRadius={'lg'}
-			>
-				<Text fontSize={'xs'}>Available Balance</Text>
-				<Text fontSize={'sm'} fontWeight={'bold'}>
-					N12,010,000
-				</Text>
-			</Stack>
-
-			<Stack justifyContent={'space-between'}>
-				<Text fontSize={'sm'}>Amount</Text>
-				<InputGroup>
-					<InputLeftAddon>&#8358;</InputLeftAddon>
-					<Input type='number' />
-				</InputGroup>
-			</Stack>
-			<Flex flexWrap={'wrap'} justifyContent={'space-between'} gap={2}>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 50,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 100,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 10,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 20,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 500,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 1000,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 1,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 5,000,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 5,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 1,500,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 2,000,000
-				</Text>
-				<Text
-					fontSize={'xs'}
-					bgColor={'white'}
-					px={3}
-					py={1}
-					w='100px'
-					border={'1px solid #f2f2f2'}
-					borderRadius={'md'}
-					boxShadow={'md'}
-				>
-					&#8358; 3,000,000
-				</Text>
+		<>
+			<Text fontSize={'sm'} fontWeight={'semibold'}>
+				How much would you like to withdraw?
+			</Text>
+			<HStack>
+				<Text fontSize={'sm'}>Balance:</Text>
+				<Text fontSize={'sm'}>₦540,000</Text>
+			</HStack>
+			<Flex justifyContent={'space-between'}>
+				<Text fontSize={'sm'}>Enter amount</Text>
+				<Input type='number' />
 			</Flex>
-			<Stack>
-				<Text></Text>
-				<FormLabel htmlFor='method' fontSize={'xs'}>
-					Payment Method
-				</FormLabel>
-
-				<Select
-					placeholder='Flutterwave'
-					name='method'
-					value={''}
-					id='method'
-					size={'xs'}
-				>
-					<option value='male'>FlutterWave</option>
-					<option value='female'>Pyyr</option>
-				</Select>
-			</Stack>
-		</Stack>
+		</>
 	);
 };
 
@@ -269,24 +94,25 @@ const ModalForm3 = () => {
 	);
 };
 
-const FundModal = () => {
+const WithdrawalModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [step, setStep] = useState(1);
 
 	return (
 		<>
 			<Button
+				loadingText='Submitting'
+				size='sm'
 				colorScheme='purple'
-				size={'xs'}
-				leftIcon={<IoMdAdd />}
+				mt={2}
 				onClick={onOpen}
 			>
-				Fund Wallet
+				Withdraw
 			</Button>
 			<Modal onClose={onClose} isOpen={isOpen} isCentered>
 				<ModalOverlay />
 				<ModalContent gap={4}>
-					<ModalHeader fontSize={'md'}>Fund Wallet</ModalHeader>
+					<ModalHeader fontSize={'md'}>Withdraw</ModalHeader>
 					<ModalCloseButton />
 					<Divider />
 					<ModalBody>
@@ -300,9 +126,8 @@ const FundModal = () => {
 					</ModalBody>
 					<Divider />
 					<ModalFooter>
-						<Button size={'xs'}>Cancel</Button>
 						<Button
-							size={'xs'}
+							size={'sm'}
 							onClick={() => setStep(step + 1)}
 							colorScheme='purple'
 						>
@@ -578,25 +403,16 @@ export const MerchantWalletPage = () => {
 	);
 	const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'));
 	return (
-		<Stack>
-			<Flex gap={2} justifyContent={'flex-end'}>
-				<Button
-					variant={'outline'}
-					size={'xs'}
-					rightIcon={<IoMdCopy color='#805ad5' />}
-				>
-					Wallet Acc No : 8790679001 (9 Payment Bank)
-				</Button>
-				<FundModal />
-			</Flex>
+		<>
 			<Flex gap={{ base: 1, md: 3 }}>
+				<DisplayCard value='₦0' label='Wallet Balance' icon={emrald} />
 				<DisplayCard
-					value='₦1,120,000'
-					label='Available Balance'
-					icon={emrald}
+					value='0987 *** ***'
+					label='Account Info'
+					icon={account}
+					title='Spotify Limited'
 				/>
-				<DisplayCard value='₦850,780' label='Total Deposits' icon={emrald} />
-				<DisplayCard value='₦450,000' label='Total Pay Out' icon={emrald} />
+				<DisplayCard value='₦0' label='Earnings' icon={emrald} />
 			</Flex>
 			<Flex
 				boxShadow={'md'}
@@ -642,16 +458,17 @@ export const MerchantWalletPage = () => {
 				>
 					<Flex gap={2} alignItems={'center'}>
 						<Text fontSize={'xs'}>Transaction History</Text>
+						<Select placeholder='This Week' size={'xs'}>
+							<option value='option1'>This Week</option>
+							<option value='option2'>Last Week</option>
+							<option value='option3'>Last Month</option>
+						</Select>
 					</Flex>
-					<Select placeholder='This Week' size={'xs'} width={'auto'}>
-						<option value='option1'>This Week</option>
-						<option value='option2'>Last Week</option>
-						<option value='option3'>Last Month</option>
-					</Select>
+					<WithdrawalModal />
 				</Flex>
 
 				<WalletTable />
 			</Flex>
-		</Stack>
+		</>
 	);
 };

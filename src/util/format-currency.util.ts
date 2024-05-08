@@ -1,0 +1,12 @@
+export function formatCurrency(amount: number): string {
+	// Set currency options for Nigerian Naira
+	const options: Intl.NumberFormatOptions = {
+		style: 'currency',
+		currency: 'NGN',
+	};
+
+	// Format the currency using toLocaleString method
+	const formattedCurrency: string = amount.toLocaleString('en-NG', options);
+
+	return formattedCurrency;
+}

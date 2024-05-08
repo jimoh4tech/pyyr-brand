@@ -1,4 +1,5 @@
 import {
+	AspectRatio,
 	Avatar,
 	Badge,
 	Box,
@@ -11,8 +12,10 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
-	HStack,
+	FormLabel,
 	Input,
+	InputGroup,
+	InputLeftAddon,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -40,100 +43,193 @@ import { useState } from 'react';
 import moment from 'moment';
 import { IWalletTable } from '../../interface/wallet';
 import { IoEyeOutline } from 'react-icons/io5';
+import { IoMdAdd, IoMdCopy } from 'react-icons/io';
+import { formatCurrency } from '../../util/format-currency.util';
+import transactionsService from '../../services/transactions';
 
-const ModalForm1 = () => {
+const AmountCard = ({
+	amount,
+	setAmount,
+}: {
+	amount: number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setAmount: any;
+}) => {
+	return (
+		<Text
+			fontSize={'xs'}
+			bgColor={'white'}
+			px={3}
+			py={1}
+			w='110px'
+			border={'1px solid #f2f2f2'}
+			borderRadius={'md'}
+			boxShadow={'md'}
+			cursor={'pointer'}
+			onClick={() => setAmount(amount)}
+		>
+			{formatCurrency(amount)}
+		</Text>
+	);
+};
+
+const ModalForm1 = ({
+	amount,
+	setAmount,
+	handleTopUp,
+}: {
+	amount: number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setAmount: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	handleTopUp: any;
+}) => {
 	return (
 		<>
-			<Text fontSize={'sm'} fontWeight={'semibold'}>
-				How much would you like to withdraw?
-			</Text>
-			<HStack>
-				<Text fontSize={'sm'}>Balance:</Text>
-				<Text fontSize={'sm'}>₦540,000</Text>
-			</HStack>
-			<Flex justifyContent={'space-between'}>
-				<Text fontSize={'sm'}>Enter amount</Text>
-				<Input type='number' />
-			</Flex>
+			<ModalHeader fontSize={'md'}>Fund Wallet</ModalHeader>
+			<ModalCloseButton />
+			<Divider />
+			<ModalBody>
+				<Stack>
+					<Stack
+						bgColor={'#f9f4f8'}
+						p={2}
+						alignItems={'center'}
+						borderRadius={'lg'}
+					>
+						<Text fontSize={'xs'}>Available Balance</Text>
+						<Text fontSize={'sm'} fontWeight={'bold'}>
+							{formatCurrency(12000)}
+						</Text>
+					</Stack>
+
+					<Stack justifyContent={'space-between'}>
+						<Text fontSize={'sm'}>Amount</Text>
+						<InputGroup>
+							<InputLeftAddon>&#8358;</InputLeftAddon>
+							<Input
+								type='number'
+								value={amount}
+								onChange={(e) => setAmount(Number(e.target.value))}
+							/>
+						</InputGroup>
+					</Stack>
+					<Flex flexWrap={'wrap'} justifyContent={'space-between'} gap={2}>
+						{[
+							50000, 100000, 10000, 20000, 500000, 1000000, 1000, 5000000, 5000,
+							1500000, 2000000, 3000000,
+						].map((c) => (
+							<AmountCard amount={c} setAmount={setAmount} key={c} />
+						))}
+					</Flex>
+					<Stack>
+						<Text></Text>
+						<FormLabel htmlFor='method' fontSize={'xs'}>
+							Payment Method
+						</FormLabel>
+
+						<Select
+							placeholder='Flutterwave'
+							name='method'
+							id='method'
+							size={'xs'}
+						>
+							<option value='male'>FlutterWave</option>
+							<option value='female'>Pyyr</option>
+						</Select>
+					</Stack>
+				</Stack>
+			</ModalBody>
+			<Divider />
+			<ModalFooter>
+				<Button size={'xs'} mr={2}>
+					Cancel
+				</Button>
+				<Button size={'xs'} onClick={handleTopUp} colorScheme='purple'>
+					Proceed
+				</Button>
+			</ModalFooter>
 		</>
 	);
 };
 
-const ModalForm2 = () => {
+// const ModalForm2 = () => {
+// 	return (
+// 		<>
+// 			<Text fontSize={'sm'} fontWeight={'semibold'}>
+// 				How much would you like to withdraw?
+// 			</Text>
+// 			<HStack>
+// 				<Text fontSize={'sm'}>Balance:</Text>
+// 				<Text fontSize={'sm'}>₦540,000</Text>
+// 			</HStack>
+// 			<Flex>
+// 				<Text fontSize={'sm'}></Text>
+// 				<Input type='number' />
+// 			</Flex>
+// 		</>
+// 	);
+// };
+
+const ProccessModal = ({ checkoutUrl }: { checkoutUrl: string }) => {
 	return (
-		<>
-			<Text fontSize={'sm'} fontWeight={'semibold'}>
-				How much would you like to withdraw?
-			</Text>
-			<HStack>
-				<Text fontSize={'sm'}>Balance:</Text>
-				<Text fontSize={'sm'}>₦540,000</Text>
-			</HStack>
-			<Flex>
-				<Text fontSize={'sm'}></Text>
-				<Input type='number' />
-			</Flex>
-		</>
-	);
-};
-const ModalForm3 = () => {
-	return (
-		<>
-			<Text fontSize={'sm'} fontWeight={'semibold'}>
-				How much would you like to withdraw?
-			</Text>
-			<HStack>
-				<Text fontSize={'sm'}>Balance:</Text>
-				<Text fontSize={'sm'}>₦540,000</Text>
-			</HStack>
-			<Flex>
-				<Text fontSize={'sm'}></Text>
-				<Input type='number' />
-			</Flex>
-		</>
+		<AspectRatio maxW='560px' ratio={1}>
+			<Box as='iframe' title='naruto' src={checkoutUrl} allowFullScreen />
+		</AspectRatio>
 	);
 };
 
-const WithdrawalModal = () => {
+const FundModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [step, setStep] = useState(1);
+	const [amount, setAmount] = useState(0);
+	const [checkoutUrl, setCheckoutUrl] = useState('');
+
+	const handleTopUp = async () => {
+		try {
+			const bankList = await transactionsService.getBankList();
+			console.log(bankList);
+			const email = localStorage.getItem('PYMAILYR') || '';
+
+			console.log({ email, card_topup: amount.toString() });
+			const res = await transactionsService.topUp({
+				email,
+				card_topup: amount.toString(),
+			});
+			console.log(res);
+			const trans = JSON.parse(res.replace('""', ''));
+			const link = trans?.data?.payments?.redirectLink || '';
+
+			console.log(link, trans);
+			setCheckoutUrl(link);
+			setStep(2);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<>
 			<Button
-				loadingText='Submitting'
-				size='sm'
 				colorScheme='purple'
-				mt={2}
+				size={'xs'}
+				leftIcon={<IoMdAdd />}
 				onClick={onOpen}
 			>
-				Withdraw
+				Fund Wallet
 			</Button>
 			<Modal onClose={onClose} isOpen={isOpen} isCentered>
 				<ModalOverlay />
 				<ModalContent gap={4}>
-					<ModalHeader fontSize={'md'}>Withdraw</ModalHeader>
-					<ModalCloseButton />
-					<Divider />
-					<ModalBody>
-						{step === 1 ? (
-							<ModalForm1 />
-						) : step === 2 ? (
-							<ModalForm2 />
-						) : (
-							<ModalForm3 />
-						)}
-					</ModalBody>
-					<Divider />
-					<ModalFooter>
-						<Button
-							size={'sm'}
-							onClick={() => setStep(step + 1)}
-							colorScheme='purple'
-						>
-							Proceed
-						</Button>
-					</ModalFooter>
+					{step === 1 ? (
+						<ModalForm1
+							amount={amount}
+							setAmount={setAmount}
+							handleTopUp={handleTopUp}
+						/>
+					) : (
+						<ProccessModal checkoutUrl={checkoutUrl} />
+					)}
 				</ModalContent>
 			</Modal>
 		</>
@@ -402,17 +498,27 @@ export const Wallet = () => {
 		moment().subtract(1, 'days').format('YYYY-MM-DD')
 	);
 	const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'));
+
 	return (
-		<>
+		<Stack>
+			<Flex gap={2} justifyContent={'flex-end'}>
+				<Button
+					variant={'outline'}
+					size={'xs'}
+					rightIcon={<IoMdCopy color='#805ad5' />}
+				>
+					Wallet Acc No : 8790679001 (9 Payment Bank)
+				</Button>
+				<FundModal />
+			</Flex>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard value='₦0' label='Wallet Balance' icon={emrald} />
 				<DisplayCard
-					value='0987 *** ***'
-					label='Account Info'
-					icon={account}
-					title='Spotify Limited'
+					value='₦1,120,000'
+					label='Available Balance'
+					icon={emrald}
 				/>
-				<DisplayCard value='₦0' label='Earnings' icon={emrald} />
+				<DisplayCard value='₦850,780' label='Total Deposits' icon={emrald} />
+				<DisplayCard value='₦450,000' label='Total Pay Out' icon={emrald} />
 			</Flex>
 			<Flex
 				boxShadow={'md'}
@@ -458,17 +564,16 @@ export const Wallet = () => {
 				>
 					<Flex gap={2} alignItems={'center'}>
 						<Text fontSize={'xs'}>Transaction History</Text>
-						<Select placeholder='This Week' size={'xs'}>
-							<option value='option1'>This Week</option>
-							<option value='option2'>Last Week</option>
-							<option value='option3'>Last Month</option>
-						</Select>
 					</Flex>
-					<WithdrawalModal />
+					<Select placeholder='This Week' size={'xs'} width={'auto'}>
+						<option value='option1'>This Week</option>
+						<option value='option2'>Last Week</option>
+						<option value='option3'>Last Month</option>
+					</Select>
 				</Flex>
 
 				<WalletTable />
 			</Flex>
-		</>
+		</Stack>
 	);
 };
