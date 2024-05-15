@@ -54,21 +54,43 @@ const topUp = async ({
 	return res.data;
 };
 
+const walletBalance = async ({
+	pyyr_accounts,
+	
+}: {
+	pyyr_accounts: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			pyyr_accounts,
+			
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
 const verifyTopUp = async ({
 	email,
-	transactionCode,
-	status,
+	payment_ref,
+	payment_status,
+	card_topup,
 }: {
 	email: string;
-	transactionCode: string;
-	status: string;
+	payment_ref: string;
+	payment_status: string;
+	card_topup: string;
 }) => {
 	const res = await axios.post(
 		`${baseUrl}`,
 		{
 			email,
-			transactionCode,
-			status,
+			payment_ref,
+			payment_status,
+			card_topup,
 		},
 		{
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -82,4 +104,5 @@ export default {
 	getAccountName,
 	topUp,
 	verifyTopUp,
+	walletBalance
 };
