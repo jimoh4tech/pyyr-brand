@@ -1,8 +1,8 @@
-import { createContext, useEffect, useState } from "react";
-import { IUser } from "../interface/user";
-import { useNavigate } from "react-router-dom";
+import { createContext, useEffect, useState } from 'react';
+import { IUser } from '../interface/user';
+import { useNavigate } from 'react-router-dom';
 import authServices from '../services/auth';
-import userServices from "../services/user";
+import userServices from '../services/user';
 
 export const CurrentUserContext = createContext<{
 	currentUser: IUser | null;
@@ -16,15 +16,18 @@ export const CurrentUserProvider = ({ ...props }) => {
 	useEffect(() => {
 		async function validateToken() {
 			try {
-        const email = localStorage.getItem('PYMAILYR') || '';
-				console.log(email);
-				if (!email)
-					navigate('/signin');
+				const token = localStorage.getItem('PYMAILYR') || '';
+				console.log(token);
+				if (!token) navigate('/signin');
 				// Validate token with the server and set isAuthenticated accordingly
-				authServices.setEmail(email);
-				const res = await userServices.getFullUserDetail({full_user: email});
-        console.log(res);
-				setCurrentUser({ ...res });
+				authServices.setToken(token);
+				const res = await userServices.getFullUserDetail({ full_user: token });
+				if (res.responseCode == 200) {
+					console.log(res);
+					setCurrentUser({ ...res });
+				} else {
+					navigate('/signin');
+				}
 			} catch (error) {
 				navigate('/signin');
 				console.error(error);

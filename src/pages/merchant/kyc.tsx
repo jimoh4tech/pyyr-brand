@@ -329,7 +329,32 @@ const Form3 = ({
 }: {
 	setStep: (num: number) => void; // eslint-disable-next-line @typescript-eslint/no-explicit-any
 	formik: any;
-}) => {
+	}) => {
+	const industries = [
+		'Agricuture',
+		'Commerce',
+		'Finance',
+		'Education',
+		'Gaming',
+		'Health',
+		'Hospitality',
+		'Entertainment',
+		'Logistics',
+		'Travel',
+		'Utility',
+	];
+
+	const businesses = [
+		'Sole Proprietorship',
+		'Partnership',
+		'Limited Liability Company (LLC)',
+		'Corporation',
+		'Nonprofit Organization',
+		'Cooperative',
+		'Franchise',
+		'Social Enterprise',
+		'Startup',
+	];
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
@@ -386,6 +411,11 @@ const Form3 = ({
 										placeholder='Select Type'
 										onChange={formik.handleChange}
 									>
+										{businesses.map((b) => (
+											<option key={b} value={b}>
+												{b}
+											</option>
+										))}
 										<option value='option1'>Option 1</option>
 										<option value='option2'>Option 2</option>
 										<option value='option3'>Option 3</option>
@@ -396,9 +426,11 @@ const Form3 = ({
 										name='industry'
 										placeholder='Industry'
 									>
-										<option value='option1'>Option 1</option>
-										<option value='option2'>Option 2</option>
-										<option value='option3'>Option 3</option>
+										{industries.map((i) => (
+											<option key={i} value={i}>
+												{i}
+											</option>
+										))}
 									</Select>
 								</HStack>
 							</FormControl>

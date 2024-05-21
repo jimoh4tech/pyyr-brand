@@ -11,7 +11,6 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
-	FormLabel,
 	Input,
 	InputGroup,
 	InputLeftAddon,
@@ -39,7 +38,7 @@ import { DisplayCard } from './dashboard';
 import account from '../../assets/account.svg';
 import emrald from '../../assets/emrald.svg';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import { IWalletTable } from '../../interface/wallet';
 import { IoEyeOutline } from 'react-icons/io5';
@@ -47,6 +46,7 @@ import { IoMdAdd, IoMdCopy } from 'react-icons/io';
 import { formatCurrency } from '../../util/format-currency.util';
 import transactionsService from '../../services/transactions';
 import { usePaystackPayment } from 'react-paystack';
+import { CurrentUserContext } from '../../context/user.context';
 
 const AmountCard = ({
 	amount,
@@ -78,7 +78,9 @@ const ModalForm1 = ({
 	amount,
 	setAmount,
 	handleTopUp,
+	balance,
 }: {
+	balance: number;
 	amount: number;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setAmount: any;
@@ -100,7 +102,7 @@ const ModalForm1 = ({
 					>
 						<Text fontSize={'xs'}>Available Balance</Text>
 						<Text fontSize={'sm'} fontWeight={'bold'}>
-							{formatCurrency(12000)}
+							{formatCurrency(balance)}
 						</Text>
 					</Stack>
 
@@ -123,22 +125,6 @@ const ModalForm1 = ({
 							<AmountCard amount={c} setAmount={setAmount} key={c} />
 						))}
 					</Flex>
-					<Stack>
-						<Text></Text>
-						<FormLabel htmlFor='method' fontSize={'xs'}>
-							Payment Method
-						</FormLabel>
-
-						<Select
-							placeholder='Flutterwave'
-							name='method'
-							id='method'
-							size={'xs'}
-						>
-							<option value='male'>FlutterWave</option>
-							<option value='female'>Pyyr</option>
-						</Select>
-					</Stack>
 				</Stack>
 			</ModalBody>
 			<Divider />
@@ -154,14 +140,26 @@ const ModalForm1 = ({
 	);
 };
 
-const FundModal = () => {
+const FundModal = ({
+	setBalance,
+	balance,
+}: {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setBalance: any;
+	balance: number;
+}) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [amount, setAmount] = useState(0);
-	const [reference, setReference] = useState<{ trxref?: string;  status?: string} | null>(null);
+	const { currentUser } = useContext(CurrentUserContext);
+	const [reference, setReference] = useState<{
+		trxref?: string;
+		status?: string;
+	} | null>(null);
 	const publicKey = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
 	const toast = useToast();
 
-	const email = localStorage.getItem('PYMAILYR') || '';
+	const token = localStorage.getItem('PYMAILYR') || '';
+	const email = currentUser?.email || '';
 
 	const config = {
 		reference: new Date().getTime().toString(),
@@ -180,7 +178,7 @@ const FundModal = () => {
 		// implementation for  whatever you want to do when the Paystack dialog closed.
 		toast({
 			title: 'Payment Cancelled',
-			description: 'Proccessed was not completed',
+			description: 'Payment was not completed',
 			status: 'error',
 			duration: 9000,
 			isClosable: true,
@@ -191,28 +189,33 @@ const FundModal = () => {
 	const initializePayment = usePaystackPayment(config);
 
 	const fundWallet = async () => {
-		const res = await transactionsService.verifyTopUp({
-			email,
+		const payload = {
+			email: token,
 			payment_ref: reference?.trxref || '',
-			payment_status: reference?.status || '',
-			card_topup: amount.toString(),
-		});
+		};
+		console.log(payload);
+		const res = await transactionsService.verifyTopUp(payload);
 		console.log(res);
 		toast({
 			title: 'Payment Successful',
-			description: 'Proccessed was successfully completed',
+			description: 'Payment was successfully completed',
 			status: 'success',
 			duration: 9000,
 			isClosable: true,
 			position: 'top-right',
 		});
+		const wallet = await transactionsService.walletBalance({
+			pyyr_accounts: token,
+		});
+		console.log(wallet);
+		setBalance(wallet.currentBalance);
 		onClose();
 	};
 
 	useEffect(() => {
 		if (reference) {
 			fundWallet();
-			setReference(null)
+			setReference(null);
 		}
 	}, [reference]);
 	return (
@@ -230,6 +233,7 @@ const FundModal = () => {
 				<ModalOverlay />
 				<ModalContent gap={4}>
 					<ModalForm1
+						balance={balance}
 						amount={amount}
 						setAmount={setAmount}
 						handleTopUp={() => {
@@ -510,11 +514,15 @@ export const MerchantWalletPage = () => {
 	useEffect(() => {
 		const fetchBalance = async () => {
 			const email = localStorage.getItem('PYMAILYR') || '';
+			console.log({ email });
 			const res = await transactionsService.walletBalance({
 				pyyr_accounts: email,
 			});
 			console.log(res);
 			setBalance(res.currentBalance);
+
+			const bankList = await transactionsService.getBankList();
+			console.log({ bankList });
 		};
 		fetchBalance();
 	}, []);
@@ -529,24 +537,12 @@ export const MerchantWalletPage = () => {
 				>
 					Wallet Acc No : 8790679001 (9 Payment Bank)
 				</Button>
-				<FundModal />
+				<FundModal setBalance={setBalance} balance={balance} />
 			</Flex>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard
-					value={`₦${balance}`}
-					label='Available Balance'
-					icon={emrald}
-				/>
-				<DisplayCard
-					value={`₦${balance}`}
-					label='Total Deposits'
-					icon={emrald}
-				/>
-				<DisplayCard
-					value={`₦${balance}`}
-					label='Total Pay Out'
-					icon={emrald}
-				/>
+				<DisplayCard value={balance} label='Available Balance' icon={emrald} />
+				<DisplayCard value={balance} label='Total Deposits' icon={emrald} />
+				<DisplayCard value={balance} label='Total Pay Out' icon={emrald} />
 			</Flex>
 			<Flex
 				boxShadow={'md'}

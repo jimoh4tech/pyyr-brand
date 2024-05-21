@@ -1,4 +1,4 @@
-export function formatCurrency(amount: number): string {
+export function formatCurrency(amount: number | string): string {
 	// Set currency options for Nigerian Naira
 	const options: Intl.NumberFormatOptions = {
 		style: 'currency',

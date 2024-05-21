@@ -1,16 +1,11 @@
 import axios from 'axios';
 import { baseUrl } from './auth';
+const token = import.meta.env.VITE_PAYSTACK_PRIVATE_KEY;
 
 const getBankList = async () => {
-	const res = await axios.post(
-		`${baseUrl}`,
-		{
-			list_banks: 1,
-		},
-		{
-			headers: { 'Content-Type': 'multipart/form-data' },
-		}
-	);
+	const res = await axios.get(`https://api.paystack.co/bank`, {
+		headers: { Authorization: `bearer ${token}` },
+	});
 	return res.data;
 };
 
@@ -54,17 +49,11 @@ const topUp = async ({
 	return res.data;
 };
 
-const walletBalance = async ({
-	pyyr_accounts,
-	
-}: {
-	pyyr_accounts: string;
-}) => {
+const walletBalance = async ({ pyyr_accounts }: { pyyr_accounts: string }) => {
 	const res = await axios.post(
 		`${baseUrl}`,
 		{
 			pyyr_accounts,
-			
 		},
 		{
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -75,22 +64,16 @@ const walletBalance = async ({
 
 const verifyTopUp = async ({
 	email,
-	payment_ref,
-	payment_status,
-	card_topup,
+	payment_ref
 }: {
 	email: string;
 	payment_ref: string;
-	payment_status: string;
-	card_topup: string;
 }) => {
 	const res = await axios.post(
 		`${baseUrl}`,
 		{
 			email,
 			payment_ref,
-			payment_status,
-			card_topup,
 		},
 		{
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -104,5 +87,5 @@ export default {
 	getAccountName,
 	topUp,
 	verifyTopUp,
-	walletBalance
+	walletBalance,
 };

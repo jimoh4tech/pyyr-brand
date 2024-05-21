@@ -35,6 +35,7 @@ import { IoIosArrowForward } from 'react-icons/io';
 import { useState } from 'react';
 import moment from 'moment';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import { formatCurrency } from '../../util/format-currency.util';
 
 const Empty = () => {
 	const [isLessthan500] = useMediaQuery('(max-width: 500px)');
@@ -104,7 +105,7 @@ export const DisplayCard = ({
 	icon,
 	title,
 }: {
-	value: string;
+	value: number;
 	label: string;
 	icon: string;
 	title?: string;
@@ -117,7 +118,10 @@ export const DisplayCard = ({
 						{' '}
 						{title}
 					</Heading>
-					<Heading size={{ base: 'sm', md: 'md' }}> {value}</Heading>
+					<Heading size={{ base: 'sm', md: 'md' }}>
+						{' '}
+						{formatCurrency(value)}
+					</Heading>
 				</CardHeader>
 				<CardBody>
 					<Flex justifyContent={'space-between'}>
@@ -316,12 +320,12 @@ const DashboardContent = () => {
 			{' '}
 			<Flex gap={{ base: 1, md: 3 }}>
 				<DisplayCard
-					value='N1,600,000'
+					value={160000}
 					label='Cumulative Voucher Balance'
 					icon={balance}
 				/>
-				<DisplayCard value='N500,000' label='Amount Claimed' icon={progress} />
-				<DisplayCard value='10' label='Active Campaigns' icon={campaignIcon} />
+				<DisplayCard value={50000} label='Amount Claimed' icon={progress} />
+				<DisplayCard value={10} label='Active Campaigns' icon={campaignIcon} />
 			</Flex>
 			<Flex color={'black'} gap={3} flexWrap={'wrap'}>
 				<Flex flexDir={'column'} gap={5} bgColor={'white'}>

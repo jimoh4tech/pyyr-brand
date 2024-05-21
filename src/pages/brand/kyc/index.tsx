@@ -37,11 +37,12 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import {  useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import authService from '../../../services/auth';
 import { useNavigate } from 'react-router-dom';
 import userService from '../../../services/user';
+import transactionsService from '../../../services/transactions';
 
 const NoConsentModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -337,6 +338,31 @@ const Form3 = ({
 	setStep: (num: number) => void; // eslint-disable-next-line @typescript-eslint/no-explicit-any
 	formik: any;
 }) => {
+	const industries = [
+		'Agricuture',
+		'Commerce',
+		'Finance',
+		'Education',
+		'Gaming',
+		'Health',
+		'Hospitality',
+		'Entertainment',
+		'Logistics',
+		'Travel',
+		'Utility',
+	];
+
+	const businesses = [
+		'Sole Proprietorship',
+		'Partnership',
+		'Limited Liability Company (LLC)',
+		'Corporation',
+		'Nonprofit Organization',
+		'Cooperative',
+		'Franchise',
+		'Social Enterprise',
+		'Startup',
+	];
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
@@ -393,6 +419,11 @@ const Form3 = ({
 										placeholder='Select Type'
 										onChange={formik.handleChange}
 									>
+										{businesses.map((b) => (
+											<option key={b} value={b}>
+												{b}
+											</option>
+										))}
 										<option value='option1'>Option 1</option>
 										<option value='option2'>Option 2</option>
 										<option value='option3'>Option 3</option>
@@ -403,9 +434,11 @@ const Form3 = ({
 										name='industry'
 										placeholder='Industry'
 									>
-										<option value='option1'>Option 1</option>
-										<option value='option2'>Option 2</option>
-										<option value='option3'>Option 3</option>
+										{industries.map((i) => (
+											<option key={i} value={i}>
+												{i}
+											</option>
+										))}
 									</Select>
 								</HStack>
 							</FormControl>
@@ -548,10 +581,12 @@ const Form3 = ({
 const Form4 = ({
 	setStep,
 	formik,
+	bankList,
 }: {
 	setStep: (num: number) => void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	formik: any;
+	bankList: { code: string; id: string; name: string }[];
 }) => {
 	return (
 		<>
@@ -589,9 +624,11 @@ const Form4 = ({
 									placeholder='Select Back'
 									onChange={formik.handleChange}
 								>
-									<option value='option1'>Option 1</option>
-									<option value='option2'>Option 2</option>
-									<option value='option3'>Option 3</option>
+									{bankList.map((b) => (
+										<option key={b.id} value={`${b.code}:${b.name}`}>
+											{b.name}
+										</option>
+									))}
 								</Select>
 							</FormControl>
 
@@ -776,6 +813,9 @@ const Form5 = ({
 export const BrandKYC = () => {
 	const [step, setStep] = useState(2);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
+	const [bankList, setBankList] = useState<
+		{ code: string; id: string; name: string }[]
+	>([]);
 	const toast = useToast();
 	const navigate = useNavigate();
 
@@ -807,14 +847,22 @@ export const BrandKYC = () => {
 			b_phone: '',
 			accountBank: '',
 			mail: '',
+			bankcode: '',
 		},
 		async onSubmit(values) {
-			console.log(values);
-
+			
+			
 			try {
+				const bank = values.accountBank.split(':');
 				const email = localStorage.getItem('PYMAILYR') || '';
-				console.log({ ...values, email });
-				const res = await authService.kyc({ ...values, email });
+				const newVal = {
+					...values,
+					bankcode: bank[0],
+					accountBank: bank[1],
+					email,
+				};
+				console.log({ newVal});
+				const res = await authService.kyc(newVal);
 				console.log(res);
 
 				const keep = await userService.getUserBusinessDetails({
@@ -848,6 +896,15 @@ export const BrandKYC = () => {
 			}
 		},
 	});
+
+	useEffect(() => {
+		const fetchBankList = async () => {
+			const bankList = await transactionsService.getBankList();
+			console.log({ bankList });
+			setBankList(bankList.data);
+		};
+		fetchBankList();
+	}, []);
 	return (
 		<>
 			<Flex
@@ -912,7 +969,7 @@ export const BrandKYC = () => {
 							) : step === 3 ? (
 								<Form3 setStep={setStep} formik={formik} />
 							) : step === 4 ? (
-								<Form4 setStep={setStep} formik={formik} />
+								<Form4 setStep={setStep} formik={formik} bankList={bankList} />
 							) : (
 								<Form5 setStep={setStep} formik={formik} />
 							)}

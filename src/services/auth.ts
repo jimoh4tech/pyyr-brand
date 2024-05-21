@@ -4,7 +4,7 @@ export const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export let email = '';
 
- const setEmail = (userMail: string): void => {
+ const setToken = (userMail: string): void => {
 	email = userMail;
 };
 
@@ -245,5 +245,5 @@ export default {
 	resetPassword,
 	changePassword,
 	kyc,
-	setEmail
+	setToken
 };

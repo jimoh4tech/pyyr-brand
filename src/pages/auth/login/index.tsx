@@ -38,13 +38,13 @@ export const LoginPage = () => {
 			try {
 				const res = await authServices.login(values);
 				console.log(res);
+				authServices.setToken(res.token);
 
 				const user = await userService.getFullUserDetail({
-					full_user: values.username,
+					full_user: res.token,
 				});
 
-				localStorage.setItem('PYMAILYR', values.username);
-				authServices.setEmail(values.username);
+				localStorage.setItem('PYMAILYR', res.token);
 				console.log(user);
 				setCurrentUser(user);
 				if (res.responseCode == 200) {
@@ -56,7 +56,7 @@ export const LoginPage = () => {
 						isClosable: true,
 						position: 'top-right',
 					});
-					user.account_type === 'brand' ? navigate('/') : navigate('/merchant');
+					res.userRole === 'brand' ? navigate('/') : navigate('/merchant');
 				} else {
 					toast({
 						title: 'Error',
