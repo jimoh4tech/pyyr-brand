@@ -949,6 +949,7 @@ export const BrandKYC = () => {
 			console.log(formik.values.accountNumber.toString().length === 10);
 			fetchAccountName();
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.accountNumber]);
 	return (
 		<>

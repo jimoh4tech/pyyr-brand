@@ -4,6 +4,7 @@ import {
 	Button,
 	Card,
 	CardBody,
+	CardHeader,
 	CircularProgress,
 	CircularProgressLabel,
 	Divider,
@@ -593,6 +594,53 @@ const Form3 = ({
 	);
 };
 
+const VoucherCard = ({
+	image,
+	amount,
+	worth,
+	redemption,
+	voucher_name,
+}: {
+	image: string;
+	amount: string;
+	worth: string;
+	voucher_name: string;
+	redemption: string;
+}) => {
+	return (
+		<Card backgroundColor={'#FF5C30'}>
+			<CardHeader>
+				<Flex justifyContent={'space-between'}>
+					<Avatar src={image} size={'xs'} />
+					<Text>#763</Text>
+				</Flex>
+			</CardHeader>
+			<CardBody>
+				<Stack gap={10}>
+					<Flex
+						justifyContent={'center'}
+						alignItems={'center'}
+						flexDir={'column'}
+					>
+						<Text fontWeight={'bold'} fontSize={'x-large'}>
+							{voucher_name}
+						</Text>
+						<Text>{redemption}</Text>
+					</Flex>
+					<Flex justifyContent={'space-between'}>
+						<Stack>
+							<Text fontWeight={'semibold'}>{formatCurrency(amount)}</Text>
+							<Text>{`Cost Price: ${formatCurrency(worth)}`}</Text>
+						</Stack>
+
+						<Button variant={'outline'}>Buy Now</Button>
+					</Flex>
+				</Stack>
+			</CardBody>
+		</Card>
+	);
+};
+
 const Form4 = ({
 	setStep,
 	formik,
@@ -612,13 +660,13 @@ const Form4 = ({
 					<Divider />
 					<Flex p={5} bg={'white'}>
 						<Flex flexDir={'column'} gap={3} w={'100%'}>
-							<Text>Expecting cards</Text>
+							<VoucherCard {...formik.values} />
 						</Flex>
 					</Flex>
 					<Divider />
 					<Flex justifyContent={'flex-end'} gap={3}>
 						<Button
-							onClick={() => setStep(4)}
+							onClick={() => setStep(3)}
 							colorScheme='purple'
 							size={'xs'}
 							variant={'ghost'}
@@ -769,7 +817,13 @@ const CreateVoucher = () => {
 	);
 };
 
-const ViewVoucherDrawer = ({ code, worth, Date,Name, amount,}: IVoucherTable) => {
+const ViewVoucherDrawer = ({
+	code,
+	worth,
+	Date,
+	Name,
+	amount,
+}: IVoucherTable) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
@@ -915,7 +969,6 @@ const ViewVoucherDrawer = ({ code, worth, Date,Name, amount,}: IVoucherTable) =>
 };
 
 const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
-	
 	return (
 		<>
 			<TableContainer>
@@ -992,14 +1045,14 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 	);
 };
 
-const VoucherContent = () => {
-
-	const [vouchers, setVouchers] = useState<IVoucherTable[]>([])
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const VoucherContent = ({ setStatus }: { setStatus: any }) => {
+	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
 	useEffect(() => {
 		const fetchVouchers = async () => {
 			const token = localStorage.getItem('PYMAILYR') || '';
 			const res = await voucherService.getVouchers({ get_voucher: token });
-			setVouchers(res[1])
+			setVouchers(res[1]);
 			console.log({ res, data: res[1] });
 		};
 
@@ -1031,31 +1084,36 @@ const VoucherContent = () => {
 				flexDir={'column'}
 				gap={3}
 			>
-				<Flex justifyContent={'space-between'} flex={1} alignItems={'center'}>
+				<Flex
+					justifyContent={'space-between'}
+					flex={1}
+					alignItems={'center'}
+					flexWrap={'wrap'}
+					gap={2}
+				>
 					<Text fontSize={'sm'}>Vouchers</Text>
-					<HStack>
-						<InputGroup p={1}>
-							<InputLeftElement alignItems={'center'}>
-								<FiSearch size={'15px'} />
-							</InputLeftElement>
-							<Input placeholder='Search' size={'sm'} borderRadius={'30px'} />
-						</InputGroup>
-						<Menu>
-							<MenuButton
-								fontSize={'sm'}
-								as={Button}
-								rightIcon={<MdKeyboardArrowDown />}
-							>
-								All
-							</MenuButton>
-							<MenuList>
-								<MenuItem fontSize={'sm'}>All</MenuItem>
-								<MenuItem fontSize={'sm'}>Draft</MenuItem>
-								<MenuItem fontSize={'sm'}>Private</MenuItem>
-								<MenuItem fontSize={'sm'}>Public</MenuItem>
-							</MenuList>
-						</Menu>
-					</HStack>
+					<InputGroup p={1} maxW={'60%'}>
+						<InputLeftElement alignItems={'center'}>
+							<FiSearch size={'15px'} />
+						</InputLeftElement>
+						<Input placeholder='Search' size={'sm'} borderRadius={'30px'} />
+					</InputGroup>
+					<Menu>
+						<MenuButton
+							fontSize={'sm'}
+							as={Button}
+							rightIcon={<MdKeyboardArrowDown />}
+						>
+							All
+						</MenuButton>
+						<MenuList>
+							<MenuItem fontSize={'sm'}>All</MenuItem>
+							<MenuItem fontSize={'sm'}>Draft</MenuItem>
+							<MenuItem fontSize={'sm'}>Private</MenuItem>
+							<MenuItem fontSize={'sm'}>Public</MenuItem>
+						</MenuList>
+					</Menu>
+					<CreateVoucherModal setStatus={setStatus} />
 				</Flex>
 				<Divider />
 				<VoucherTable vouchers={vouchers} />
@@ -1074,7 +1132,7 @@ export const Voucher = () => {
 				) : status === 'create' ? (
 					<CreateVoucher />
 				) : (
-					<VoucherContent />
+					<VoucherContent setStatus={() => setStatus('create')} />
 				)}
 			</Flex>
 		</>
