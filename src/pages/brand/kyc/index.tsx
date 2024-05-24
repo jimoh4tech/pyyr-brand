@@ -41,7 +41,6 @@ import { useEffect, useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import authService from '../../../services/auth';
 import { useNavigate } from 'react-router-dom';
-import userService from '../../../services/user';
 import transactionsService from '../../../services/transactions';
 
 const NoConsentModal = () => {
@@ -600,21 +599,6 @@ const Form4 = ({
 					<Flex p={5} bg={'#fbfbfb'}>
 						<Flex flexDir={'column'} gap={3} w={'100%'}>
 							<FormControl isRequired>
-								<FormLabel fontSize={'xs'} htmlFor={'accountNumber'}>
-									{'Account Number'}
-								</FormLabel>
-								<Input
-									id={'accountNumber'}
-									name={'accountNumber'}
-									type='number'
-									w={'full'}
-									size={'xs'}
-									value={formik.values.accountNumber}
-									onChange={formik.handleChange}
-									placeholder='Enter Account Number'
-								/>
-							</FormControl>
-							<FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'bank'}>
 									{'Bank'}
 								</FormLabel>
@@ -631,7 +615,21 @@ const Form4 = ({
 									))}
 								</Select>
 							</FormControl>
-
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'accountNumber'}>
+									{'Account Number'}
+								</FormLabel>
+								<Input
+									id={'accountNumber'}
+									name={'accountNumber'}
+									type='number'
+									w={'full'}
+									size={'xs'}
+									value={formik.values.accountNumber}
+									onChange={formik.handleChange}
+									placeholder='Enter Account Number'
+								/>
+							</FormControl>
 							<FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'accountName'}>
 									{'Account Name'}
@@ -645,6 +643,7 @@ const Form4 = ({
 										value={formik.values.accountName}
 										onChange={formik.handleChange}
 										placeholder='Enter Account Name'
+										isDisabled={true}
 									/>
 								</InputGroup>
 							</FormControl>
@@ -819,6 +818,48 @@ export const BrandKYC = () => {
 	const toast = useToast();
 	const navigate = useNavigate();
 
+	const fetchAccountName = async () => {
+		try {
+			// const token = localStorage.getItem('PYMAILYR') || '';
+			const bank = formik.values.accountBank.split(':');
+			console.log({
+				get_account: formik.values.accountNumber,
+				bankcode: bank[0],
+			});
+			const res = await transactionsService.getAccountName({
+				get_account: formik.values.accountNumber,
+				bankcode: bank[0],
+			});
+			console.log({ res });
+			if (res.status) {
+				formik.setValues({
+					...formik.values,
+					accountName: res.data.account_name,
+				});
+				toast({
+					title: 'Success',
+					description: res.message,
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			} else {
+				toast({
+					title: 'Error',
+					description:
+						res.message || 'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const formik = useFormik({
 		initialValues: {
 			coc: '',
@@ -850,8 +891,6 @@ export const BrandKYC = () => {
 			bankcode: '',
 		},
 		async onSubmit(values) {
-			
-			
 			try {
 				const bank = values.accountBank.split(':');
 				const email = localStorage.getItem('PYMAILYR') || '';
@@ -861,14 +900,14 @@ export const BrandKYC = () => {
 					accountBank: bank[1],
 					email,
 				};
-				console.log({ newVal});
+				console.log({ newVal });
 				const res = await authService.kyc(newVal);
 				console.log(res);
 
-				const keep = await userService.getUserBusinessDetails({
-					business_user: '2lfbvg7kim@mailcurity.com',
-				});
-				console.log(keep);
+				// const keep = await userService.getUserBusinessDetails({
+				// 	business_user: '2lfbvg7kim@mailcurity.com',
+				// });
+				// console.log(keep);
 				if (res.responseCode == 200) {
 					toast({
 						title: 'KYC successfully submitted.',
@@ -899,12 +938,18 @@ export const BrandKYC = () => {
 
 	useEffect(() => {
 		const fetchBankList = async () => {
-			const bankList = await transactionsService.getBankList();
-			console.log({ bankList });
-			setBankList(bankList.data);
+			const banks = await transactionsService.getBankList();
+			console.log({ banks });
+			setBankList(banks.data);
 		};
-		fetchBankList();
-	}, []);
+
+		if (bankList.length === 0) fetchBankList();
+
+		if (formik.values.accountNumber.toString().length === 10) {
+			console.log(formik.values.accountNumber.toString().length === 10);
+			fetchAccountName();
+		}
+	}, [formik.values.accountNumber]);
 	return (
 		<>
 			<Flex

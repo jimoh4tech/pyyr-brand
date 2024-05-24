@@ -217,6 +217,7 @@ const FundModal = ({
 			fundWallet();
 			setReference(null);
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [reference]);
 	return (
 		<>

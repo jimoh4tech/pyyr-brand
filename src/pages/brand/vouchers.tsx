@@ -4,6 +4,8 @@ import {
 	Button,
 	Card,
 	CardBody,
+	CircularProgress,
+	CircularProgressLabel,
 	Divider,
 	Drawer,
 	DrawerBody,
@@ -47,6 +49,8 @@ import {
 	Thead,
 	Tr,
 	useDisclosure,
+	useMediaQuery,
+	useToast,
 } from '@chakra-ui/react';
 import { IoIosArrowForward } from 'react-icons/io';
 import empty from '../../assets/voucher_empty.svg';
@@ -54,7 +58,7 @@ import platium from '../../assets/platium.svg';
 import emrald from '../../assets/emrald.svg';
 import gift from '../../assets/gift.svg';
 import verified from '../../assets/verified.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { ItemCheck } from './kyc/index';
 import { DisplayCard } from './dashboard';
@@ -62,6 +66,8 @@ import { FiSearch } from 'react-icons/fi';
 import { IoEyeOutline } from 'react-icons/io5';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 import { IVoucherTable } from '../../interface/voucher';
+import voucherService from '../../services/voucher';
+import { formatCurrency } from '../../util/format-currency.util';
 
 const ModalForm1 = () => {
 	return (
@@ -215,416 +221,415 @@ const Empty = ({ setStatus }: { setStatus: (status: string) => void }) => {
 		</>
 	);
 };
-const Form1 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			image: '',
-			phone: '',
-			role: '',
-			title: '',
-			promotion: '',
-			description: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-			setStep(2);
-		},
-	});
+const Form1 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'sm'}>Voucher Details</Heading>
-						<Text fontSize={'xs'}>
-							Kindly Provide the information below to create your voucher
-						</Text>
-						<Divider />
-						<Flex p={5} bg={'white'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'image'}>
-										{'Cover Image'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'image'}
-											name={'image'}
-											type='file'
-											size={'xs'}
-											value={formik.values.image}
-											onChange={formik.handleChange}
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'title'}>
-										{'Voucher Title'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'title'}
-											name={'title'}
-											type='text'
-											size={'xs'}
-											value={formik.values.title}
-											onChange={formik.handleChange}
-											placeholder='Enter the name you’d like to display on this voucher'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl>
-									<FormLabel fontSize={'xs'} htmlFor={'promotion'}>
-										{'Promotional Title'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'promotion'}
-											name={'promotion'}
-											type='text'
-											size={'xs'}
-											value={formik.values.promotion}
-											onChange={formik.handleChange}
-											placeholder='Additional subtext that’d catch the attention of your merchants'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'description'}>
-										{'Description'}
-									</FormLabel>
-									<InputGroup>
-										<Textarea
-											id={'description'}
-											name={'description'}
-											size={'xs'}
-											value={formik.values.description}
-											onChange={formik.handleChange}
-											placeholder='Give more context to the value of this voucher card. E.g Perfect for Staff, Customers and friends incentives'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Voucher Redemption Type'}
-									</FormLabel>
-									<Select size={'xs'} placeholder='Single use Voucher'>
-										<option value='option1'>Single use Voucher</option>
-										<option value='option2'>Multi-use Voucher</option>
-									</Select>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Visibility'}
-									</FormLabel>
-									<Select size={'xs'} placeholder='Draft'>
-										<option value='option1'>Draft</option>
-										<option value='option2'>Private</option>
-										<option value='option3'>Public</option>
-									</Select>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Redeem/Usage Window'}
-									</FormLabel>
-									<Select size={'xs'} placeholder='Unlimited (does not expire)'>
-										<option value='option1'>Unlimited (does not expire)</option>
-										<option value='option2'>
-											1 month Expiry (from sales period)
-										</option>
-										<option value='option3'>Set Custom Timeframe</option>
-									</Select>
-								</FormControl>
-							</Flex>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'sm'}>Voucher Details</Heading>
+					<Text fontSize={'xs'}>
+						Kindly Provide the information below to create your voucher
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'white'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'image'}>
+									{'Cover Image'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'image'}
+										name={'image'}
+										type='file'
+										size={'xs'}
+										onChange={(event) => {
+											formik.setFieldValue(
+												'image',
+												event.currentTarget.files &&
+													event.currentTarget.files[0]
+											);
+										}}
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'title'}>
+									{'Voucher Title'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'title'}
+										name={'voucher_name'}
+										type='text'
+										size={'xs'}
+										value={formik.values.voucher_name}
+										onChange={formik.handleChange}
+										placeholder='Enter the name you’d like to display on this voucher'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl>
+								<FormLabel fontSize={'xs'} htmlFor={'promotion'}>
+									{'Promotional Title'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'promotion'}
+										name={'promotional_title'}
+										type='text'
+										size={'xs'}
+										value={formik.values.promotional_title}
+										onChange={formik.handleChange}
+										placeholder='Additional subtext that’d catch the attention of your merchants'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'description'}>
+									{'Description'}
+								</FormLabel>
+								<InputGroup>
+									<Textarea
+										id={'description'}
+										name={'voucher_des'}
+										size={'xs'}
+										value={formik.values.voucher_des}
+										onChange={formik.handleChange}
+										placeholder='Give more context to the value of this voucher card. E.g Perfect for Staff, Customers and friends incentives'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'role'}>
+									{'Voucher Redemption Type'}
+								</FormLabel>
+								<Select
+									size={'xs'}
+									name='redemption'
+									placeholder='Select Voucher'
+									onChange={formik.handleChange}
+								>
+									<option value='Single use Voucher'>Single use Voucher</option>
+									<option value='Multi-use Voucher'>Multi-use Voucher</option>
+								</Select>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'role'}>
+									{'Visibility'}
+								</FormLabel>
+								<Select
+									size={'xs'}
+									placeholder='Select Visibility'
+									name='visibility'
+									onChange={formik.handleChange}
+								>
+									<option value='Draft'>Draft</option>
+									<option value='Private'>Private</option>
+									<option value='Public'>Public</option>
+								</Select>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'role'}>
+									{'Redeem/Usage Window'}
+								</FormLabel>
+								<FormLabel fontSize={'xs'} htmlFor={'role'}>
+									{'Redeem/Usage Window'}
+								</FormLabel>
+								<Input
+									id='exp'
+									type='datetime-local'
+									name='usage_limit'
+									value={formik.values.usage_limit}
+									onChange={formik.handleChange}
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'Live'}>
+									{'When would you like to go live?'}
+								</FormLabel>
+								<Input
+									id='Live'
+									type='datetime-local'
+									name='live'
+									value={formik.values.live}
+									onChange={formik.handleChange}
+								/>
+							</FormControl>
 						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
+					</Flex>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						{/* <Button
 								onClick={() => setStep(1)}
 								colorScheme='purple'
 								size={'xs'}
 								variant={'ghost'}
+								disabled={true}
 							>
 								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
-							</Button>
-						</Flex>
+							</Button> */}
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(2)}>
+							Proceed
+						</Button>
 					</Flex>
-				</form>
+				</Flex>
 			</Flex>
 		</>
 	);
 };
 
-const Form2 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			link: '',
-			url: '',
-			location: '',
-			how: '',
-			description: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-			setStep(3);
-		},
-	});
+const Form2 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'sm'}>Redeem Location(s)</Heading>
-						<Text fontSize={'xs'}>
-							Kindly Provide the information below to create your voucher
-						</Text>
-						<Divider />
-						<Flex p={5} bg={'white'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'location'}>
-										{'Location Name'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'location'}
-											name={'location'}
-											type='text'
-											size={'xs'}
-											value={formik.values.location}
-											onChange={formik.handleChange}
-											placeholder='Enter location'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl>
-									<FormLabel fontSize={'xs'} htmlFor={'url'}>
-										{'URL Location'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'url'}
-											name={'url'}
-											type='text'
-											size={'xs'}
-											value={formik.values.url}
-											onChange={formik.handleChange}
-											placeholder='Enter Link'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'description'}>
-										{'Description'}
-									</FormLabel>
-									<InputGroup>
-										<Textarea
-											id={'description'}
-											name={'description'}
-											size={'xs'}
-											value={formik.values.description}
-											onChange={formik.handleChange}
-											placeholder='Give more context to the value of this voucher card. E.g Perfect for Staff, Customers and friends incentives'
-										/>
-									</InputGroup>
-								</FormControl>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'sm'}>Redeem Location(s)</Heading>
+					<Text fontSize={'xs'}>
+						Kindly Provide the information below to create your voucher
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'white'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'location'}>
+									{'Location Name'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'location'}
+										name={'location_name'}
+										type='text'
+										size={'xs'}
+										value={formik.values.location_name}
+										onChange={formik.handleChange}
+										placeholder='Enter location'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl>
+								<FormLabel fontSize={'xs'} htmlFor={'url'}>
+									{'URL Location'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'url'}
+										name={'url'}
+										type='text'
+										size={'xs'}
+										value={formik.values.url}
+										onChange={formik.handleChange}
+										placeholder='Enter Link'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'description'}>
+									{'Description'}
+								</FormLabel>
+								<InputGroup>
+									<Textarea
+										id={'description'}
+										name={'description'}
+										size={'xs'}
+										value={formik.values.description}
+										onChange={formik.handleChange}
+										placeholder='Give more context to the value of this voucher card. E.g Perfect for Staff, Customers and friends incentives'
+									/>
+								</InputGroup>
+							</FormControl>
 
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'how'}>
-										{'How to Redeem Voucher'}
-									</FormLabel>
-									<InputGroup>
-										<Textarea
-											id={'how'}
-											name={'how'}
-											size={'xs'}
-											value={formik.values.how}
-											onChange={formik.handleChange}
-											placeholder='1. Present your voucher card at any of our store during checkout.\n
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'how'}>
+									{'How to Redeem Voucher'}
+								</FormLabel>
+								<InputGroup>
+									<Textarea
+										id={'how'}
+										name={'redeem'}
+										size={'xs'}
+										value={formik.values.redeem}
+										onChange={formik.handleChange}
+										placeholder='1. Present your voucher card at any of our store during checkout.\n
 2. Scan barcode using a barcode scanner at checkout\n 
 3. Enter the unique voucher code at the online checkout on our website to enjoy the virtual shopping experience.'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl>
-									<FormLabel fontSize={'xs'} htmlFor={'link'}>
-										{'Embed Explainer Video'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'link'}
-											name={'link'}
-											type='text'
-											size={'xs'}
-											value={formik.values.link}
-											onChange={formik.handleChange}
-											placeholder='Enter Link'
-										/>
-									</InputGroup>
-								</FormControl>
-							</Flex>
-						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
-								onClick={() => setStep(2)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-							>
-								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
-							</Button>
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl>
+								<FormLabel fontSize={'xs'} htmlFor={'video'}>
+									{'Embed Explainer Video'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'video'}
+										name={'video'}
+										type='text'
+										size={'xs'}
+										value={formik.values.video}
+										onChange={formik.handleChange}
+										placeholder='Enter Link'
+									/>
+								</InputGroup>
+							</FormControl>
 						</Flex>
 					</Flex>
-				</form>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(1)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(3)}>
+							Proceed
+						</Button>
+					</Flex>
+				</Flex>
 			</Flex>
 		</>
 	);
 };
 
-const Form3 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			link: '',
-			url: '',
-			location: '',
-			how: '',
-			description: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-			setStep(4);
-		},
-	});
+const Form3 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'sm'}>Pricing</Heading>
-						<Text fontSize={'xs'}>
-							Kindly Provide the information below to create your voucher
-						</Text>
-						<Divider />
-						<Flex p={5} bg={'white'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'location'}>
-										{'Voucher’s Monetary Worth'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'location'}
-											name={'location'}
-											type='text'
-											size={'xs'}
-											value={formik.values.location}
-											onChange={formik.handleChange}
-											placeholder='What’s the worth of this voucher. E.g ₦20,000'
-										/>
-									</InputGroup>
-								</FormControl>
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'url'}>
-										{'Voucher Amount'}
-									</FormLabel>
-									<InputGroup>
-										<Input
-											id={'url'}
-											name={'url'}
-											type='text'
-											size={'xs'}
-											value={formik.values.url}
-											onChange={formik.handleChange}
-											placeholder='How much would you sell this voucher for?'
-										/>
-									</InputGroup>
-								</FormControl>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'sm'}>Pricing</Heading>
+					<Text fontSize={'xs'}>
+						Kindly Provide the information below to create your voucher
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'white'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'worth'}>
+									{'Voucher’s Monetary Worth'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'worth'}
+										name={'worth'}
+										type='text'
+										size={'xs'}
+										value={formik.values.worth}
+										onChange={formik.handleChange}
+										placeholder='What’s the worth of this voucher. E.g ₦20,000'
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'amount'}>
+									{'Voucher Amount'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'amount'}
+										name={'amount'}
+										type='text'
+										size={'xs'}
+										value={formik.values.amount}
+										onChange={formik.handleChange}
+										placeholder='How much would you sell this voucher for?'
+									/>
+								</InputGroup>
+							</FormControl>
 
-								<FormControl isRequired>
-									<FormLabel fontSize={'xs'} htmlFor={'role'}>
-										{'Should this Voucher be redeemable once?'}
-									</FormLabel>
-									<Select size={'xs'} placeholder='Draft'>
-										<option value='option1'>Yes, it should</option>
-										<option value='option2'>
-											No, it can be redeemable multiple times
-										</option>
-									</Select>
-								</FormControl>
-							</Flex>
-						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
-								onClick={() => setStep(2)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-							>
-								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
-							</Button>
+							{/* <FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'role'}>
+									{'Should this Voucher be redeemable once?'}
+								</FormLabel>
+								<Select size={'xs'} placeholder='Draft'>
+									<option value='option1'>Yes, it should</option>
+									<option value='option2'>
+										No, it can be redeemable multiple times
+									</option>
+								</Select>
+							</FormControl> */}
 						</Flex>
 					</Flex>
-				</form>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(2)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(4)}>
+							Proceed
+						</Button>
+					</Flex>
+				</Flex>
 			</Flex>
 		</>
 	);
 };
 
-const Form4 = ({ setStep }: { setStep: (num: number) => void }) => {
-	const formik = useFormik({
-		initialValues: {
-			accountNumber: '',
-			accountName: '',
-			bvn: '',
-			bank: '',
-		},
-		async onSubmit(values) {
-			console.log(values);
-			setStep(5);
-		},
-	});
+const Form4 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
-				<form onSubmit={formik.handleSubmit}>
-					<Flex p={5} flexDir={'column'} gap={3}>
-						<Heading fontSize={'sm'}>Preview</Heading>
-						<Text fontSize={'xs'}>
-							A sneak peak on how the vouchers would look to your merchant
-						</Text>
-						<Divider />
-						<Flex p={5} bg={'white'}>
-							<Flex flexDir={'column'} gap={3} w={'100%'}>
-								<Text>Expecting cards</Text>
-							</Flex>
-						</Flex>
-						<Divider />
-						<Flex justifyContent={'flex-end'} gap={3}>
-							<Button
-								onClick={() => setStep(4)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-							>
-								Back
-							</Button>
-							<Button colorScheme='purple' size={'xs'} type='submit'>
-								Proceed
-							</Button>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'sm'}>Preview</Heading>
+					<Text fontSize={'xs'}>
+						A sneak peak on how the vouchers would look to your merchant
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'white'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<Text>Expecting cards</Text>
 						</Flex>
 					</Flex>
-				</form>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(4)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button colorScheme='purple' size={'xs'} type='submit'>
+							Create
+						</Button>
+					</Flex>
+				</Flex>
 			</Flex>
 		</>
 	);
@@ -632,6 +637,69 @@ const Form4 = ({ setStep }: { setStep: (num: number) => void }) => {
 
 const CreateVoucher = () => {
 	const [step, setStep] = useState(1);
+	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
+	const toast = useToast();
+	// const navigate = useNavigate();
+
+	const formik = useFormik({
+		initialValues: {
+			voucher_name: '',
+			promotional_title: '',
+			voucher_des: '',
+			redemption: '',
+			visibility: '',
+			usage_limit: '',
+			live: '',
+			worth: '',
+			amount: '',
+			image: '',
+			location_name: '',
+			url: '',
+			description: '',
+			redeem: '',
+			video: '',
+		},
+		async onSubmit(values) {
+			try {
+				const token = localStorage.getItem('PYMAILYR') || '';
+				const newVal = {
+					...values,
+					add_voucher: token,
+					usage_limit: values.usage_limit.replace('T', ' '),
+					live: values.live.replace('T', ' '),
+				};
+				console.log({ newVal });
+				const res = await voucherService.createVoucher(newVal);
+				console.log(res);
+
+				if (res.responseCode == 200) {
+					toast({
+						title: 'Vocuher successfully created.',
+						description: res.responseMessage,
+						status: 'success',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+					// navigate('/');
+				} else {
+					toast({
+						title: 'Error',
+						description:
+							res.responseMessage ||
+							'Opps! Something went wrong, try again later',
+						status: 'error',
+						duration: 9000,
+						isClosable: true,
+						position: 'top-right',
+					});
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		},
+	});
+
 	return (
 		<>
 			<Flex
@@ -644,6 +712,13 @@ const CreateVoucher = () => {
 				bgColor={'white'}
 			>
 				<Text>Create Voucher</Text>
+				<Flex justify={'center'} display={isLessThan600 ? 'flex' : 'none'}>
+					<CircularProgress value={step * 25} size={'70px'} color='#825ee4'>
+						<CircularProgressLabel fontSize={'xs'}>
+							{step} of 4
+						</CircularProgressLabel>
+					</CircularProgress>
+				</Flex>
 				<Flex gap={2}>
 					<Flex
 						flex={1}
@@ -652,6 +727,7 @@ const CreateVoucher = () => {
 						boxShadow={'md'}
 						fontSize={'xs'}
 						gap={3}
+						display={isLessThan600 ? 'none' : 'flex'}
 					>
 						<Text>Steps</Text>
 						<Flex
@@ -663,10 +739,10 @@ const CreateVoucher = () => {
 								value={step * 25}
 								colorScheme='purple'
 								w='130px'
-								size='sm'
+								size='xs'
 								borderRadius={'md'}
 							/>
-							<Text>{step} of 4</Text>
+							<Text width={'32px'}>{step} of 4</Text>
 						</Flex>
 
 						<ItemCheck label='Voucher Details' value={1} step={step} />
@@ -674,16 +750,18 @@ const CreateVoucher = () => {
 						<ItemCheck label='Pricing ' value={3} step={step} />
 						<ItemCheck label='Preview' value={4} step={step} />
 					</Flex>
-					<Flex bg={'#fbfbfb'} flex={3} p={5}>
-						{step === 1 ? (
-							<Form1 setStep={setStep} />
-						) : step === 2 ? (
-							<Form2 setStep={setStep} />
-						) : step === 3 ? (
-							<Form3 setStep={setStep} />
-						) : (
-							<Form4 setStep={setStep} />
-						)}
+					<Flex bg={'#fbfbfb'} flex={3} p={isLessThan600 ? 1 : 5}>
+						<form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
+							{step === 1 ? (
+								<Form1 setStep={setStep} formik={formik} />
+							) : step === 2 ? (
+								<Form2 setStep={setStep} formik={formik} />
+							) : step === 3 ? (
+								<Form3 setStep={setStep} formik={formik} />
+							) : (
+								<Form4 setStep={setStep} formik={formik} />
+							)}
+						</form>
 					</Flex>
 				</Flex>
 			</Flex>
@@ -691,7 +769,7 @@ const CreateVoucher = () => {
 	);
 };
 
-const ViewVoucherDrawer = ({ id, name, price, type, worth }: IVoucherTable) => {
+const ViewVoucherDrawer = ({ code, worth, Date,Name, amount,}: IVoucherTable) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
@@ -710,10 +788,10 @@ const ViewVoucherDrawer = ({ id, name, price, type, worth }: IVoucherTable) => {
 								<Text
 									fontSize={'xs'}
 									fontWeight={'bold'}
-								>{`${name} Voucher ${id}`}</Text>
+								>{`${Name} Voucher ${code}`}</Text>
 								<HStack px={'3'} borderRadius={'lg'} boxShadow={'md'}>
-									<Text fontSize={'xs'}>{type}</Text>
-									<Image src={verified} alt={name} />
+									<Text fontSize={'xs'}>{Date}</Text>
+									<Image src={verified} alt={Name} />
 								</HStack>
 								<Text
 									fontSize={'xs'}
@@ -729,7 +807,7 @@ const ViewVoucherDrawer = ({ id, name, price, type, worth }: IVoucherTable) => {
 									px={'3'}
 									borderRadius={'lg'}
 									boxShadow={'md'}
-								>{`@ ${price}`}</Text>
+								>{`@ ${formatCurrency(amount)}`}</Text>
 							</Flex>
 							<Divider />
 							<Text
@@ -836,63 +914,8 @@ const ViewVoucherDrawer = ({ id, name, price, type, worth }: IVoucherTable) => {
 	);
 };
 
-const VoucherTable = () => {
-	const vouchers: IVoucherTable[] = [
-		{
-			name: 'Emerald',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Draft',
-		},
-		{
-			name: 'Platinum',
-			type: 'Multiple Use	',
-			worth: '₦500,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Private',
-		},
-		{
-			name: 'Beryl',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Public',
-		},
-		{
-			name: 'Emerald',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Draft',
-		},
-		{
-			name: 'Platinum',
-			type: 'Multiple Use	',
-			worth: '₦500,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Private',
-		},
-		{
-			name: 'Beryl',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Public',
-		},
-	];
+const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
+	
 	return (
 		<>
 			<TableContainer>
@@ -926,28 +949,28 @@ const VoucherTable = () => {
 						</Tr>
 					</Thead>
 					<Tbody>
-						{vouchers.map((v) => (
-							<Tr fontSize={'xs'} key={v.id}>
-								<Td fontSize={'xs'}>{v.name}</Td>
-								<Td fontSize={'xs'}>{v.type}</Td>
-								<Td fontSize={'xs'}>{v.worth}</Td>
-								<Td fontSize={'xs'}>#{v.id}</Td>
+						{vouchers?.map((v) => (
+							<Tr fontSize={'xs'} key={v.code}>
+								<Td fontSize={'xs'}>{v.Name}</Td>
+								<Td fontSize={'xs'}>{v.redemption}</Td>
+								<Td fontSize={'xs'}>{formatCurrency(v.worth)}</Td>
+								<Td fontSize={'xs'}>{v.code}</Td>
 								<Td fontSize={'xs'}>{v.quantity}</Td>
-								<Td fontSize={'xs'}>{v.price}</Td>
+								<Td fontSize={'xs'}>{formatCurrency(v.amount)}</Td>
 								<Td fontSize={'xs'}>
 									<Badge
 										// eslint-disable-next-line no-constant-condition
 										bgColor={
-											v.status === 'Draft'
+											v.visibility === 'Draft'
 												? '#ffd5d0'
-												: v.status === 'Private'
+												: v.visibility === 'Private'
 												? '#ffe3b2'
 												: '#d4f7e1'
 										}
 										textTransform={'capitalize'}
 										borderRadius={'10px'}
 									>
-										{v.status}
+										{v.visibility}
 									</Badge>{' '}
 								</Td>
 								<Td>
@@ -970,6 +993,18 @@ const VoucherTable = () => {
 };
 
 const VoucherContent = () => {
+
+	const [vouchers, setVouchers] = useState<IVoucherTable[]>([])
+	useEffect(() => {
+		const fetchVouchers = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await voucherService.getVouchers({ get_voucher: token });
+			setVouchers(res[1])
+			console.log({ res, data: res[1] });
+		};
+
+		fetchVouchers();
+	}, []);
 	return (
 		<>
 			<Flex gap={{ base: 1, md: 3 }}>
@@ -1023,14 +1058,14 @@ const VoucherContent = () => {
 					</HStack>
 				</Flex>
 				<Divider />
-				<VoucherTable />
+				<VoucherTable vouchers={vouchers} />
 			</Flex>
 		</>
 	);
 };
 
 export const Voucher = () => {
-	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('create');
+	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('list');
 	return (
 		<>
 			<Flex flexDir={'column'} gap={3} justifyContent={'space-between'}>
