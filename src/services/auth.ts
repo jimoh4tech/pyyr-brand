@@ -159,11 +159,11 @@ const kyc = async ({
 	phone,
 	dob,
 	id_type,
-	id_nummber,
+	id_number,
 	accountNumber,
 	accountBank,
 	accountName,
-	bankCode,
+	bankcode,
 	bvn,
 	coc,
 	cac,
@@ -188,11 +188,11 @@ const kyc = async ({
 	phone?: string;
 	dob?: string;
 	id_type?: string;
-	id_nummber?: string;
+	id_number?: string;
 	accountNumber?: string;
 	accountBank?: string;
 	accountName?: string;
-	bankCode?: string;
+	bankcode?: string;
 	bvn?: string;
 	coc?: string;
 	cac?: string;
@@ -220,11 +220,11 @@ const kyc = async ({
 			phone,
 			dob,
 			id_type,
-			id_nummber,
+			id_number,
 			accountNumber,
 			accountBank,
 			accountName,
-			bankCode,
+			bankcode,
 			bvn,
 			coc,
 			cac,

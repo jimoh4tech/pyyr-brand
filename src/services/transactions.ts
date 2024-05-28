@@ -64,7 +64,7 @@ const walletBalance = async ({ pyyr_accounts }: { pyyr_accounts: string }) => {
 
 const verifyTopUp = async ({
 	email,
-	payment_ref
+	payment_ref,
 }: {
 	email: string;
 	payment_ref: string;
@@ -82,10 +82,67 @@ const verifyTopUp = async ({
 	return res.data;
 };
 
+const withdrawal = async ({
+	ptb,
+	accountNumber,
+	beneficiaryAccountName,
+	beneficiaryBank,
+	recipient_code,
+	amount,
+}: {
+	ptb: string;
+	accountNumber: string;
+	beneficiaryAccountName: string;
+	beneficiaryBank: string;
+	recipient_code: string;
+	amount: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			ptb,
+			accountNumber,
+			beneficiaryAccountName,
+			beneficiaryBank,
+			recipient_code,
+			amount,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
+const confirmWithdrawal = async ({
+	confirm_ptb,
+	pin,
+	email,
+}: {
+	confirm_ptb: string;
+	pin: string;
+	email: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			confirm_ptb,
+			pin,
+			email,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
 export default {
 	getBankList,
 	getAccountName,
 	topUp,
 	verifyTopUp,
 	walletBalance,
+	withdrawal,
+	confirmWithdrawal,
 };

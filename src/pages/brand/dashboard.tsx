@@ -106,7 +106,7 @@ export const DisplayCard = ({
 	icon,
 	title,
 }: {
-	value: string;
+	value: string | number;
 	label: string;
 	icon: string;
 	title?: string;

@@ -1,4 +1,3 @@
-
 import {
 	Avatar,
 	Badge,
@@ -12,8 +11,11 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
+	FormControl,
+	FormLabel,
 	HStack,
 	Input,
+	InputGroup,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -21,6 +23,8 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
+	PinInput,
+	PinInputField,
 	Select,
 	Stack,
 	Table,
@@ -32,72 +36,336 @@ import {
 	Thead,
 	Tr,
 	useDisclosure,
+	useToast,
 } from '@chakra-ui/react';
 import { DisplayCard } from './dashboard';
 import account from '../../assets/account.svg';
 import emrald from '../../assets/emrald.svg';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import moment from 'moment';
 import { IWalletTable } from '../../interface/wallet';
 import { IoEyeOutline } from 'react-icons/io5';
+import { useFormik } from 'formik';
+import { useNavigate } from 'react-router-dom';
+import transactionsService from '../../services/transactions';
+import { formatCurrency } from '../../util/format-currency.util';
 
-const ModalForm1 = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ModalForm1 = ({ formik, balance }: { formik: any; balance: number }) => {
 	return (
 		<>
-			<Text fontSize={'sm'} fontWeight={'semibold'}>
-				How much would you like to withdraw?
-			</Text>
-			<HStack>
-				<Text fontSize={'sm'}>Balance:</Text>
-				<Text fontSize={'sm'}>₦540,000</Text>
-			</HStack>
-			<Flex justifyContent={'space-between'}>
-				<Text fontSize={'sm'}>Enter amount</Text>
-				<Input type='number' />
-			</Flex>
+			<Stack gap={4}>
+				<Text fontSize={'sm'} fontWeight={'semibold'}>
+					How much would you like to withdraw?
+				</Text>
+				<HStack>
+					<Text fontSize={'sm'}>Balance:</Text>
+					<Text fontSize={'sm'} color={'#825EE4'}>
+						{formatCurrency(balance)}
+					</Text>
+				</HStack>
+				<Flex justifyContent={'space-between'} alignItems={'center'}>
+					<Text fontSize={'sm'}>Enter amount</Text>
+					<Input
+						id='amount'
+						type='number'
+						name='amount'
+						value={formik.values.amount}
+						onChange={formik.handleChange}
+						isInvalid={formik.values.amount > balance}
+						width={'70%'}
+					/>
+				</Flex>
+			</Stack>
 		</>
 	);
 };
 
-const ModalForm2 = () => {
+const ModalForm2 = ({
+	formik,
+	bankList,
+}: {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+	bankList: { code: string; id: string; name: string }[];
+}) => {
 	return (
 		<>
-			<Text fontSize={'sm'} fontWeight={'semibold'}>
-				How much would you like to withdraw?
-			</Text>
-			<HStack>
-				<Text fontSize={'sm'}>Balance:</Text>
-				<Text fontSize={'sm'}>₦540,000</Text>
-			</HStack>
-			<Flex>
-				<Text fontSize={'sm'}></Text>
-				<Input type='number' />
-			</Flex>
+			<Stack gap={3}>
+				<FormControl isRequired>
+					<FormLabel fontSize={'xs'} htmlFor={'bank'}>
+						{'Bank Name'}
+					</FormLabel>
+					<Select
+						size={'xs'}
+						name='beneficiaryBank'
+						placeholder='Select Back'
+						onChange={formik.handleChange}
+					>
+						{bankList.map((b) => (
+							<option key={b.id} value={`${b.code}:${b.name}`}>
+								{b.name}
+							</option>
+						))}
+					</Select>
+				</FormControl>
+				<FormControl isRequired>
+					<FormLabel fontSize={'xs'} htmlFor={'accountNumber'}>
+						{'Account Number'}
+					</FormLabel>
+					<Input
+						id={'accountNumber'}
+						name={'accountNumber'}
+						type='number'
+						w={'full'}
+						size={'xs'}
+						value={formik.values.accountNumber}
+						onChange={formik.handleChange}
+						placeholder='Enter Account Number'
+					/>
+				</FormControl>
+				<FormControl isRequired>
+					<FormLabel fontSize={'xs'} htmlFor={'beneficiaryAccountName'}>
+						{'Account Name'}
+					</FormLabel>
+					<InputGroup>
+						<Input
+							id={'beneficiaryAccountName'}
+							name={'beneficiaryAccountName'}
+							type='text'
+							size={'xs'}
+							value={formik.values.beneficiaryAccountName}
+							onChange={formik.handleChange}
+							placeholder='Enter Account Name'
+							isDisabled={true}
+						/>
+					</InputGroup>
+				</FormControl>
+			</Stack>
 		</>
 	);
 };
-const ModalForm3 = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ModalForm3 = ({ formik }: { formik: any }) => {
 	return (
 		<>
-			<Text fontSize={'sm'} fontWeight={'semibold'}>
-				How much would you like to withdraw?
-			</Text>
-			<HStack>
-				<Text fontSize={'sm'}>Balance:</Text>
-				<Text fontSize={'sm'}>₦540,000</Text>
-			</HStack>
-			<Flex>
-				<Text fontSize={'sm'}></Text>
-				<Input type='number' />
-			</Flex>
+			<Stack gap={3}>
+				<Flex justifyContent={'space-between'}>
+					<Text fontSize={'xs'}>Amount</Text>
+					<Text fontSize={'xs'}>{formatCurrency(formik.values.amount)}</Text>
+				</Flex>
+				<Flex justifyContent={'space-between'}>
+					<Text fontSize={'xs'}>Processing Fee</Text>
+					<Text fontSize={'xs'}>{formatCurrency(250)}</Text>
+				</Flex>
+				<Flex justifyContent={'space-between'}>
+					<Text fontSize={'xs'}>Receiving Account</Text>
+					<Text fontSize={'xs'}>{formik.values.accountNumber}</Text>
+				</Flex>
+				<Flex justifyContent={'space-between'}>
+					<Text fontSize={'xs'}>Account Name</Text>
+					<Text fontSize={'xs'}>{formik.values.beneficiaryAccountName}</Text>
+				</Flex>
+			</Stack>
 		</>
 	);
 };
 
-const WithdrawalModal = () => {
+const ModalForm4 = ({
+	pin,
+	setPin,
+}: {
+	pin: string; // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setPin: any;
+}) => {
+	return (
+		<>
+			<Stack>
+				<Text>Enter the code</Text>
+				<Text>We've sent an OTP to your email to confirm transaction</Text>
+				<HStack>
+					<PinInput otp value={pin} onChange={(val) => setPin(val)}>
+						<PinInputField />
+						<PinInputField />
+						<PinInputField />
+						<PinInputField />
+					</PinInput>
+				</HStack>
+
+				<Button colorScheme='purple' type='submit'>
+					Submit
+				</Button>
+			</Stack>
+		</>
+	);
+};
+
+const WithdrawalModal = ({ balance }: { balance: number }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [step, setStep] = useState(1);
+	const [pin, setPin] = useState('');
+	const [confirm_ptb, setConfirm] = useState('');
+	const toast = useToast();
+	const navigate = useNavigate();
+
+	const [bankList, setBankList] = useState<
+		{ code: string; id: string; name: string }[]
+	>([]);
+	const formik = useFormik({
+		initialValues: {
+			ptb: '',
+			accountNumber: '',
+			beneficiaryAccountName: '',
+			beneficiaryBank: '',
+			recipient_code: '',
+			amount: 0,
+		},
+		async onSubmit(values) {
+			console.log(values);
+			if (values.amount > balance)
+				return;
+			if (step < 3) setStep(step + 1);
+			else if (step === 3) {
+				try {
+					const bank = values.beneficiaryBank.split(':');
+					const email = localStorage.getItem('PYMAILYR') || '';
+					const newVal = {
+						...values,
+						recipient_code: bank[0],
+						accountBank: bank[1],
+						email,
+						amount: values.amount.toString(),
+					};
+					console.log({ newVal });
+					const res = await transactionsService.withdrawal(newVal);
+					console.log(res);
+
+					if (res.responseCode == 200) {
+						toast({
+							title: 'Trasaction successfully initiated',
+							description: res.responseMessage,
+							status: 'success',
+							duration: 9000,
+							isClosable: true,
+							position: 'top-right',
+						});
+						setConfirm(res.transactionCode);
+						setStep(step + 1);
+					} else {
+						toast({
+							title: 'Error',
+							description:
+								res.responseMessage ||
+								'Opps! Something went wrong, try again later',
+							status: 'error',
+							duration: 9000,
+							isClosable: true,
+							position: 'top-right',
+						});
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			} else {
+				try {
+					const email = localStorage.getItem('PYMAILYR') || '';
+					const newVal = {
+						confirm_ptb,
+						pin,
+						email,
+					};
+					console.log({ newVal });
+					const res = await transactionsService.confirmWithdrawal(newVal);
+					console.log(res);
+
+					if (res.responseCode == 200) {
+						toast({
+							title: 'Transfer Successfully completed',
+							description: res.responseMessage,
+							status: 'success',
+							duration: 9000,
+							isClosable: true,
+							position: 'top-right',
+						});
+						navigate('/');
+					} else {
+						toast({
+							title: 'Error',
+							description:
+								res.responseMessage ||
+								'Opps! Something went wrong, try again later',
+							status: 'error',
+							duration: 9000,
+							isClosable: true,
+							position: 'top-right',
+						});
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		},
+	});
+
+	const fetchAccountName = async () => {
+		try {
+			const ptb = localStorage.getItem('PYMAILYR') || '';
+			const bank = formik.values.beneficiaryBank.split(':');
+			console.log({
+				get_account: formik.values.accountNumber,
+				bankcode: bank[0],
+			});
+			const res = await transactionsService.getAccountName({
+				get_account: formik.values.accountNumber,
+				bankcode: bank[0],
+			});
+			console.log({ res });
+			if (res.status) {
+				formik.setValues({
+					...formik.values,
+					beneficiaryAccountName: res.data.account_name,
+					recipient_code: bank[0],
+					ptb,
+				});
+				toast({
+					title: 'Success',
+					description: res.message,
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			} else {
+				toast({
+					title: 'Error',
+					description:
+						res.message || 'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	useEffect(() => {
+		const fetchBankList = async () => {
+			const banks = await transactionsService.getBankList();
+			console.log({ banks });
+			setBankList(banks.data);
+		};
+
+		if (bankList.length === 0) fetchBankList();
+
+		if (formik.values.accountNumber.toString().length === 10) {
+			console.log(formik.values.accountNumber.toString().length === 10);
+			fetchAccountName();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [formik.values.accountNumber]);
 
 	return (
 		<>
@@ -112,30 +380,42 @@ const WithdrawalModal = () => {
 			</Button>
 			<Modal onClose={onClose} isOpen={isOpen} isCentered>
 				<ModalOverlay />
-				<ModalContent gap={4}>
-					<ModalHeader fontSize={'md'}>Withdraw</ModalHeader>
-					<ModalCloseButton />
-					<Divider />
-					<ModalBody>
-						{step === 1 ? (
-							<ModalForm1 />
-						) : step === 2 ? (
-							<ModalForm2 />
-						) : (
-							<ModalForm3 />
+				<form onSubmit={formik.handleSubmit}>
+					<ModalContent gap={4}>
+						<ModalHeader fontSize={'md'}>
+							{step !== 3 ? 'Withdraw' : 'Confirm Details'}
+						</ModalHeader>
+						<ModalCloseButton />
+						<Divider />
+						<ModalBody>
+							{step === 1 ? (
+								<ModalForm1 formik={formik} balance={balance} />
+							) : step === 2 ? (
+								<ModalForm2 bankList={bankList} formik={formik} />
+							) : step === 3 ? (
+								<ModalForm3 formik={formik} />
+							) : (
+								<ModalForm4 pin={pin} setPin={setPin} />
+							)}
+						</ModalBody>
+						<Divider />
+						{step < 4 && (
+							<ModalFooter>
+								<Button
+									size={'sm'}
+									mr={3}
+									variant={'outline'}
+									onClick={() => (step === 1 ? setStep(1) : setStep(step - 1))}
+								>
+									Cancel
+								</Button>
+								<Button size={'sm'} colorScheme='purple' type='submit'>
+									{step < 3 ? 'Proceed' : 'Yes, proceed'}
+								</Button>
+							</ModalFooter>
 						)}
-					</ModalBody>
-					<Divider />
-					<ModalFooter>
-						<Button
-							size={'sm'}
-							onClick={() => setStep(step + 1)}
-							colorScheme='purple'
-						>
-							Proceed
-						</Button>
-					</ModalFooter>
-				</ModalContent>
+					</ModalContent>
+				</form>
 			</Modal>
 		</>
 	);
@@ -403,17 +683,41 @@ export const Wallet = () => {
 		moment().subtract(1, 'days').format('YYYY-MM-DD')
 	);
 	const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'));
+
+	const [balance, setBalance] = useState(0);
+
+	useEffect(() => {
+		const fetchBalance = async () => {
+			const email = localStorage.getItem('PYMAILYR') || '';
+			console.log({ email });
+			const res = await transactionsService.walletBalance({
+				pyyr_accounts: email,
+			});
+			console.log(res);
+			setBalance(res.currentBalance);
+		};
+		fetchBalance();
+	}, []);
+
 	return (
 		<>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard value='₦0' label='Wallet Balance' icon={emrald} />
+				<DisplayCard
+					value={formatCurrency(balance)}
+					label='Wallet Balance'
+					icon={emrald}
+				/>
 				<DisplayCard
 					value='0987 *** ***'
 					label='Account Info'
 					icon={account}
 					title='Spotify Limited'
 				/>
-				<DisplayCard value='₦0' label='Earnings' icon={emrald} />
+				<DisplayCard
+					value={formatCurrency(balance)}
+					label='Earnings'
+					icon={emrald}
+				/>
 			</Flex>
 			<Flex
 				boxShadow={'md'}
@@ -465,7 +769,7 @@ export const Wallet = () => {
 							<option value='option3'>Last Month</option>
 						</Select>
 					</Flex>
-					<WithdrawalModal />
+					<WithdrawalModal balance={balance} />
 				</Flex>
 
 				<WalletTable />

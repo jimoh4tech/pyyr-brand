@@ -732,7 +732,7 @@ const Form5 = ({
 					<Divider />
 					<Flex p={5} bg={'#fbfbfb'}>
 						<Flex flexDir={'column'} gap={3} w={'100%'}>
-							<FormControl isRequired>
+							<FormControl >
 								<FormLabel fontSize={'xs'} htmlFor={'certificate'}>
 									{'Certificate of Corporation'}
 								</FormLabel>
@@ -749,7 +749,7 @@ const Form5 = ({
 									}}
 								/>
 							</FormControl>
-							<FormControl isRequired>
+							<FormControl >
 								<FormLabel fontSize={'xs'} htmlFor={'cac'}>
 									{'Form CAC'}
 								</FormLabel>
@@ -766,7 +766,7 @@ const Form5 = ({
 									}}
 								/>
 							</FormControl>
-							<FormControl isRequired>
+							<FormControl >
 								<FormLabel fontSize={'xs'} htmlFor={'id'}>
 									{'National Identity'}
 								</FormLabel>
@@ -899,6 +899,9 @@ export const BrandKYC = () => {
 					bankcode: bank[0],
 					accountBank: bank[1],
 					email,
+					accountNumber: values.accountNumber.toString(),
+					b_phone: values.b_phone.toString(),
+					phone: values.phone.toString(),
 				};
 				console.log({ newVal });
 				const res = await authService.kyc(newVal);
