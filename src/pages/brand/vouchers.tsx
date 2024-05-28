@@ -69,6 +69,7 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { IVoucherTable } from '../../interface/voucher';
 import voucherService from '../../services/voucher';
 import { formatCurrency } from '../../util/format-currency.util';
+import { useNavigate } from 'react-router-dom';
 
 const ModalForm1 = () => {
 	return (
@@ -595,13 +596,12 @@ const Form3 = ({
 };
 
 const VoucherCard = ({
-	image,
 	amount,
 	worth,
 	redemption,
 	voucher_name,
 }: {
-	image: string;
+	// image: string;
 	amount: string;
 	worth: string;
 	voucher_name: string;
@@ -611,7 +611,7 @@ const VoucherCard = ({
 		<Card backgroundColor={'#FF5C30'}>
 			<CardHeader>
 				<Flex justifyContent={'space-between'}>
-					<Avatar src={image} size={'xs'} />
+					<Avatar name={voucher_name} size={'xs'} />
 					<Text>#763</Text>
 				</Flex>
 			</CardHeader>
@@ -673,7 +673,12 @@ const Form4 = ({
 						>
 							Back
 						</Button>
-						<Button colorScheme='purple' size={'xs'} type='submit'>
+						<Button
+							colorScheme='purple'
+							size={'xs'}
+							type='submit'
+							isLoading={formik.isSubmitting}
+						>
 							Create
 						</Button>
 					</Flex>
@@ -729,7 +734,7 @@ const CreateVoucher = () => {
 						isClosable: true,
 						position: 'top-right',
 					});
-					// navigate('/');
+					// navigate('/vouchers');
 				} else {
 					toast({
 						title: 'Error',

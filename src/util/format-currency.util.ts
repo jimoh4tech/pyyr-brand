@@ -6,7 +6,7 @@ export function formatCurrency(amount: number | string): string {
 	};
 
 	// Format the currency using toLocaleString method
-	const formattedCurrency: string = amount.toLocaleString('en-NG', options);
+	const formattedCurrency: string = Number(amount).toLocaleString('en-NG', options);
 
 	return formattedCurrency;
 }

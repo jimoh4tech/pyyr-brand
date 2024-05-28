@@ -1,7 +1,10 @@
 import { Avatar, Card, CardBody, Flex, Stack, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { IVoucherTable } from '../../interface/voucher';
+import voucherService from '../../services/voucher';
 
 
-const MarketPlaceCard = () => {
+const MarketPlaceCard = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 	return (
 		<Flex flexWrap={'wrap'} gap={2}>
 			<Card maxW={'270px'}>
@@ -244,6 +247,18 @@ const MarketPlaceCard = () => {
 };
 
 export const MarketPlacePage = () => {
+
+	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+	useEffect(() => {
+		const fetchVouchers = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await voucherService.getAllVouchers({ all_voucher: token });
+			setVouchers(res[1]);
+			console.log({ res, data: res[1] });
+		};
+
+		fetchVouchers();
+	}, []);
 	return (
 		<Stack>
 			<Flex
@@ -264,7 +279,7 @@ export const MarketPlacePage = () => {
 					</Flex>
 				</Flex>
 
-				<MarketPlaceCard />
+				<MarketPlaceCard vouchers={vouchers}/>
 			</Flex>
 		</Stack>
 	);

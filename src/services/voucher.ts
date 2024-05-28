@@ -83,7 +83,21 @@ const getVouchers = async ({
 	return res.data;
 };
 
+const getAllVouchers = async ({ all_voucher }: { all_voucher: string }) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			all_voucher,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
 export default {
-  createVoucher,
-  getVouchers
+	createVoucher,
+	getVouchers,
+	getAllVouchers,
 };

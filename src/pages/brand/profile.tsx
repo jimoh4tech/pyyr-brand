@@ -31,16 +31,17 @@ import { CurrentUserContext } from '../../context/user.context';
 import userService from '../../services/user';
 
 const Form1 = () => {
+	const { currentUser } = useContext(CurrentUserContext);
 	const formik = useFormik({
 		initialValues: {
-			firstname: '',
-			lastname: '',
-			email: '',
-			phone: '',
+			firstName: currentUser?.firstName || '',
+			lastName: currentUser?.lastName || '',
+			mail: currentUser?.mail || '',
+			phone: currentUser?.phone || '',
 			role: '',
-			dob: '',
-			type: '',
-			idNumber: '',
+			dob: currentUser?.dob || '',
+			type: currentUser?.id_type || '',
+			id_number: currentUser?.id_number || '',
 		},
 		async onSubmit(values) {
 			console.log(values);
@@ -63,37 +64,37 @@ const Form1 = () => {
 							<HStack>
 								<Input
 									id={'name'}
-									name={'firstname'}
+									name={'firstName'}
 									type='text'
 									w={'full'}
 									size={'xs'}
-									value={formik.values.firstname}
+									value={formik.values.firstName}
 									onChange={formik.handleChange}
 									placeholder='First Name'
 								/>
 								<Input
 									id={'name'}
-									name={'lastname'}
+									name={'lastName'}
 									type='text'
 									w={'full'}
 									size={'xs'}
-									value={formik.values.lastname}
+									value={formik.values.lastName}
 									onChange={formik.handleChange}
 									placeholder='Last Name'
 								/>
 							</HStack>
 						</FormControl>
 						<FormControl isRequired>
-							<FormLabel fontSize={'xs'} htmlFor={'email'}>
+							<FormLabel fontSize={'xs'} htmlFor={'mail'}>
 								{'Email Address'}
 							</FormLabel>
 							<InputGroup>
 								<Input
-									id={'email'}
-									name={'email'}
+									id={'mail'}
+									name={'mail'}
 									type='email'
 									size={'xs'}
-									value={formik.values.email}
+									value={formik.values.mail}
 									onChange={formik.handleChange}
 									placeholder='Enter Email'
 								/>
@@ -107,7 +108,7 @@ const Form1 = () => {
 								<Input
 									id={'phone'}
 									name={'phone'}
-									type='phone'
+									type='number'
 									size={'xs'}
 									value={formik.values.phone}
 									onChange={formik.handleChange}
@@ -116,29 +117,39 @@ const Form1 = () => {
 							</InputGroup>
 						</FormControl>
 						<FormControl isRequired>
-							<FormLabel fontSize={'xs'} htmlFor={'role'}>
-								{'Role'}
+							<FormLabel fontSize={'xs'} htmlFor={'dob'}>
+								{'Date of Birth'}
 							</FormLabel>
 							<InputGroup>
 								<Input
-									id={'role'}
-									name={'role'}
-									type='text'
+									id={'dob'}
+									name={'dob'}
+									type='date'
 									size={'xs'}
-									value={formik.values.role}
+									value={formik.values.dob}
 									onChange={formik.handleChange}
-									placeholder='Enter your role in the company'
+									placeholder='Enter date'
 								/>
 							</InputGroup>
 						</FormControl>
 						<FormControl isRequired>
-							<FormLabel fontSize={'xs'} htmlFor={'role'}>
+							<FormLabel fontSize={'xs'} htmlFor={'id_type'}>
 								{'Select ID'}
 							</FormLabel>
-							<Select size={'xs'} placeholder='Select option'>
-								<option value='option1'>Option 1</option>
-								<option value='option2'>Option 2</option>
-								<option value='option3'>Option 3</option>
+
+							<Select
+								size={'xs'}
+								onChange={formik.handleChange}
+								name='id_type'
+								placeholder='Select option'
+							>
+								<option value='NIN'>NIN</option>
+								<option value='BVN'>BVN</option>
+								<option value='Driver Lisence'>Driver's Lisence</option>
+								<option value='Internation Passport'>
+									Internation Passport
+								</option>
+								<option value='Voter Card'>Voter's Card</option>
 							</Select>
 						</FormControl>
 						<FormControl isRequired>
@@ -148,10 +159,10 @@ const Form1 = () => {
 							<InputGroup>
 								<Input
 									id={'idNumber'}
-									name={'idNumber'}
+									name={'id_number'}
 									type='text'
 									size={'xs'}
-									value={formik.values.idNumber}
+									value={formik.values.id_number}
 									onChange={formik.handleChange}
 									placeholder='Enter Select ID Number'
 								/>
@@ -173,24 +184,47 @@ const Form1 = () => {
 };
 
 const Form2 = () => {
+	const { currentUser } = useContext(CurrentUserContext);
+	const industries = [
+		'Agricuture',
+		'Commerce',
+		'Finance',
+		'Education',
+		'Gaming',
+		'Health',
+		'Hospitality',
+		'Entertainment',
+		'Logistics',
+		'Travel',
+		'Utility',
+	];
+
+	const businesses = [
+		'Sole Proprietorship',
+		'Partnership',
+		'Limited Liability Company (LLC)',
+		'Corporation',
+		'Nonprofit Organization',
+		'Cooperative',
+		'Franchise',
+		'Social Enterprise',
+		'Startup',
+	];
 	const formik = useFormik({
 		initialValues: {
-			firstname: '',
-			lastname: '',
-			businessName: '',
-			phone: '',
-			role: '',
-			dob: '',
-			city: '',
-			state: '',
-			country: '',
-			type: '',
-			idNumber: '',
-			date: '',
-			website: '',
-			rcNumber: '',
-			email: '',
-			logo: '',
+			brand_name: currentUser?.brand_name || '',
+			businessType: currentUser?.businessType || '',
+			city: currentUser?.city || '',
+			state: currentUser?.state || '',
+			country: currentUser?.country || '',
+			date: currentUser?.date || '',
+			website: currentUser?.website || '',
+			rc_number: currentUser?.rc_number || '',
+			logo: currentUser?.logo || '',
+
+			industry: currentUser?.industry || '',
+			b_mail: currentUser?.mail || '',
+			b_phone: currentUser?.phone || '',
 		},
 		async onSubmit(values) {
 			console.log(values);
@@ -211,66 +245,100 @@ const Form2 = () => {
 								{'Business Logo'}
 							</FormLabel>
 							<Text fontSize={'xs'}>Add a business logo</Text>
-
-							{/* <Avatar src={add} as={Input} /> */}
 							<Input
 								id={'logo'}
 								name={'logo'}
 								type='file'
 								size={'xs'}
-								value={formik.values.logo}
-								onChange={formik.handleChange}
+								onChange={(event) => {
+									formik.setFieldValue(
+										'logo',
+										event.currentTarget.files && event.currentTarget.files[0]
+									);
+								}}
 							/>
 						</FormControl>
 						<FormControl isRequired>
-							<FormLabel fontSize={'xs'} htmlFor={'businessName'}>
+							<FormLabel fontSize={'xs'} htmlFor={'brand_name'}>
 								{'Business Name'}
 							</FormLabel>
 							<InputGroup>
 								<Input
-									id={'businessName'}
-									name={'businessName'}
+									id={'brand_name'}
+									name={'brand_name'}
 									type='text'
 									size={'xs'}
-									value={formik.values.businessName}
+									value={formik.values.brand_name}
 									onChange={formik.handleChange}
 									placeholder='Business Name'
 								/>
 							</InputGroup>
 						</FormControl>
 						<FormControl isRequired>
-							<FormLabel fontSize={'xs'} htmlFor={'name'}>
+							<FormLabel fontSize={'xs'} htmlFor={'business Type'}>
 								{'Business Type'}
 							</FormLabel>
 							<HStack>
-								<Select size={'xs'} placeholder='Select Type'>
+								<Select
+									size={'xs'}
+									name='businessType'
+									placeholder='Select Type'
+									onChange={formik.handleChange}
+								>
+									{businesses.map((b) => (
+										<option key={b} value={b}>
+											{b}
+										</option>
+									))}
 									<option value='option1'>Option 1</option>
 									<option value='option2'>Option 2</option>
 									<option value='option3'>Option 3</option>
 								</Select>
-								<Select size={'xs'} placeholder='Industry'>
-									<option value='option1'>Option 1</option>
-									<option value='option2'>Option 2</option>
-									<option value='option3'>Option 3</option>
+								<Select
+									size={'xs'}
+									onChange={formik.handleChange}
+									name='industry'
+									placeholder='Industry'
+								>
+									{industries.map((i) => (
+										<option key={i} value={i}>
+											{i}
+										</option>
+									))}
 								</Select>
 							</HStack>
 						</FormControl>
 						<FormControl isRequired>
 							<FormLabel fontSize={'xs'} htmlFor={'name'}>
-								{'Business Type'}
+								{'Location'}
 							</FormLabel>
 							<HStack>
-								<Select size={'xs'} placeholder='City'>
+								<Select
+									size={'xs'}
+									onChange={formik.handleChange}
+									name='city'
+									placeholder='City'
+								>
 									<option value='option1'>Option 1</option>
 									<option value='option2'>Option 2</option>
 									<option value='option3'>Option 3</option>
 								</Select>
-								<Select size={'xs'} placeholder='State'>
+								<Select
+									size={'xs'}
+									onChange={formik.handleChange}
+									name='state'
+									placeholder='State'
+								>
 									<option value='option1'>Option 1</option>
 									<option value='option2'>Option 2</option>
 									<option value='option3'>Option 3</option>
 								</Select>
-								<Select size={'xs'} placeholder='Country'>
+								<Select
+									size={'xs'}
+									onChange={formik.handleChange}
+									name='country'
+									placeholder='Country'
+								>
 									<option value='option1'>Option 1</option>
 									<option value='option2'>Option 2</option>
 									<option value='option3'>Option 3</option>
@@ -298,10 +366,10 @@ const Form2 = () => {
 							<InputGroup>
 								<Input
 									id={'email'}
-									name={'email'}
+									name={'b_mail'}
 									type='email'
 									size={'xs'}
-									value={formik.values.email}
+									value={formik.values.b_mail}
 									onChange={formik.handleChange}
 									placeholder='Enter Email'
 								/>
@@ -314,10 +382,10 @@ const Form2 = () => {
 							<InputGroup>
 								<Input
 									id={'phone'}
-									name={'phone'}
-									type='phone'
+									name={'b_phone'}
+									type='number'
 									size={'xs'}
-									value={formik.values.phone}
+									value={formik.values.b_phone}
 									onChange={formik.handleChange}
 									placeholder='090908678000'
 								/>
@@ -346,10 +414,10 @@ const Form2 = () => {
 							<InputGroup>
 								<Input
 									id={'rcNumber'}
-									name={'rcNumber'}
+									name={'rc_number'}
 									type='text'
 									size={'xs'}
-									value={formik.values.rcNumber}
+									value={formik.values.rc_number}
 									onChange={formik.handleChange}
 									placeholder='Enter RC Number'
 								/>
