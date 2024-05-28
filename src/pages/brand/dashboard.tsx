@@ -5,8 +5,6 @@ import {
 	Box,
 	Button,
 	Card,
-	CardBody,
-	CardHeader,
 	Flex,
 	Heading,
 	Image,
@@ -115,22 +113,25 @@ export const DisplayCard = ({
 }) => {
 	return (
 		<>
-			<Card flex={1} size={{ base: 'sm', md: 'md' }}>
-				<CardHeader>
-					<Heading size={{ base: 'xs', md: 'sm' }} color={'#825EE4'}>
-						{' '}
-						{title}
-					</Heading>
-					<Heading size={{ base: 'sm', md: 'md' }}> {value}</Heading>
-				</CardHeader>
-				<CardBody>
-					<Flex justifyContent={'space-between'}>
-						<Text fontSize={{ base: '2xs', md: 'xs' }}>{label}</Text>
-						<Box bgSize={{ base: '2xs', md: 'sm' }}>
-							<Image src={icon} alt={label} />
-						</Box>
-					</Flex>
-				</CardBody>
+			<Card
+				flex={1}
+				size={{ base: 'sm', md: 'md' }}
+				px={{ base: 2, md: 5 }}
+				py={3}
+				gap={3}
+				justifyContent={'space-between'}
+			>
+				<Heading size={{ base: 'xs', md: 'sm' }} color={'#825EE4'}>
+					{' '}
+					{title}
+				</Heading>
+				<Heading size={{ base: 'sm', md: 'md' }}> {(value)}</Heading>
+				<Flex justifyContent={'space-between'}>
+					<Text fontSize={{ base: '2xs', md: 'xs' }}>{label}</Text>
+					<Box bgSize={{ base: '2xs', md: 'sm' }}>
+						<Image src={icon} alt={label} />
+					</Box>
+				</Flex>
 			</Card>
 		</>
 	);

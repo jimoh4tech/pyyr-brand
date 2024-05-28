@@ -677,8 +677,6 @@ export const MerchantKYC = () => {
 			coc: '',
 			cac: '',
 			idcard: '',
-			accountNumber: '',
-			accountName: '',
 			bvn: '',
 			firstName: '',
 			lastName: '',
@@ -698,7 +696,6 @@ export const MerchantKYC = () => {
 			industry: '',
 			b_mail: '',
 			b_phone: '',
-			accountBank: '',
 			mail: '',
 		},
 		async onSubmit(values) {
@@ -723,7 +720,7 @@ export const MerchantKYC = () => {
 						isClosable: true,
 						position: 'top-right',
 					});
-					navigate('/');
+					navigate('/merchant');
 				} else {
 					toast({
 						title: 'Error',

@@ -32,13 +32,16 @@ import progress from '../../assets/progress.svg';
 import image from '../../assets/image.svg';
 import rectangle from '../../assets/rectangle.svg';
 import { IoIosArrowForward } from 'react-icons/io';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import moment from 'moment';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { formatCurrency } from '../../util/format-currency.util';
+import { CurrentUserContext } from '../../context/user.context';
+import { useNavigate } from 'react-router-dom';
 
 const Empty = () => {
 	const [isLessthan500] = useMediaQuery('(max-width: 500px)');
+	const navigate = useNavigate();
 	return (
 		<>
 			<Alert
@@ -53,6 +56,7 @@ const Empty = () => {
 				<LuAlertCircle />
 				Welcome to Pyyr, kindly complete your profile to validate your account.
 				<Link
+					href='/merchant/kyc'
 					textDecoration={'underline'}
 					color={'#825EE4'}
 					fontSize={isLessthan500 ? 'xs' : 'sm'}
@@ -87,7 +91,7 @@ const Empty = () => {
 							size='sm'
 							colorScheme='purple'
 							mt={2}
-							onClick={() => console.log('s')}
+							onClick={() => navigate('/merchant/kyc')}
 							rightIcon={<IoIosArrowForward />}
 						>
 							Get Started
@@ -449,11 +453,11 @@ const DashboardContent = () => {
 };
 
 export const MerchantDashboard = () => {
-	const [isEmpty] = useState(false);
+	const { currentUser } = useContext(CurrentUserContext);
 	return (
 		<>
 			<Flex flexDir={'column'} gap={3} justifyContent={'space-between'}>
-				{isEmpty ? <Empty /> : <DashboardContent />}
+				{currentUser?.businessName === null ? <Empty /> : <DashboardContent />}
 			</Flex>
 		</>
 	);

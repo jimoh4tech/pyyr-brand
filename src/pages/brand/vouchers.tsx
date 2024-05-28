@@ -57,9 +57,8 @@ import { IoIosArrowForward } from 'react-icons/io';
 import empty from '../../assets/voucher_empty.svg';
 import platium from '../../assets/platium.svg';
 import emrald from '../../assets/emrald.svg';
-import gift from '../../assets/gift.svg';
 import verified from '../../assets/verified.svg';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { ItemCheck } from './kyc/index';
 import { DisplayCard } from './dashboard';
@@ -69,7 +68,7 @@ import { MdKeyboardArrowDown } from 'react-icons/md';
 import { IVoucherTable } from '../../interface/voucher';
 import voucherService from '../../services/voucher';
 import { formatCurrency } from '../../util/format-currency.util';
-import { useNavigate } from 'react-router-dom';
+import { CurrentUserContext } from '../../context/user.context';
 
 const ModalForm1 = () => {
 	return (
@@ -193,7 +192,8 @@ const CreateVoucherModal = ({
 	);
 };
 
-const Empty = ({ setStatus }: { setStatus: (status: string) => void }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Empty = ({ setStatus }: { setStatus: any }) => {
 	return (
 		<>
 			<Flex
@@ -596,22 +596,24 @@ const Form3 = ({
 };
 
 const VoucherCard = ({
+	image,
 	amount,
 	worth,
 	redemption,
 	voucher_name,
 }: {
-	// image: string;
+	image: File;
 	amount: string;
 	worth: string;
 	voucher_name: string;
 	redemption: string;
 }) => {
+	const { currentUser } = useContext(CurrentUserContext);
 	return (
-		<Card backgroundColor={'#FF5C30'}>
+		<Card backgroundImage={URL.createObjectURL(image)}>
 			<CardHeader>
 				<Flex justifyContent={'space-between'}>
-					<Avatar name={voucher_name} size={'xs'} />
+					<Avatar src={currentUser?.logo} name={voucher_name} size={'xs'} />
 					<Text>#763</Text>
 				</Flex>
 			</CardHeader>
@@ -688,11 +690,11 @@ const Form4 = ({
 	);
 };
 
-const CreateVoucher = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 	const [step, setStep] = useState(1);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
 	const toast = useToast();
-	// const navigate = useNavigate();
 
 	const formik = useFormik({
 		initialValues: {
@@ -722,6 +724,7 @@ const CreateVoucher = () => {
 					live: values.live.replace('T', ' '),
 				};
 				console.log({ newVal });
+
 				const res = await voucherService.createVoucher(newVal);
 				console.log(res);
 
@@ -734,7 +737,7 @@ const CreateVoucher = () => {
 						isClosable: true,
 						position: 'top-right',
 					});
-					// navigate('/vouchers');
+					setStatus('list');
 				} else {
 					toast({
 						title: 'Error',
@@ -828,12 +831,15 @@ const ViewVoucherDrawer = ({
 	Date,
 	Name,
 	amount,
+	redemption,
+	description,
+	image
 }: IVoucherTable) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
 		<>
-			<IoEyeOutline size={'20px'} onClick={onOpen} />
+			<IoEyeOutline size={'20px'} onClick={onOpen} cursor={'pointer'} />
 			<Drawer isOpen={isOpen} placement='right' onClose={onClose} size={'md'}>
 				<DrawerOverlay />
 				<DrawerContent>
@@ -842,7 +848,7 @@ const ViewVoucherDrawer = ({
 					<Divider />
 					<DrawerBody>
 						<Stack gap={5}>
-							<Avatar src={gift} />
+							<Avatar src={image} name={ Name} />
 							<Flex justifyContent={'space-between'}>
 								<Text
 									fontSize={'xs'}
@@ -859,7 +865,7 @@ const ViewVoucherDrawer = ({
 									boxShadow={'md'}
 								>
 									{' '}
-									{worth}
+									{formatCurrency(worth)}
 								</Text>
 								<Text
 									fontSize={'xs'}
@@ -876,12 +882,7 @@ const ViewVoucherDrawer = ({
 							>
 								Description
 							</Text>
-							<Text fontSize={'xs'}>
-								This {worth} worth of voucher is a gateway to a delightful and
-								personalised shopping experience for valued customers. With the
-								freedom to choose from our extensive range of products and
-								services, this voucher offers a myriad of possibilities
-							</Text>
+							<Text fontSize={'xs'}>{description}</Text>
 							<Text
 								fontSize={'xs'}
 								fontWeight={'semibold'}
@@ -889,14 +890,7 @@ const ViewVoucherDrawer = ({
 							>
 								How to Redeem Voucher
 							</Text>
-							<Text fontSize={'xs'}>
-								1. Present your voucher card at any of our store during
-								checkout.
-								<br />
-								2. Scan barcode using a barcode scanner at checkout <br />
-								3. Enter the unique voucher code at the online checkout on our
-								website to enjoy the virtual shopping experience.
-							</Text>
+							<Text fontSize={'xs'}>{redemption}</Text>
 							<Text
 								fontSize={'xs'}
 								fontWeight={'semibold'}
@@ -1050,19 +1044,14 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 	);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const VoucherContent = ({ setStatus }: { setStatus: any }) => {
-	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
-	useEffect(() => {
-		const fetchVouchers = async () => {
-			const token = localStorage.getItem('PYMAILYR') || '';
-			const res = await voucherService.getVouchers({ get_voucher: token });
-			setVouchers(res[1]);
-			console.log({ res, data: res[1] });
-		};
-
-		fetchVouchers();
-	}, []);
+const VoucherContent = ({
+	setStatus,
+	vouchers,
+}: {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setStatus: any;
+	vouchers: IVoucherTable[];
+}) => {
 	return (
 		<>
 			<Flex gap={{ base: 1, md: 3 }}>
@@ -1129,15 +1118,26 @@ const VoucherContent = ({ setStatus }: { setStatus: any }) => {
 
 export const Voucher = () => {
 	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('list');
+	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+	useEffect(() => {
+		const fetchVouchers = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await voucherService.getVouchers({ get_voucher: token });
+			setVouchers(res[1]);
+			console.log({ res, data: res[1] });
+		};
+
+		fetchVouchers();
+	}, [status]);
 	return (
 		<>
 			<Flex flexDir={'column'} gap={3} justifyContent={'space-between'}>
 				{status === 'empty' ? (
-					<Empty setStatus={() => setStatus('create')} />
+					<Empty setStatus={setStatus} />
 				) : status === 'create' ? (
-					<CreateVoucher />
+					<CreateVoucher setStatus={setStatus} />
 				) : (
-					<VoucherContent setStatus={() => setStatus('create')} />
+					<VoucherContent setStatus={setStatus} vouchers={vouchers} />
 				)}
 			</Flex>
 		</>
