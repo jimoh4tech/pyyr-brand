@@ -576,15 +576,16 @@ export const Profile = () => {
 
 	useEffect(() => {
 		const fetchAccountDetails = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
 			const res = await userService.getBankDetails({
-				get_bank: currentUser?.email || '',
+				get_bank: token,
 			});
-			console.log(res[1][0]);
+			// console.log({ res });
 			setAccountDetails(res[1][0]);
 		};
 
 		fetchAccountDetails();
-	});
+	}, []);
 
 	return (
 		<Stack p={5} borderRadius={'lg'} boxShadow={'lg'} bg={'white'} gap={7}>
@@ -675,8 +676,8 @@ export const Profile = () => {
 						<Text fontSize={'xs'}>{accountDetails[0]}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
-						<Text fontSize={'xs'}>Bank</Text>
-						<Text fontSize={'xs'}>{accountDetails[1]}</Text>
+						<Text fontSize={'xs'}>Bank Name</Text>
+						<Text fontSize={'xs'}>{accountDetails[3]}</Text>
 					</Flex>
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Account Name</Text>
