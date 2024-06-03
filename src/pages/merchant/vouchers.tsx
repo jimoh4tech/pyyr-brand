@@ -16,7 +16,7 @@ import { HiOutlineShoppingBag } from 'react-icons/hi';
 
 
 
-const WalletCard = () => {
+const VoucherCards = () => {
 	return (
 		<Flex flexWrap={'wrap'} gap={2}>
 			<Card>
@@ -204,9 +204,9 @@ export const MerchantVoucherPage = () => {
 	return (
 		<Stack>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard value='₦0' label='Cumulative Balance' icon={emrald} />
-				<DisplayCard value='0' label='No of Brand Vouchers' icon={emrald} />
-				<DisplayCard value='₦0' label='Gifted Vouchers' icon={emrald} />
+				<DisplayCard value={0} label='Cumulative Balance' icon={emrald} />
+				<DisplayCard value={0}label='No of Brand Vouchers' icon={emrald} />
+				<DisplayCard value={0} label='Gifted Vouchers' icon={emrald} />
 			</Flex>
 
 			<Flex
@@ -230,7 +230,7 @@ export const MerchantVoucherPage = () => {
 					</Button>
 				</Flex>
 
-				<WalletCard />
+				<VoucherCards />
 			</Flex>
 		</Stack>
 	);
