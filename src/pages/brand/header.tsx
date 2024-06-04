@@ -10,7 +10,6 @@ import {
 	Text,
 } from '@chakra-ui/react';
 import { FiSearch } from 'react-icons/fi';
-import image from '../../assets/Image.svg';
 import notification from '../../assets/notification.svg';
 import help from '../../assets/help.svg';
 import { CurrentUserContext } from '../../context/user.context';
@@ -58,7 +57,11 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
 						<Avatar size={'xs'} src={notification} />
 					</Box>
 					<Box>
-						<Avatar size={'sm'} src={image} />
+						<Avatar
+							size={'sm'}
+							src={currentUser?.logo}
+							name={currentUser?.first_name || currentUser?.brand_name}
+						/>
 					</Box>
 					<Text display={{ base: 'none', md: 'flex' }} fontSize={'sm'}>
 						{`Hello ${currentUser?.first_name || currentUser?.brand_name}`}

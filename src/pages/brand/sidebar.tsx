@@ -17,13 +17,12 @@ import profile from '../../assets/profile.svg';
 import user from '../../assets/user.svg';
 import wallet from '../../assets/wallet.svg';
 import notification from '../../assets/voucher.svg';
-import image from '../../assets/image.svg';
 import turn_left from '../../assets/turn_left.svg';
-
 import { useNavigate } from 'react-router-dom';
 import { INavItem } from '../../interface/interface.nav-items';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
+import { CurrentUserContext } from '../../context/user.context';
 
 interface SidebarProps extends BoxProps {
 	onClose: () => void;
@@ -177,6 +176,7 @@ export const BrandSidebarContent = ({
 }: SidebarProps) => {
 	const [isControlVisible, toggleControlVisibility] = useState(false);
 	const navigate = useNavigate();
+	const { currentUser } = useContext(CurrentUserContext);
 
 	const navItems: INavItem[] = [
 		{
@@ -274,13 +274,13 @@ export const BrandSidebarContent = ({
 					borderRadius={'5px'}
 				>
 					<Box>
-						<Avatar size={'sm'} src={image} />
+						<Avatar size={'sm'} src={currentUser?.logo} name={ currentUser?.firstName} />
 					</Box>
 					<Flex flexDir={'column'} color={'black'}>
 						<Text fontSize={'xs'} fontWeight={'bold'}>
-							Merchant
+							{currentUser?.firstName}
 						</Text>
-						<Text fontSize={'xs'}>textt@gksgii.com</Text>
+						<Text fontSize={'xs'}>{ currentUser?.email}</Text>
 					</Flex>
 				</Flex>
 				<Button
