@@ -63,18 +63,11 @@ const createVoucher = async ({
 	return res.data;
 };
 
-const getVouchers = async ({
-	get_voucher,
-	
-}: {
-	get_voucher: string;
-
-}) => {
+const getVouchers = async ({ get_voucher }: { get_voucher: string }) => {
 	const res = await axios.post(
 		`${baseUrl}`,
 		{
 			get_voucher,
-			
 		},
 		{
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -96,8 +89,105 @@ const getAllVouchers = async ({ all_voucher }: { all_voucher: string }) => {
 	return res.data;
 };
 
+const addVoucherToCart = async ({
+	add_cart,
+	email,
+}: {
+	add_cart: string;
+	email: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			add_cart,
+			email,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
+const reduceQtyVoucherFromCart = async ({
+	reduce_cart,
+	email,
+}: {
+	reduce_cart: string;
+	email: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			reduce_cart,
+			email,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
+const clearVoucherCart = async ({
+	clear_cart,
+	email,
+}: {
+	clear_cart: string;
+	email: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			clear_cart,
+			email,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
+const removeVoucherFromCart = async ({
+	remove_cart,
+	email,
+}: {
+	remove_cart: string;
+	email: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			remove_cart,
+			email,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
+const getAllCartVouchers = async ({ get_cart }: { get_cart: string }) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			get_cart,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
 export default {
 	createVoucher,
 	getVouchers,
 	getAllVouchers,
+	addVoucherToCart,
+	removeVoucherFromCart,
+	reduceQtyVoucherFromCart,
+	clearVoucherCart,
+	getAllCartVouchers,
 };

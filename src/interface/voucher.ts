@@ -1,8 +1,10 @@
 export interface IVoucherTable {
 	worth: string;
-	quantity: string;
+	qty: string;
 	expireDate?: string;
 	merchant?: string;
+	price?: string;
+	usage?: string;
 
 	Date: string;
 	Name: string;
