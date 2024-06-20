@@ -338,10 +338,7 @@ const Form1 = ({
 									<option value='Public'>Public</option>
 								</Select>
 							</FormControl>
-							<FormControl isRequired>
-								<FormLabel fontSize={'xs'} htmlFor={'role'}>
-									{'Redeem/Usage Window'}
-								</FormLabel>
+							{/* <FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'role'}>
 									{'Redeem/Usage Window'}
 								</FormLabel>
@@ -352,8 +349,8 @@ const Form1 = ({
 									value={formik.values.usage_limit}
 									onChange={formik.handleChange}
 								/>
-							</FormControl>
-							<FormControl isRequired>
+							</FormControl> */}
+							{/* <FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'Live'}>
 									{'When would you like to go live?'}
 								</FormLabel>
@@ -364,7 +361,7 @@ const Form1 = ({
 									value={formik.values.live}
 									onChange={formik.handleChange}
 								/>
-							</FormControl>
+							</FormControl> */}
 						</Flex>
 					</Flex>
 					<Divider />
@@ -703,8 +700,6 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 			voucher_des: '',
 			redemption: '',
 			visibility: '',
-			usage_limit: '',
-			live: '',
 			worth: '',
 			amount: '',
 			image: '',
@@ -720,8 +715,6 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 				const newVal = {
 					...values,
 					add_voucher: token,
-					usage_limit: values.usage_limit.replace('T', ' '),
-					live: values.live.replace('T', ' '),
 				};
 				console.log({ newVal });
 
@@ -828,12 +821,11 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 const ViewVoucherDrawer = ({
 	code,
 	worth,
-	Date,
 	Name,
 	amount,
 	redemption,
 	description,
-	image
+	// image,
 }: IVoucherTable) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -848,14 +840,13 @@ const ViewVoucherDrawer = ({
 					<Divider />
 					<DrawerBody>
 						<Stack gap={5}>
-							<Avatar src={image} name={ Name} />
+							<Avatar  name={Name} />
 							<Flex justifyContent={'space-between'}>
 								<Text
 									fontSize={'xs'}
 									fontWeight={'bold'}
 								>{`${Name} Voucher ${code}`}</Text>
 								<HStack px={'3'} borderRadius={'lg'} boxShadow={'md'}>
-									<Text fontSize={'xs'}>{Date}</Text>
 									<Image src={verified} alt={Name} />
 								</HStack>
 								<Text
@@ -1007,7 +998,7 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 								<Td fontSize={'xs'}>{v.redemption}</Td>
 								<Td fontSize={'xs'}>{formatCurrency(v.worth)}</Td>
 								<Td fontSize={'xs'}>{v.code}</Td>
-								<Td fontSize={'xs'}>{v.quantity}</Td>
+								<Td fontSize={'xs'}>{v.qty}</Td>
 								<Td fontSize={'xs'}>{formatCurrency(v.amount)}</Td>
 								<Td fontSize={'xs'}>
 									<Badge

@@ -190,10 +190,6 @@ export const CartItem = ({
 					{voucher.Name}
 				</Text>
 				<Text fontSize={'xs'}>{`Code: ${voucher.code}`}</Text>
-				<Text
-					color={voucher.usage === 'Valid' ? 'green' : 'red'}
-					fontSize={'xs'}
-				>{`Status: ${voucher.usage}`}</Text>
 			</Flex>
 
 			{/* Desktop */}

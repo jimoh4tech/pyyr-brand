@@ -8,7 +8,7 @@ const createVoucher = async ({
 	voucher_des,
 	redemption,
 	visibility,
-	usage_limit,
+	// usage_limit,
 	live,
 	worth,
 	amount,
@@ -25,7 +25,7 @@ const createVoucher = async ({
 	voucher_des?: string;
 	redemption?: string;
 	visibility?: string;
-	usage_limit?: string;
+	// usage_limit?: string;
 	live?: string;
 	worth?: string;
 	amount?: string;
@@ -45,7 +45,7 @@ const createVoucher = async ({
 			voucher_des,
 			redemption,
 			visibility,
-			usage_limit,
+			// usage_limit,
 			live,
 			worth,
 			amount,
@@ -181,6 +181,34 @@ const getAllCartVouchers = async ({ get_cart }: { get_cart: string }) => {
 	);
 	return res.data;
 };
+const getAllMerchantVouchers = async ({
+	list_voucher,
+}: {
+	list_voucher: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			list_voucher,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+const checkoutOrder = async ({ checkout }: { checkout: string }) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			checkout,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
 export default {
 	createVoucher,
 	getVouchers,
@@ -190,4 +218,6 @@ export default {
 	reduceQtyVoucherFromCart,
 	clearVoucherCart,
 	getAllCartVouchers,
+	getAllMerchantVouchers,
+	checkoutOrder,
 };

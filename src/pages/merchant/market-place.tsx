@@ -37,7 +37,7 @@ import {
 } from 'react-icons/md';
 import { CartItem } from './cart';
 
-const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
+export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
@@ -75,10 +75,6 @@ const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 							<Flex justifyContent={'space-between'}>
 								<Text fontSize={'small'}>Title:</Text>
 								<Text fontSize={'small'}>{voucher.promotional_title}</Text>
-							</Flex>
-							<Flex justifyContent={'space-between'}>
-								<Text fontSize={'small'}>Usage limit:</Text>
-								<Text fontSize={'small'}>{voucher.usage_limit}</Text>
 							</Flex>
 							<Flex justifyContent={'space-between'}>
 								<Text fontSize={'small'}>Description:</Text>
@@ -229,6 +225,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 	const [cartItems, setCartItems] = useState<IVoucherTable[]>([]);
 	const [total, setTotal] = useState('0');
 	const [refetchCart, setRefetchCart] = useState(true);
+	const [isLoading, toggleLoading] = useState(false);
 	useEffect(() => {
 		const fetchCartVouchers = async () => {
 			try {
@@ -245,6 +242,46 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 		};
 		fetchCartVouchers();
 	}, [refetchCart, isOpen]);
+
+	const toast = useToast();
+	const handleCheckout = async () => {
+		try {
+			toggleLoading(true);
+			const email = localStorage.getItem('PYMAILYR') || '';
+			const val = {
+				checkout: email,
+			};
+			console.log(val);
+			const res = await voucherService.checkoutOrder(val);
+			console.log(res);
+			if (res.responseCode == 200) {
+				toast({
+					title: 'Voucher Successfully Checkout',
+					description: res.responseMessage,
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+				toggleLoading(false);
+				onClose();
+			} else {
+				toggleLoading(false)
+				toast({
+					title: 'Error',
+					description:
+						res.responseMessage ||
+						'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<>
 			<Box
@@ -301,7 +338,9 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 						<Button variant='outline' mr={3} onClick={onClose}>
 							Close
 						</Button>
-						<Button colorScheme='purple'>Checkout</Button>
+						<Button colorScheme='purple' onClick={handleCheckout} isLoading={isLoading}>
+							Checkout
+						</Button>
 					</DrawerFooter>
 				</DrawerContent>
 			</Drawer>
