@@ -34,10 +34,10 @@ export const LoginPage = () => {
 			password: '',
 		},
 		async onSubmit(values) {
-			console.log(values);
+			// console.log(values);
 			try {
 				const res = await authServices.login(values);
-				console.log(res);
+				// console.log(res);
 				authServices.setToken(res.token);
 
 				const user = await userService.getFullUserDetail({

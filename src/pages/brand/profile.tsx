@@ -598,7 +598,7 @@ export const Profile = () => {
 				</Flex>
 
 				<Flex gap={4} alignItems={'center'}>
-					<Avatar name={currentUser?.businessName} />
+					<Avatar src={currentUser?.logo} name={currentUser?.businessName} />
 					<Stack>
 						<Text
 							fontSize={'xs'}

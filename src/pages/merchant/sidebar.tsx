@@ -125,6 +125,11 @@ export const MerchantSidebarContent = ({
 		},
 	];
 
+	const handleLogout = () => {
+		localStorage.removeItem('PYMAILYR');
+		navigate('/signin');
+	};
+
 	return (
 		<Flex
 			transition='3s ease'
@@ -170,7 +175,7 @@ export const MerchantSidebarContent = ({
 					/>
 				))}
 			</Stack>
-			<Stack gap={2} mt={'40'}>
+			<Stack gap={2} mt={'20'}>
 				<Flex
 					gap={2}
 					cursor={'pointer'}
@@ -179,13 +184,17 @@ export const MerchantSidebarContent = ({
 					borderRadius={'5px'}
 				>
 					<Box>
-						<Avatar size={'sm'} src={currentUser?.logo} name={currentUser?.firstName} />
+						<Avatar
+							size={'sm'}
+							src={currentUser?.logo}
+							name={currentUser?.firstName}
+						/>
 					</Box>
 					<Flex flexDir={'column'} color={'black'}>
 						<Text fontSize={'xs'} fontWeight={'bold'}>
 							{currentUser?.firstName}
 						</Text>
-						<Text fontSize={'xs'}>{ currentUser?.email}</Text>
+						<Text fontSize={'xs'}>{currentUser?.email}</Text>
 					</Flex>
 				</Flex>
 				<Button
@@ -193,6 +202,7 @@ export const MerchantSidebarContent = ({
 					boxShadow={'md'}
 					bgColor={'white'}
 					color={'red'}
+					onClick={handleLogout}
 				>
 					LOG OUT
 				</Button>

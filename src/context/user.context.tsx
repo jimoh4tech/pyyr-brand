@@ -33,8 +33,20 @@ export const CurrentUserProvider = ({ ...props }) => {
 				console.error(error);
 			}
 		}
-		validateToken();
-	}, []);
+		if (!currentUser) validateToken();
+
+		// Prevent brands from accessing merchant portal and vice versa.
+		if (currentUser) {
+			if (currentUser?.brand_name) {
+				!window.location.pathname.includes('merchant') ? '' : navigate('/');
+			} else {
+				window.location.pathname.includes('merchant')
+					? ''
+					: navigate('/merchant');
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentUser]);
 	return (
 		<CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
 			{props.children}

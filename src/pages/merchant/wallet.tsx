@@ -530,7 +530,7 @@ export const MerchantWalletPage = () => {
 
 	return (
 		<Stack>
-			<Flex gap={2} justifyContent={'flex-end'}>
+			<Flex gap={2} justifyContent={'flex-end'} flexWrap={'wrap'}>
 				<Button
 					variant={'outline'}
 					size={'xs'}
