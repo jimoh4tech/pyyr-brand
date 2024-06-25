@@ -12,6 +12,7 @@ import {
 	Link,
 	Select,
 	Stack,
+	Switch,
 	Table,
 	TableContainer,
 	Tbody,
@@ -24,9 +25,6 @@ import {
 } from '@chakra-ui/react';
 import { LuAlertCircle } from 'react-icons/lu';
 import empty from '../../assets/empty.svg';
-import campaignIcon from '../../assets/campaign_icon.svg';
-import balance from '../../assets/balance.svg';
-import progress from '../../assets/progress.svg';
 import image from '../../assets/image.svg';
 import rectangle from '../../assets/rectangle.svg';
 import { IoIosArrowForward } from 'react-icons/io';
@@ -103,14 +101,19 @@ const Empty = () => {
 export const DisplayCard = ({
 	value,
 	label,
-	icon,
+	isChecked,
 	title,
 }: {
 	value: string | number;
 	label: string;
-	icon: string;
+	isChecked: boolean;
 	title?: string;
 }) => {
+	const [isCheck, setCheck] = useState(isChecked);
+
+	const handleChange = () => {
+		setCheck(!isCheck);
+	};
 	return (
 		<>
 			<Card
@@ -125,12 +128,21 @@ export const DisplayCard = ({
 					{' '}
 					{title}
 				</Heading>
-				<Heading size={{ base: 'sm', md: 'md' }}> {(value)}</Heading>
+				<Heading size={{ base: 'sm', md: 'md' }}>
+					{' '}
+					{isCheck ? value : '*****'}
+				</Heading>
 				<Flex justifyContent={'space-between'}>
 					<Text fontSize={{ base: '2xs', md: 'xs' }}>{label}</Text>
-					<Box bgSize={{ base: '2xs', md: 'sm' }}>
+					{/* <Box bgSize={{ base: '2xs', md: 'sm' }}>
 						<Image src={icon} alt={label} />
-					</Box>
+					</Box> */}
+					<Switch
+						size='sm'
+						colorScheme='purple'
+						isChecked={isCheck}
+						onChange={handleChange}
+					/>
 				</Flex>
 			</Card>
 		</>
@@ -323,10 +335,10 @@ const DashboardContent = () => {
 				<DisplayCard
 					value='N1,600,000'
 					label='Cumulative Voucher Balance'
-					icon={balance}
+					isChecked={true}
 				/>
-				<DisplayCard value='N500,000' label='Amount Claimed' icon={progress} />
-				<DisplayCard value='10' label='Active Campaigns' icon={campaignIcon} />
+				<DisplayCard value='N500,000' label='Amount Claimed' isChecked={true} />
+				<DisplayCard value='10' label='Active Campaigns' isChecked={true} />
 			</Flex>
 			<Flex color={'black'} gap={3} flexWrap={'wrap'}>
 				<Flex flexDir={'column'} gap={5} bgColor={'white'}>

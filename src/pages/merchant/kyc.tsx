@@ -30,11 +30,12 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/auth';
-import userService from '../../services/user';
+import userServices from '../../services/user';
+import { CurrentUserContext } from '../../context/user.context';
 
 const NoConsentModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -669,6 +670,7 @@ const Form5 = ({
 export const MerchantKYC = () => {
 	const [step, setStep] = useState(2);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
+	const { setCurrentUser } = useContext(CurrentUserContext);
 	const toast = useToast();
 	const navigate = useNavigate();
 
@@ -705,12 +707,9 @@ export const MerchantKYC = () => {
 				const email = localStorage.getItem('PYMAILYR') || '';
 				console.log({ ...values, email });
 				const res = await authService.kyc({ ...values, email });
-				console.log(res);
-
-				const keep = await userService.getUserBusinessDetails({
-					business_user: '2lfbvg7kim@mailcurity.com',
-				});
-				console.log(keep);
+				const user = await userServices.getFullUserDetail({ full_user: email });
+				console.log({ res, user });
+				setCurrentUser(user);
 				if (res.responseCode == 200) {
 					toast({
 						title: 'KYC successfully submitted.',

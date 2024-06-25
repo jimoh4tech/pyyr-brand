@@ -40,7 +40,6 @@ import {
 } from '@chakra-ui/react';
 import { DisplayCard } from './dashboard';
 import account from '../../assets/account.svg';
-import emrald from '../../assets/emrald.svg';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
@@ -669,18 +668,18 @@ export const Wallet = () => {
 				<DisplayCard
 					value={formatCurrency(balance)}
 					label='Wallet Balance'
-					icon={emrald}
+					isChecked={false}
 				/>
 				<DisplayCard
 					value='0987 *** ***'
 					label='Account Info'
-					icon={account}
+					isChecked={true}
 					title='Spotify Limited'
 				/>
 				<DisplayCard
 					value={formatCurrency(balance)}
 					label='Earnings'
-					icon={emrald}
+					isChecked={false}
 				/>
 			</Flex>
 			<Flex

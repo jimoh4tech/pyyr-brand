@@ -55,8 +55,6 @@ import {
 } from '@chakra-ui/react';
 import { IoIosArrowForward } from 'react-icons/io';
 import empty from '../../assets/voucher_empty.svg';
-import platium from '../../assets/platium.svg';
-import emrald from '../../assets/emrald.svg';
 import verified from '../../assets/verified.svg';
 import { useContext, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
@@ -825,8 +823,8 @@ const ViewVoucherDrawer = ({
 	amount,
 	redemption,
 	description,
-	// image,
-}: IVoucherTable) => {
+}: // image,
+IVoucherTable) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
@@ -840,7 +838,7 @@ const ViewVoucherDrawer = ({
 					<Divider />
 					<DrawerBody>
 						<Stack gap={5}>
-							<Avatar  name={Name} />
+							<Avatar name={Name} />
 							<Flex justifyContent={'space-between'}>
 								<Text
 									fontSize={'xs'}
@@ -1038,26 +1036,34 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 const VoucherContent = ({
 	setStatus,
 	vouchers,
+	vData,
 }: {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setStatus: any;
 	vouchers: IVoucherTable[];
+	vData: {
+		total_purchase: string;
+		total_used: string;
+		total_voucher: number;
+	} | null;
 }) => {
 	return (
 		<>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard value='35' label='Total No Vouchers' icon={emrald} />
 				<DisplayCard
-					value='₦20,000 '
-					label='Most Purchased'
-					icon={emrald}
-					title='Emerald'
+					value={vData?.total_voucher || 0}
+					label='Total No Vouchers'
+					isChecked={true}
 				/>
 				<DisplayCard
-					value='₦500,000'
-					label='Least Purchased'
-					icon={platium}
-					title='Platinum'
+					value={formatCurrency(vData?.total_purchase || '')}
+					label='Total Purchased'
+					isChecked={true}
+				/>
+				<DisplayCard
+					value={formatCurrency(vData?.total_used || '')}
+					label='Total Used'
+					isChecked={true}
 				/>
 			</Flex>
 			<Flex
@@ -1108,17 +1114,26 @@ const VoucherContent = ({
 };
 
 export const Voucher = () => {
-	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('list');
+	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('empty');
 	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+	const [vData, setVData] = useState<{
+		total_purchase: string;
+		total_used: string;
+		total_voucher: number;
+	} | null>(null);
+
 	useEffect(() => {
 		const fetchVouchers = async () => {
 			const token = localStorage.getItem('PYMAILYR') || '';
 			const res = await voucherService.getVouchers({ get_voucher: token });
-			setVouchers(res[1]);
-			console.log({ res, data: res[1] });
+			setVouchers(res[2]);
+			setVData(res[1][0]);
+			setStatus(res[2] ? 'list' : 'empty');
+			console.log({ res, data: res[1][0] });
 		};
 
-		fetchVouchers();
+		if (!vData || status === 'list') fetchVouchers();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [status]);
 	return (
 		<>
@@ -1128,7 +1143,11 @@ export const Voucher = () => {
 				) : status === 'create' ? (
 					<CreateVoucher setStatus={setStatus} />
 				) : (
-					<VoucherContent setStatus={setStatus} vouchers={vouchers} />
+					<VoucherContent
+						setStatus={setStatus}
+						vouchers={vouchers}
+						vData={vData}
+					/>
 				)}
 			</Flex>
 		</>
