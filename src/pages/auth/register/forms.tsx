@@ -115,7 +115,7 @@ export const Form1 = ({
 						setStep={setStep}
 						values={values}
 						setValues={setValues}
-						type='merchant'
+						type='Business'
 					/>
 					<AccountTypeCard
 						icon={group}

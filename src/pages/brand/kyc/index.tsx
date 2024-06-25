@@ -37,11 +37,13 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import authService from '../../../services/auth';
 import { useNavigate } from 'react-router-dom';
 import transactionsService from '../../../services/transactions';
+import userServices from '../../../services/user';
+import { CurrentUserContext } from '../../../context/user.context';
 
 const NoConsentModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -732,7 +734,7 @@ const Form5 = ({
 					<Divider />
 					<Flex p={5} bg={'#fbfbfb'}>
 						<Flex flexDir={'column'} gap={3} w={'100%'}>
-							<FormControl >
+							<FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'certificate'}>
 									{'Certificate of Corporation'}
 								</FormLabel>
@@ -749,7 +751,7 @@ const Form5 = ({
 									}}
 								/>
 							</FormControl>
-							<FormControl >
+							<FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'cac'}>
 									{'Form CAC'}
 								</FormLabel>
@@ -766,7 +768,7 @@ const Form5 = ({
 									}}
 								/>
 							</FormControl>
-							<FormControl >
+							<FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'id'}>
 									{'National Identity'}
 								</FormLabel>
@@ -815,6 +817,7 @@ export const BrandKYC = () => {
 	const [bankList, setBankList] = useState<
 		{ code: string; id: string; name: string }[]
 	>([]);
+	const { setCurrentUser } = useContext(CurrentUserContext);
 	const toast = useToast();
 	const navigate = useNavigate();
 
@@ -905,12 +908,9 @@ export const BrandKYC = () => {
 				};
 				console.log({ newVal });
 				const res = await authService.kyc(newVal);
-				console.log(res);
-
-				// const keep = await userService.getUserBusinessDetails({
-				// 	business_user: '2lfbvg7kim@mailcurity.com',
-				// });
-				// console.log(keep);
+				const user = await userServices.getFullUserDetail({ full_user: email });
+				console.log({ res, user });
+				setCurrentUser(user);
 				if (res.responseCode == 200) {
 					toast({
 						title: 'KYC successfully submitted.',
@@ -952,7 +952,7 @@ export const BrandKYC = () => {
 			console.log(formik.values.accountNumber.toString().length === 10);
 			fetchAccountName();
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [formik.values.accountNumber]);
 	return (
 		<>
