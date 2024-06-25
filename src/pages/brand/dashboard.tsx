@@ -25,14 +25,16 @@ import {
 } from '@chakra-ui/react';
 import { LuAlertCircle } from 'react-icons/lu';
 import empty from '../../assets/empty.svg';
-import image from '../../assets/image.svg';
 import rectangle from '../../assets/rectangle.svg';
 import { IoIosArrowForward } from 'react-icons/io';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { CurrentUserContext } from '../../context/user.context';
 import { useNavigate } from 'react-router-dom';
+import dashboardService from '../../services/dashboard';
+import { IVoucherTable } from '../../interface/voucher';
+import { formatCurrency } from '../../util/format-currency.util';
 
 const Empty = () => {
 	const [isLessthan500] = useMediaQuery('(max-width: 500px)');
@@ -167,7 +169,7 @@ const VoucherCard = ({
 					alignItems={'center'}
 				>
 					<Flex gap={3} alignItems={'center'}>
-						<Avatar size={{ base: 'xs', md: 'sm' }} src={icon} />
+						<Avatar size={{ base: 'xs', md: 'sm' }} src={icon} name={ label} />
 						<Text>{label}</Text>
 					</Flex>
 					<Text>{value}</Text>
@@ -324,20 +326,49 @@ const CampaignsTable = () => {
 };
 
 const DashboardContent = () => {
-	const [fromDate, setFromDate] = useState(
-		moment().subtract(1, 'days').format('YYYY-MM-DD')
+	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+	const [vData, setVData] = useState<{
+		total_purchase: string;
+		total_used: string;
+		total_voucher: number;
+	} | null>(null);
+	const [from, setFrom] = useState(
+		moment().subtract(7, 'days').format('YYYY-MM-DD')
 	);
-	const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'));
+	const [to, setTo] = useState(moment().format('YYYY-MM-DD'));
+	useEffect(() => {
+		const fetchDashboard = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await dashboardService.brandDashboard({
+				brand_dashboard: token,
+				from,
+				to,
+			});
+			setVouchers(res[1]);
+			setVData(res[0]);
+			console.log({ res });
+		};
+
+		try {
+			fetchDashboard();
+		} catch (error) {
+			console.error(error);
+		}
+	}, [to, from]);
 	return (
 		<>
 			{' '}
 			<Flex gap={{ base: 1, md: 3 }}>
 				<DisplayCard
-					value='N1,600,000'
-					label='Cumulative Voucher Balance'
+					value={vData?.total_voucher || 0}
+					label='Cumulative Voucher'
 					isChecked={true}
 				/>
-				<DisplayCard value='N500,000' label='Amount Claimed' isChecked={true} />
+				<DisplayCard
+					value={formatCurrency(vData?.total_purchase || '')}
+					label='Amount Claimed'
+					isChecked={true}
+				/>
 				<DisplayCard value='10' label='Active Campaigns' isChecked={true} />
 			</Flex>
 			<Flex color={'black'} gap={3} flexWrap={'wrap'}>
@@ -361,14 +392,14 @@ const DashboardContent = () => {
 							<Stack direction='row' gap={0}>
 								<Input
 									type='date'
-									value={fromDate}
-									onChange={(e) => setFromDate(e.target.value)}
+									value={from}
+									onChange={(e) => setFrom(e.target.value)}
 									size={'xs	'}
 								/>
 								<Input
 									type='date'
-									value={toDate}
-									onChange={(e) => setToDate(e.target.value)}
+									value={to}
+									onChange={(e) => setTo(e.target.value)}
 									size={'xs	'}
 								/>
 							</Stack>
@@ -426,12 +457,9 @@ const DashboardContent = () => {
 							</Link>
 						</Flex>
 						<Flex flexDir={'column'} gap={1}>
-							<VoucherCard value='N80,000' label='Nike' icon={image} />
-							<VoucherCard value='N480,000' label='Spur' icon={image} />
-							<VoucherCard value='N100,000' label='Shoprite' icon={image} />
-							<VoucherCard value='N480,000' label='D place' icon={image} />
-							<VoucherCard value='N20,000' label='Nike' icon={image} />
-							<VoucherCard value='N280,000' label='Spotify' icon={image} />
+							{vouchers.map((v) => (
+								<VoucherCard value={formatCurrency(v.amount)} label={v.Name} icon={v.image} />
+							))}
 						</Flex>
 					</Flex>
 					<Flex
@@ -463,6 +491,7 @@ const DashboardContent = () => {
 
 export const BrandDashboard = () => {
 	const { currentUser } = useContext(CurrentUserContext);
+
 	return (
 		<>
 			<Flex flexDir={'column'} gap={3} justifyContent={'space-between'}>

@@ -69,8 +69,19 @@ export const LoginPage = () => {
 						position: 'top-right',
 					});
 				}
-			} catch (error) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			} catch (error: any) {
 				console.log(error);
+				toast({
+					title: 'Error',
+					description:
+						error?.message ||
+						'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
 			}
 		},
 	});

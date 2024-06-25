@@ -1126,14 +1126,18 @@ export const Voucher = () => {
 		const fetchVouchers = async () => {
 			const token = localStorage.getItem('PYMAILYR') || '';
 			const res = await voucherService.getVouchers({ get_voucher: token });
-			setVouchers(res[2]);
-			setVData(res[1][0]);
-			setStatus(res[2] ? 'list' : 'empty');
-			console.log({ res, data: res[1][0] });
+			setVouchers(res[1]);
+			setVData(res[0]);
+			setStatus(res[0] ? 'list' : 'empty');
+			console.log({ res, data: res[1] });
 		};
 
-		if (!vData || status === 'list') fetchVouchers();
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		try {
+			if (!vData || status === 'list') fetchVouchers();
+		} catch (error) {
+			console.error(error);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [status]);
 	return (
 		<>
