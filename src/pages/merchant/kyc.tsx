@@ -18,6 +18,13 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
+	Popover,
+	PopoverArrow,
+	PopoverBody,
+	PopoverCloseButton,
+	PopoverContent,
+	PopoverHeader,
+	PopoverTrigger,
 	Progress,
 	Radio,
 	RadioGroup,
@@ -30,10 +37,11 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
-import { useNavigate } from 'react-router-dom';
 import authService from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
+import transactionsService from '../../services/transactions';
 import userServices from '../../services/user';
 import { CurrentUserContext } from '../../context/user.context';
 
@@ -330,7 +338,7 @@ const Form3 = ({
 }: {
 	setStep: (num: number) => void; // eslint-disable-next-line @typescript-eslint/no-explicit-any
 	formik: any;
-	}) => {
+}) => {
 	const industries = [
 		'Agricuture',
 		'Commerce',
@@ -571,7 +579,143 @@ const Form3 = ({
 		</>
 	);
 };
-
+const Form4 = ({
+	setStep,
+	formik,
+	bankList,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+	bankList: { code: string; id: string; name: string }[];
+}) => {
+	return (
+		<>
+			<Flex bg={'white'} flex={1} flexDir={'column'}>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'xs'}>Payment Account Information</Heading>
+					<Text fontSize={'xs'}>
+						Kindly fill the field with required credentials
+					</Text>
+					<Divider />
+					<Flex p={5} bg={'#fbfbfb'}>
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'bank'}>
+									{'Bank'}
+								</FormLabel>
+								<Select
+									size={'xs'}
+									name='accountBank'
+									placeholder='Select Back'
+									onChange={formik.handleChange}
+								>
+									{bankList.map((b) => (
+										<option key={b.id} value={`${b.code}:${b.name}`}>
+											{b.name}
+										</option>
+									))}
+								</Select>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'accountNumber'}>
+									{'Account Number'}
+								</FormLabel>
+								<Input
+									id={'accountNumber'}
+									name={'accountNumber'}
+									type='number'
+									w={'full'}
+									size={'xs'}
+									value={formik.values.accountNumber}
+									onChange={formik.handleChange}
+									placeholder='Enter Account Number'
+								/>
+							</FormControl>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'accountName'}>
+									{'Account Name'}
+								</FormLabel>
+								<InputGroup>
+									<Input
+										id={'accountName'}
+										name={'accountName'}
+										type='text'
+										size={'xs'}
+										value={formik.values.accountName}
+										onChange={formik.handleChange}
+										placeholder='Enter Account Name'
+										isDisabled={true}
+									/>
+								</InputGroup>
+							</FormControl>
+							<FormControl isRequired>
+								<Flex justifyContent={'space-between'}>
+									<FormLabel fontSize={'xs'} htmlFor={'bvn'}>
+										{'BVN'}
+									</FormLabel>
+									<Popover>
+										<PopoverTrigger>
+											<Text
+												color={'#825EE4'}
+												textDecor={'underline'}
+												cursor={'pointer'}
+												fontSize={'xs'}
+											>
+												Why we need your BVN?
+											</Text>
+										</PopoverTrigger>
+										<PopoverContent>
+											<PopoverArrow />
+											<PopoverCloseButton />
+											<PopoverHeader fontSize={'xs'}>
+												Why we need your BVN?
+											</PopoverHeader>
+											<PopoverBody fontSize={'xs'}>
+												We only need access to your: <br /> - Full Name <br /> -
+												Date of Birth <br /> - House Address <br /> - BVN Image{' '}
+												<br /> <br />
+												Rest assured that your Bank Verification Number (BVN)
+												does not provide us with any access to your bank
+												accounts or transactions. <br /> The validation of your
+												BVN is solely handled by NIBBS.
+											</PopoverBody>
+										</PopoverContent>
+									</Popover>
+								</Flex>
+								<InputGroup>
+									<Input
+										id={'bvn'}
+										name={'bvn'}
+										type='text'
+										size={'xs'}
+										value={formik.values.bvn}
+										onChange={formik.handleChange}
+										placeholder='Enter BVN Number'
+									/>
+								</InputGroup>
+							</FormControl>
+						</Flex>
+					</Flex>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(3)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(5)}>
+							Proceed
+						</Button>
+					</Flex>
+				</Flex>
+			</Flex>
+		</>
+	);
+};
 
 const Form5 = ({
 	setStep,
@@ -646,7 +790,7 @@ const Form5 = ({
 					<Divider />
 					<Flex justifyContent={'flex-end'} gap={3}>
 						<Button
-							onClick={() => setStep(3)}
+							onClick={() => setStep(4)}
 							colorScheme='purple'
 							size={'xs'}
 							variant={'ghost'}
@@ -670,15 +814,62 @@ const Form5 = ({
 export const MerchantKYC = () => {
 	const [step, setStep] = useState(2);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
+	const [bankList, setBankList] = useState<
+		{ code: string; id: string; name: string }[]
+	>([]);
 	const { setCurrentUser } = useContext(CurrentUserContext);
 	const toast = useToast();
 	const navigate = useNavigate();
+
+	const fetchAccountName = async () => {
+		try {
+			// const token = localStorage.getItem('PYMAILYR') || '';
+			const bank = formik.values.accountBank.split(':');
+			console.log({
+				get_account: formik.values.accountNumber,
+				bankcode: bank[0],
+			});
+			const res = await transactionsService.getAccountName({
+				get_account: formik.values.accountNumber,
+				bankcode: bank[0],
+			});
+			console.log({ res });
+			if (res.status) {
+				formik.setValues({
+					...formik.values,
+					accountName: res.data.account_name,
+				});
+				toast({
+					title: 'Success',
+					description: res.message,
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			} else {
+				toast({
+					title: 'Error',
+					description:
+						res.message || 'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	const formik = useFormik({
 		initialValues: {
 			coc: '',
 			cac: '',
 			idcard: '',
+			accountNumber: '',
+			accountName: '',
 			bvn: '',
 			firstName: '',
 			lastName: '',
@@ -698,15 +889,25 @@ export const MerchantKYC = () => {
 			industry: '',
 			b_mail: '',
 			b_phone: '',
+			accountBank: '',
 			mail: '',
+			bankcode: '',
 		},
 		async onSubmit(values) {
-			console.log(values);
-
 			try {
+				const bank = values.accountBank.split(':');
 				const email = localStorage.getItem('PYMAILYR') || '';
-				console.log({ ...values, email });
-				const res = await authService.kyc({ ...values, email });
+				const newVal = {
+					...values,
+					bankcode: bank[0],
+					accountBank: bank[1],
+					email,
+					accountNumber: values.accountNumber.toString(),
+					b_phone: values.b_phone.toString(),
+					phone: values.phone.toString(),
+				};
+				console.log({ newVal });
+				const res = await authService.kyc(newVal);
 				const user = await userServices.getFullUserDetail({ full_user: email });
 				console.log({ res, user });
 				setCurrentUser(user);
@@ -719,7 +920,7 @@ export const MerchantKYC = () => {
 						isClosable: true,
 						position: 'top-right',
 					});
-					navigate('/merchant');
+					navigate('/');
 				} else {
 					toast({
 						title: 'Error',
@@ -737,6 +938,22 @@ export const MerchantKYC = () => {
 			}
 		},
 	});
+
+	useEffect(() => {
+		const fetchBankList = async () => {
+			const banks = await transactionsService.getBankList();
+			console.log({ banks });
+			setBankList(banks.data);
+		};
+
+		if (bankList.length === 0) fetchBankList();
+
+		if (formik.values.accountNumber.toString().length === 10) {
+			console.log(formik.values.accountNumber.toString().length === 10);
+			fetchAccountName();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [formik.values.accountNumber]);
 	return (
 		<>
 			<Flex
@@ -751,12 +968,12 @@ export const MerchantKYC = () => {
 				<Text>Account Validation</Text>
 				<Flex justify={'center'} display={isLessThan600 ? 'flex' : 'none'}>
 					<CircularProgress
-						value={(step - 1) * 33}
+						value={(step - 1) * 25}
 						size={'70px'}
 						color='#825ee4'
 					>
 						<CircularProgressLabel fontSize={'xs'}>
-							{step - 1} of 3
+							{step - 1} of 4
 						</CircularProgressLabel>
 					</CircularProgress>
 				</Flex>
@@ -777,19 +994,20 @@ export const MerchantKYC = () => {
 							justifyContent={'space-between'}
 						>
 							<Progress
-								value={(step - 1) * 33}
+								value={(step - 1) * 25}
 								colorScheme='purple'
 								w='130px'
 								size='xs'
 								borderRadius={'md'}
 							/>
-							<Text width={'32px'}>{step - 1} of 3</Text>
+							<Text width={'32px'}>{step - 1} of 4</Text>
 						</Flex>
 
 						{/* <ItemCheck label='Consent' value={1} step={step} /> */}
 						<ItemCheck label='Key Contact Details' value={2} step={step} />
 						<ItemCheck label='Organisational Details' value={3} step={step} />
-						<ItemCheck label='Documents/Verification' value={4} step={step} />
+						<ItemCheck label='Payment Account Info' value={4} step={step} />
+						<ItemCheck label='Documents/Verification' value={5} step={step} />
 					</Flex>
 					<Flex bg={'#fbfbfb'} flex={3} p={isLessThan600 ? 1 : 5}>
 						<form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
@@ -799,7 +1017,9 @@ export const MerchantKYC = () => {
 								<Form2 setStep={setStep} formik={formik} />
 							) : step === 3 ? (
 								<Form3 setStep={setStep} formik={formik} />
-							): (
+							) : step === 4 ? (
+								<Form4 setStep={setStep} formik={formik} bankList={bankList} />
+							) : (
 								<Form5 setStep={setStep} formik={formik} />
 							)}
 						</form>

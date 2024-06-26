@@ -25,9 +25,10 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CiEdit, CiLocationOn, CiMobile2 } from 'react-icons/ci';
 import { CurrentUserContext } from '../../context/user.context';
+import userService from '../../services/user';
 
 const Form1 = () => {
 	const { currentUser } = useContext(CurrentUserContext);
@@ -437,6 +438,82 @@ const Form2 = () => {
 	);
 };
 
+const Form3 = () => {
+	const formik = useFormik({
+		initialValues: {
+			accountNumber: '',
+			bank: '',
+			accountName: '',
+		},
+		async onSubmit(values) {
+			console.log(values);
+		},
+	});
+	return (
+		<>
+			<form onSubmit={formik.handleSubmit}>
+				<Flex
+					bg={'white'}
+					flexDir={'column'}
+					justifyContent={'space-between'}
+					minH={'75vh'}
+				>
+					<Flex flexDir={'column'} gap={3} w={'100%'}>
+						<FormControl isRequired>
+							<FormLabel fontSize={'xs'} htmlFor={'name'}>
+								{'Account Number'}
+							</FormLabel>
+							<Input
+								id={'name'}
+								name={'accountNumber'}
+								type='text'
+								w={'full'}
+								size={'xs'}
+								value={formik.values.accountNumber}
+								onChange={formik.handleChange}
+								placeholder='0990987996'
+							/>
+						</FormControl>
+
+						<FormControl isRequired>
+							<FormLabel fontSize={'xs'} htmlFor={'bank'}>
+								{'Bank'}
+							</FormLabel>
+							<Select size={'xs'} placeholder='Select option'>
+								<option value='option1'>GTBank</option>
+								<option value='option2'>UBA</option>
+								<option value='option3'>Option 3</option>
+							</Select>
+						</FormControl>
+						<FormControl isRequired>
+							<FormLabel fontSize={'xs'} htmlFor={'name'}>
+								{'Account Name'}
+							</FormLabel>
+							<Input
+								id={'name'}
+								name={'accountName'}
+								type='text'
+								w={'full'}
+								size={'xs'}
+								value={formik.values.accountName}
+								onChange={formik.handleChange}
+								placeholder='Spotify Nig Limited'
+							/>
+						</FormControl>
+					</Flex>
+					<Stack gap={5}>
+						<Divider />
+						<Flex justifyContent={'flex-end'} gap={3}>
+							<Button colorScheme='purple' size={'xs'} type='submit'>
+								Update Changes
+							</Button>
+						</Flex>
+					</Stack>
+				</Flex>
+			</form>
+		</>
+	);
+};
 const EditProfileDrawer = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	return (
@@ -480,6 +557,9 @@ const EditProfileDrawer = () => {
 								<TabPanel>
 									<Form2 />
 								</TabPanel>
+								<TabPanel>
+									<Form3 />
+								</TabPanel>
 							</TabPanels>
 						</Tabs>
 					</DrawerBody>
@@ -491,6 +571,21 @@ const EditProfileDrawer = () => {
 
 export const MerchantProfile = () => {
 	const { currentUser } = useContext(CurrentUserContext);
+
+	const [accountDetails, setAccountDetails] = useState([]);
+
+	useEffect(() => {
+		const fetchAccountDetails = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await userService.getBankDetails({
+				get_bank: token,
+			});
+			console.log({ res });
+			setAccountDetails(res[1][0]);
+		};
+
+		fetchAccountDetails();
+	}, []);
 
 	return (
 		<Stack p={5} borderRadius={'lg'} boxShadow={'lg'} bg={'white'} gap={7}>
@@ -566,6 +661,27 @@ export const MerchantProfile = () => {
 					<Flex justifyContent={'space-between'}>
 						<Text fontSize={'xs'}>Nationality</Text>
 						<Text fontSize={'xs'}>{currentUser?.country}</Text>
+					</Flex>
+				</Stack>
+			</Stack>
+
+			<Stack gap={4}>
+				<Text fontSize={'sm'} fontWeight={'bold'}>
+					Payment Account Info
+				</Text>
+
+				<Stack gap={3}>
+					<Flex justifyContent={'space-between'}>
+						<Text fontSize={'xs'}>Account Number</Text>
+						<Text fontSize={'xs'}>{accountDetails[0]}</Text>
+					</Flex>
+					<Flex justifyContent={'space-between'}>
+						<Text fontSize={'xs'}>Bank Name</Text>
+						<Text fontSize={'xs'}>{accountDetails[3]}</Text>
+					</Flex>
+					<Flex justifyContent={'space-between'}>
+						<Text fontSize={'xs'}>Account Name</Text>
+						<Text fontSize={'xs'}>{accountDetails[1]}</Text>
 					</Flex>
 				</Stack>
 			</Stack>
