@@ -323,7 +323,7 @@ const DashboardContent = () => {
 			{' '}
 			<Flex gap={{ base: 1, md: 3 }}>
 				<DisplayCard
-					value={formatCurrency(vData?.total_voucher.replace(',', '') || 0)}
+					value={formatCurrency(vData?.total_voucher?.replace(',', '') || 0)}
 					label='Cumulative Voucher Balance'
 					isChecked={true}
 				/>
@@ -333,7 +333,7 @@ const DashboardContent = () => {
 					isChecked={true}
 				/>
 				<DisplayCard
-					value={formatCurrency(vData?.total_purchase || 0)}
+					value={formatCurrency(vData?.total_purchase?.replace(',', '') || 0)}
 					label='Total Purchased'
 					isChecked={true}
 				/>

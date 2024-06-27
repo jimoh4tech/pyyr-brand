@@ -193,6 +193,12 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
 
 export const MerchantVoucherPage = () => {
 	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+	const [vData, setVData] = useState<{
+		total_purchase: string;
+		total_used: string;
+		total_voucher: string;
+	} | null>(null);
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -204,6 +210,7 @@ export const MerchantVoucherPage = () => {
 
 			console.log({ res });
 			setVouchers(res[1]);
+			setVData(res[0]);
 		};
 
 		fetchVouchers();
@@ -211,9 +218,17 @@ export const MerchantVoucherPage = () => {
 	return (
 		<Stack>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard value={0} label='Cumulative Balance' isChecked={true} />
-				<DisplayCard value={0} label='No of Brand Vouchers' isChecked={true} />
-				<DisplayCard value={0} label='Gifted Vouchers' isChecked={true} />
+				<DisplayCard
+					value={formatCurrency(vData?.total_voucher?.replace(',', '') || 0)}
+					label='Cumulative Balance'
+					isChecked={true}
+				/>
+				<DisplayCard value={vData?.total_used || 0} label='Total Used' isChecked={true} />
+				<DisplayCard
+					value={formatCurrency(vData?.total_purchase?.replace(',', '') || 0)}
+					label='Total Purchased'
+					isChecked={true}
+				/>
 			</Flex>
 
 			<Flex

@@ -1056,12 +1056,12 @@ const VoucherContent = ({
 					isChecked={true}
 				/>
 				<DisplayCard
-					value={formatCurrency(vData?.total_purchase || '')}
+					value={formatCurrency(vData?.total_purchase?.replace(',', '') || '')}
 					label='Total Purchased'
 					isChecked={true}
 				/>
 				<DisplayCard
-					value={formatCurrency(vData?.total_used || '')}
+					value={formatCurrency(vData?.total_used?.replace(',', '') || '')}
 					label='Total Used'
 					isChecked={true}
 				/>

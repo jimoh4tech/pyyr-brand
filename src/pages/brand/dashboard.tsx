@@ -27,7 +27,7 @@ import rectangle from '../../assets/rectangle.svg';
 import { IoIosArrowForward } from 'react-icons/io';
 import { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { CurrentUserContext } from '../../context/user.context';
 import { useNavigate } from 'react-router-dom';
 import dashboardService from '../../services/dashboard';
@@ -177,51 +177,12 @@ const VoucherCard = ({
 	);
 };
 
-const DashboardChart = () => {
-	const data = [
-		{
-			name: 'Nov 12',
-			uv: 4000,
-			pv: 2400,
-			amt: 2400,
-		},
-		{
-			name: 'Nov 14',
-			uv: 3000,
-			pv: 1398,
-			amt: 2210,
-		},
-		{
-			name: 'Nov 16',
-			uv: 2000,
-			pv: 9800,
-			amt: 2290,
-		},
-		{
-			name: 'Nov 18',
-			uv: 2780,
-			pv: 3908,
-			amt: 2000,
-		},
-		{
-			name: 'Nov 23',
-			uv: 1890,
-			pv: 4800,
-			amt: 2181,
-		},
-		{
-			name: 'Nov 24',
-			uv: 2390,
-			pv: 3800,
-			amt: 2500,
-		},
-		{
-			name: 'Nov 11',
-			uv: 3490,
-			pv: 4300,
-			amt: 2100,
-		},
-	];
+const DashboardChart = ({
+	data,
+}: {
+	data: { voucher: string; amount: number }[];
+}) => {
+	
 	return (
 		<ResponsiveContainer width='100%' height='100%'>
 			<AreaChart
@@ -235,9 +196,10 @@ const DashboardChart = () => {
 					bottom: 0,
 				}}
 			>
-				<XAxis fontSize={'10px'} dataKey='name' />
+				<XAxis fontSize={'10px'} dataKey='voucher' />
 				<Tooltip />
-				<Area type='monotone' dataKey='uv' stroke='#8884d8' fill='#8884d8' />
+				<Area type='monotone' dataKey='amount' stroke='#8884d8' fill='#8884d8' />
+				<YAxis dataKey='amount' fontSize={'8px'} />
 			</AreaChart>
 		</ResponsiveContainer>
 	);
@@ -290,8 +252,11 @@ const DashboardContent = () => {
 	const [vData, setVData] = useState<{
 		total_purchase: string;
 		total_used: string;
-		wallet_balance: number;
+		wallet_balance: string;
 	} | null>(null);
+	const [graphData, setGraphData] = useState<
+		{ voucher: string; amount: number }[]
+	>([]);
 	const [from, setFrom] = useState(
 		moment().subtract(7, 'days').format('YYYY-MM-DD')
 	);
@@ -307,7 +272,13 @@ const DashboardContent = () => {
 			});
 			setVouchers(res[2]);
 			setVData(res[0]);
-			console.log({ res });
+			const processedGraphData = res[1]?.map(
+				(d: { voucher: string; amount: string }) => {
+					return { ...d, amount: Number(d.amount?.replace(',', '')) };
+				}
+			);
+			setGraphData(processedGraphData);
+			console.log({ res, processedGraphData });
 		};
 
 		try {
@@ -321,17 +292,17 @@ const DashboardContent = () => {
 			{' '}
 			<Flex gap={{ base: 1, md: 3 }}>
 				<DisplayCard
-					value={formatCurrency(vData?.wallet_balance || '')}
+					value={formatCurrency(vData?.wallet_balance.replace(',', '') || '')}
 					label='Available Balance'
 					isChecked={true}
 				/>
 				<DisplayCard
-					value={formatCurrency(vData?.total_purchase || '')}
+					value={formatCurrency(vData?.total_purchase.replace(',', '') || '')}
 					label='Total Sold'
 					isChecked={true}
 				/>
 				<DisplayCard
-					value={formatCurrency(vData?.total_purchase || '')}
+					value={vData?.total_used || '0'}
 					label='Total Used'
 					isChecked={true}
 				/>
@@ -370,7 +341,7 @@ const DashboardContent = () => {
 							</Stack>
 						</Flex>
 						<Box minH={'30vh'}>
-							<DashboardChart />
+							<DashboardChart data={graphData}/>
 						</Box>
 					</Flex>
 					<Flex
