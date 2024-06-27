@@ -1,19 +1,16 @@
 import {
 	Alert,
 	Avatar,
-	Badge,
 	Box,
 	Button,
 	Card,
-	CardBody,
-	CardHeader,
 	Flex,
 	Heading,
 	Image,
 	Input,
 	Link,
-	Select,
 	Stack,
+	Switch,
 	Table,
 	TableContainer,
 	Tbody,
@@ -26,18 +23,17 @@ import {
 } from '@chakra-ui/react';
 import { LuAlertCircle } from 'react-icons/lu';
 import empty from '../../assets/empty.svg';
-import campaignIcon from '../../assets/campaign_icon.svg';
-import balance from '../../assets/balance.svg';
-import progress from '../../assets/progress.svg';
-import image from '../../assets/image.svg';
+
 import rectangle from '../../assets/rectangle.svg';
 import { IoIosArrowForward } from 'react-icons/io';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
-import { formatCurrency } from '../../util/format-currency.util';
 import { CurrentUserContext } from '../../context/user.context';
 import { useNavigate } from 'react-router-dom';
+import dashboardService from '../../services/dashboard';
+import { IVoucherTable } from '../../interface/voucher';
+import { formatCurrency } from '../../util/format-currency.util';
 
 const Empty = () => {
 	const [isLessthan500] = useMediaQuery('(max-width: 500px)');
@@ -103,38 +99,53 @@ const Empty = () => {
 	);
 };
 
+
 export const DisplayCard = ({
 	value,
 	label,
-	icon,
+	isChecked,
 	title,
 }: {
-	value: number;
+	value: string | number;
 	label: string;
-	icon: string;
+	isChecked: boolean;
 	title?: string;
 }) => {
+	const [isCheck, setCheck] = useState(isChecked);
+
+	const handleChange = () => {
+		setCheck(!isCheck);
+	};
 	return (
 		<>
-			<Card flex={1} size={{ base: 'sm', md: 'md' }}>
-				<CardHeader>
-					<Heading size={{ base: 'xs', md: 'sm' }} color={'#825EE4'}>
-						{' '}
-						{title}
-					</Heading>
-					<Heading size={{ base: 'sm', md: 'md' }}>
-						{' '}
-						{formatCurrency(value)}
-					</Heading>
-				</CardHeader>
-				<CardBody>
-					<Flex justifyContent={'space-between'}>
-						<Text fontSize={{ base: '2xs', md: 'xs' }}>{label}</Text>
-						<Box bgSize={{ base: '2xs', md: 'sm' }}>
-							<Image src={icon} alt={label} />
-						</Box>
-					</Flex>
-				</CardBody>
+			<Card
+				flex={1}
+				size={{ base: 'sm', md: 'md' }}
+				px={{ base: 2, md: 5 }}
+				py={3}
+				gap={3}
+				justifyContent={'space-between'}
+			>
+				<Heading size={{ base: 'xs', md: 'sm' }} color={'#825EE4'}>
+					{' '}
+					{title}
+				</Heading>
+				<Heading size={{ base: 'sm', md: 'md' }}>
+					{' '}
+					{isCheck ? value : '*****'}
+				</Heading>
+				<Flex justifyContent={'space-between'}>
+					<Text fontSize={{ base: '2xs', md: 'xs' }}>{label}</Text>
+					{/* <Box bgSize={{ base: '2xs', md: 'sm' }}>
+						<Image src={icon} alt={label} />
+					</Box> */}
+					<Switch
+						size='sm'
+						colorScheme='purple'
+						isChecked={isCheck}
+						onChange={handleChange}
+					/>
+				</Flex>
 			</Card>
 		</>
 	);
@@ -158,7 +169,7 @@ const VoucherCard = ({
 					alignItems={'center'}
 				>
 					<Flex gap={3} alignItems={'center'}>
-						<Avatar size={{ base: 'xs', md: 'sm' }} src={icon} />
+						<Avatar size={{ base: 'xs', md: 'sm' }} src={icon} name={label} />
 						<Text>{label}</Text>
 					</Flex>
 					<Text>{value}</Text>
@@ -167,7 +178,6 @@ const VoucherCard = ({
 		</>
 	);
 };
-
 const DashboardChart = () => {
 	const data = [
 		{
@@ -234,7 +244,7 @@ const DashboardChart = () => {
 	);
 };
 
-const CampaignsTable = () => {
+const VocuhersTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 	return (
 		<>
 			<TableContainer>
@@ -242,71 +252,33 @@ const CampaignsTable = () => {
 					<Thead>
 						<Tr>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Name
+								Voucher
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								No of Winners
+								Worth
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Voucher’s Worth
+								Code
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Brand
+								Amount
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
-								Status{' '}
+								Date
 							</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
-						<Tr fontSize={'xs'}>
-							<Td fontSize={'xs'}>Christmas Rush </Td>
-							<Td fontSize={'xs'}>100</Td>
-							<Td fontSize={'xs'}>₦20,000</Td>
-							<Td fontSize={'xs'}>Spotify</Td>
-							<Td fontSize={'xs'}>
-								<Badge
-									// eslint-disable-next-line no-constant-condition
-									bgColor={true ? '#ffdfdf' : '#d4f7e1'}
-									textTransform={'capitalize'}
-									borderRadius={'10px'}
-								>
-									Unclaimed
-								</Badge>{' '}
-							</Td>
-						</Tr>
-						<Tr>
-							<Td fontSize={'xs'}>Joy in the Villa</Td>
-							<Td fontSize={'xs'}>50</Td>
-							<Td fontSize={'xs'}>₦20,000</Td>
-							<Td fontSize={'xs'}>D’ Place</Td>
-							<Td fontSize={'xs'}>
-								<Badge
-									// eslint-disable-next-line no-constant-condition
-									bgColor={false ? '#ffdfdf' : '#d4f7e1'}
-									textTransform={'capitalize'}
-									borderRadius={'10px'}
-								>
-									Claimed
-								</Badge>{' '}
-							</Td>
-						</Tr>
-						<Tr>
-							<Td fontSize={'xs'}>Christmas Rush </Td>
-							<Td fontSize={'xs'}>100</Td>
-							<Td fontSize={'xs'}>₦20,000</Td>
-							<Td fontSize={'xs'}>Spotify</Td>
-							<Td fontSize={'xs'}>
-								<Badge
-									// eslint-disable-next-line no-constant-condition
-									bgColor={true ? '#ffdfdf' : '#d4f7e1'}
-									textTransform={'capitalize'}
-									borderRadius={'10px'}
-								>
-									Unclaimed
-								</Badge>{' '}
-							</Td>
-						</Tr>
+						{vouchers.map((v) => (
+							<Tr fontSize={'xs'} key={v.code}>
+								<Td fontSize={'xs'}>{v.Name} </Td>
+								<Td fontSize={'xs'}>{formatCurrency(v.worth)}</Td>
+								<Td fontSize={'xs'}>{v.code}</Td>
+								<Td fontSize={'xs'}>{formatCurrency(v.amount)}</Td>
+
+								<Td fontSize={'xs'}>{v.date}</Td>
+							</Tr>
+						))}
 					</Tbody>
 				</Table>
 			</TableContainer>
@@ -315,21 +287,56 @@ const CampaignsTable = () => {
 };
 
 const DashboardContent = () => {
-	const [fromDate, setFromDate] = useState(
-		moment().subtract(1, 'days').format('YYYY-MM-DD')
+	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+	const [vData, setVData] = useState<{
+		total_purchase: string;
+		total_used: string;
+		total_voucher: string;
+	} | null>(null);
+	const navigate = useNavigate();
+	const [from, setFrom] = useState(
+		moment().subtract(7, 'days').format('YYYY-MM-DD')
 	);
-	const [toDate, setToDate] = useState(moment().format('YYYY-MM-DD'));
+	const [to, setTo] = useState(moment().format('YYYY-MM-DD'));
+
+		useEffect(() => {
+			const fetchDashboard = async () => {
+				const token = localStorage.getItem('PYMAILYR') || '';
+				const res = await dashboardService.merchantDashboard({
+					merchant_dashboard: token,
+					from,
+					to,
+				});
+				setVouchers(res[1]);
+				setVData(res[0]);
+				console.log({ res });
+			};
+
+			try {
+				fetchDashboard();
+			} catch (error) {
+				console.error(error);
+			}
+		}, [to, from]);
 	return (
 		<>
 			{' '}
 			<Flex gap={{ base: 1, md: 3 }}>
 				<DisplayCard
-					value={160000}
+					value={formatCurrency(vData?.total_voucher.replace(',', '') || 0)}
 					label='Cumulative Voucher Balance'
-					icon={balance}
+					isChecked={true}
 				/>
-				<DisplayCard value={50000} label='Amount Claimed' icon={progress} />
-				<DisplayCard value={10} label='Active Campaigns' icon={campaignIcon} />
+				<DisplayCard
+					value={vData?.total_used || 0}
+					label='Amount Claimed'
+					isChecked={true}
+				/>
+				<DisplayCard
+					value={formatCurrency(vData?.total_purchase || 0)}
+					label='Total Purchased'
+					isChecked={true}
+				/>
 			</Flex>
 			<Flex color={'black'} gap={3} flexWrap={'wrap'}>
 				<Flex flexDir={'column'} gap={5} bgColor={'white'}>
@@ -352,14 +359,14 @@ const DashboardContent = () => {
 							<Stack direction='row' gap={0}>
 								<Input
 									type='date'
-									value={fromDate}
-									onChange={(e) => setFromDate(e.target.value)}
+									value={from}
+									onChange={(e) => setFrom(e.target.value)}
 									size={'xs	'}
 								/>
 								<Input
 									type='date'
-									value={toDate}
-									onChange={(e) => setToDate(e.target.value)}
+									value={to}
+									onChange={(e) => setTo(e.target.value)}
 									size={'xs	'}
 								/>
 							</Stack>
@@ -382,19 +389,25 @@ const DashboardContent = () => {
 							p={2}
 						>
 							<Flex gap={2} alignItems={'center'}>
-								<Text>Campaigns</Text>
-								<Select placeholder='This Week' size={'xs'}>
+								<Text>Vouchers</Text>
+								{/* <Select placeholder='This Week' size={'xs'}>
 									<option value='option1'>This Week</option>
 									<option value='option2'>Last Week</option>
 									<option value='option3'>Last Month</option>
-								</Select>
+								</Select> */}
 							</Flex>
-							<Link color={'#825EE4'} fontSize={'xs'} textDecor={'underline'}>
+							<Text
+								color={'#825EE4'}
+								fontSize={'xs'}
+								textDecor={'underline'}
+								onClick={() => navigate('/vouchers')}
+								cursor={'pointer'}
+							>
 								View all
-							</Link>
+							</Text>
 						</Flex>
 
-						<CampaignsTable />
+						<VocuhersTable vouchers={vouchers} />
 					</Flex>
 				</Flex>
 				<Flex flexDir={'column'} gap={5} bgColor={'white'}>
@@ -417,12 +430,14 @@ const DashboardContent = () => {
 							</Link>
 						</Flex>
 						<Flex flexDir={'column'} gap={1}>
-							<VoucherCard value='N80,000' label='Nike' icon={image} />
-							<VoucherCard value='N480,000' label='Spur' icon={image} />
-							<VoucherCard value='N100,000' label='Shoprite' icon={image} />
-							<VoucherCard value='N480,000' label='D place' icon={image} />
-							<VoucherCard value='N20,000' label='Nike' icon={image} />
-							<VoucherCard value='N280,000' label='Spotify' icon={image} />
+							{vouchers.map((v) => (
+								<VoucherCard
+									key={v.code}
+									value={formatCurrency(v.amount)}
+									label={v.Name}
+									icon={v.image}
+								/>
+							))}
 						</Flex>
 					</Flex>
 					<Flex

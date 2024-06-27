@@ -1,7 +1,6 @@
 import {
 	Alert,
 	Avatar,
-	Badge,
 	Box,
 	Button,
 	Card,
@@ -10,7 +9,6 @@ import {
 	Image,
 	Input,
 	Link,
-	Select,
 	Stack,
 	Switch,
 	Table,
@@ -276,12 +274,10 @@ const VocuhersTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 								<Td fontSize={'xs'}>{formatCurrency(v.worth)}</Td>
 								<Td fontSize={'xs'}>{v.code}</Td>
 								<Td fontSize={'xs'}>{formatCurrency(v.amount)}</Td>
-								
-								
+
 								<Td fontSize={'xs'}>{v.date}</Td>
 							</Tr>
 						))}
-						
 					</Tbody>
 				</Table>
 			</TableContainer>
@@ -300,6 +296,7 @@ const DashboardContent = () => {
 		moment().subtract(7, 'days').format('YYYY-MM-DD')
 	);
 	const [to, setTo] = useState(moment().format('YYYY-MM-DD'));
+	const navigate = useNavigate();
 	useEffect(() => {
 		const fetchDashboard = async () => {
 			const token = localStorage.getItem('PYMAILYR') || '';
@@ -390,16 +387,22 @@ const DashboardContent = () => {
 							p={2}
 						>
 							<Flex gap={2} alignItems={'center'}>
-								<Text>Transactions History</Text>
-								<Select placeholder='This Week' size={'xs'}>
+								<Text fontSize={'smaller'}>Vouchers</Text>
+								{/* <Select placeholder='This Week' size={'xs'}>
 									<option value='option1'>This Week</option>
 									<option value='option2'>Last Week</option>
 									<option value='option3'>Last Month</option>
-								</Select>
+								</Select> */}
 							</Flex>
-							<Link color={'#825EE4'} fontSize={'xs'} textDecor={'underline'}>
+							<Text
+								color={'#825EE4'}
+								fontSize={'xs'}
+								textDecor={'underline'}
+								onClick={() => navigate('/vouchers')}
+								cursor={'pointer'}
+							>
 								View all
-							</Link>
+							</Text>
 						</Flex>
 
 						<VocuhersTable vouchers={vouchers} />
@@ -420,9 +423,15 @@ const DashboardContent = () => {
 							p={2}
 						>
 							<Text>Voucher Balances</Text>
-							<Link color={'#825EE4'} textDecor={'underline'}>
+							<Text
+								color={'#825EE4'}
+								fontSize={'xs'}
+								textDecor={'underline'}
+								onClick={() => navigate('/vouchers')}
+								cursor={'pointer'}
+							>
 								View all
-							</Link>
+							</Text>
 						</Flex>
 						<Flex flexDir={'column'} gap={1}>
 							{vouchers.map((v) => (

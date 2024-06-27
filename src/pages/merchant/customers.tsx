@@ -30,8 +30,6 @@ import {
 } from '@chakra-ui/react';
 import { DisplayCard } from './dashboard';
 
-// import empty from '../../assets/voucher_empty.svg';
-import customer_light from '../../assets/customer_light.svg';
 import { FiSearch } from 'react-icons/fi';
 import { AiOutlineFileAdd } from 'react-icons/ai';
 import { useState } from 'react';
@@ -504,17 +502,17 @@ export const CustomerPage = () => {
 				<DisplayCard
 					value='5,200'
 					label='Total No of Customers'
-					icon={customer_light}
+					isChecked={true}
 				/>
 				<DisplayCard
 					value='700 '
 					label='Total No of Customers Rewarded '
-					icon={customer_light}
+					isChecked={true}
 				/>
 				<DisplayCard
 					value='200'
 					label='Total No Active Customers'
-					icon={customer_light}
+					isChecked={true}
 				/>
 			</Flex>
 			<CustomerTable />

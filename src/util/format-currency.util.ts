@@ -4,7 +4,7 @@ export function formatCurrency(amount: number | string): string {
 		style: 'currency',
 		currency: 'NGN',
 	};
-
+	
 	// Format the currency using toLocaleString method
 	const formattedCurrency: string = Number(amount).toLocaleString('en-NG', options);
 

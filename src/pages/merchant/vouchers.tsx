@@ -8,7 +8,6 @@ import {
 	Text,
 } from '@chakra-ui/react';
 import { DisplayCard } from './dashboard';
-import emrald from '../../assets/emrald.svg';
 import voucherService from '../../services/voucher';
 import { useEffect, useState } from 'react';
 import { IVoucherTable } from '../../interface/voucher';
@@ -79,9 +78,9 @@ export const MerchantVoucherPage = () => {
 	return (
 		<Stack>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard value={0} label='Cumulative Balance' icon={emrald} />
-				<DisplayCard value={0} label='No of Brand Vouchers' icon={emrald} />
-				<DisplayCard value={0} label='Gifted Vouchers' icon={emrald} />
+				<DisplayCard value={0} label='Cumulative Balance' isChecked={true} />
+				<DisplayCard value={0} label='No of Brand Vouchers' isChecked={true} />
+				<DisplayCard value={0} label='Gifted Vouchers' isChecked={true} />
 			</Flex>
 
 			<Flex

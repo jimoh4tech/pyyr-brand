@@ -5,6 +5,7 @@ export interface IVoucherTable {
 	merchant?: string;
 	price?: string;
 	usage?: string;
+	date?: string;
 
 	// Date: string;
 	Name: string;

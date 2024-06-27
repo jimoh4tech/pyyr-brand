@@ -580,7 +580,7 @@ export const Profile = () => {
 			const res = await userService.getBankDetails({
 				get_bank: token,
 			});
-			// console.log({ res });
+			console.log({ res });
 			setAccountDetails(res[1][0]);
 		};
 

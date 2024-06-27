@@ -36,7 +36,6 @@ import {
 } from '@chakra-ui/react';
 import { DisplayCard } from './dashboard';
 import account from '../../assets/account.svg';
-import emrald from '../../assets/emrald.svg';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
@@ -541,9 +540,9 @@ export const MerchantWalletPage = () => {
 				<FundModal setBalance={setBalance} balance={balance} />
 			</Flex>
 			<Flex gap={{ base: 1, md: 3 }}>
-				<DisplayCard value={balance} label='Available Balance' icon={emrald} />
-				<DisplayCard value={balance} label='Total Deposits' icon={emrald} />
-				<DisplayCard value={balance} label='Total Pay Out' icon={emrald} />
+				<DisplayCard value={formatCurrency(balance)} label='Available Balance' isChecked={false}/>
+				<DisplayCard value={formatCurrency(balance)} label='Total Deposits' isChecked={false}/>
+				<DisplayCard value={formatCurrency(balance)} label='Total Pay Out' isChecked={false}/>
 			</Flex>
 			<Flex
 				boxShadow={'md'}
