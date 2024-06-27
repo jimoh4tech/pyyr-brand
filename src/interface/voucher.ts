@@ -6,6 +6,8 @@ export interface IVoucherTable {
 	price?: string;
 	usage?: string;
 	date?: string;
+	qty_used?: string;
+	exp?: string;
 
 	// Date: string;
 	Name: string;

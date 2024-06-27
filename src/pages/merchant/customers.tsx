@@ -29,7 +29,6 @@ import {
 	useDisclosure,
 } from '@chakra-ui/react';
 import { DisplayCard } from './dashboard';
-
 import { FiSearch } from 'react-icons/fi';
 import { AiOutlineFileAdd } from 'react-icons/ai';
 import { useState } from 'react';

@@ -4,8 +4,18 @@ import {
 	Card,
 	CardBody,
 	Flex,
+	Input,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalHeader,
+	ModalOverlay,
+	Spacer,
 	Stack,
 	Text,
+	useDisclosure,
+	useToast,
 } from '@chakra-ui/react';
 import { DisplayCard } from './dashboard';
 import voucherService from '../../services/voucher';
@@ -14,7 +24,130 @@ import { IVoucherTable } from '../../interface/voucher';
 import { VocuherDetailModal } from './market-place';
 import { formatCurrency } from '../../util/format-currency.util';
 import { useNavigate } from 'react-router-dom';
+import { CiEdit } from 'react-icons/ci';
+import dashboardService from '../../services/dashboard';
 
+const EditVoucherModal = ({ voucher }: { voucher: IVoucherTable }) => {
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const toast = useToast();
+	const [isLoading, toggleLoading] = useState(false);
+	const [date, setDate] = useState('');
+
+	const handleUpdate = async () => {
+		try {
+			toggleLoading(true);
+			const email = localStorage.getItem('PYMAILYR') || '';
+			const val = {
+				update_voucher: email,
+				v_code: voucher.code,
+				exp: date,
+			};
+			console.log(val);
+			const res = await dashboardService.updateVoucher(val);
+			console.log(res);
+			if (res.responseCode == 200) {
+				toast({
+					title: 'Voucher Successfully Updated',
+					description: res.responseMessage,
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+				toggleLoading(false);
+				onClose();
+			} else {
+				toggleLoading(false);
+				toast({
+					title: 'Error',
+					description:
+						res.responseMessage ||
+						'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	return (
+		<>
+			<Flex
+				bgColor={'white'}
+				px={5}
+				py={2}
+				w='100px'
+				border={'1px solid #f2f2f2'}
+				borderRadius={'md'}
+				boxShadow={'md'}
+				justifyContent={'center'}
+				cursor={'pointer'}
+				onClick={onOpen}
+			>
+				<CiEdit />
+			</Flex>
+
+			<Modal onClose={onClose} isOpen={isOpen} isCentered>
+				<ModalOverlay />
+				<ModalContent>
+					<ModalHeader fontSize={'medium'}>Edit Vocuher Details</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>
+						<Stack>
+							<Flex justifyContent={'space-between'}>
+								<Text fontSize={'small'}>Name</Text>
+								<Text fontSize={'small'}>{voucher.Name}</Text>
+							</Flex>
+							<Flex justifyContent={'space-between'}>
+								<Text fontSize={'small'}>Code:</Text>
+								<Text fontSize={'small'}>{voucher.code}</Text>
+							</Flex>
+							<Flex justifyContent={'space-between'}>
+								<Text fontSize={'small'}>Quantity:</Text>
+								<Text fontSize={'small'}>{voucher.qty}</Text>
+							</Flex>
+							<Flex justifyContent={'space-between'} alignItems={'center'}>
+								<Text fontSize={'small'}>Expiration Date:</Text>
+								<Input
+									type='date'
+									w={'50%'}
+									size={'sm'}
+									value={date}
+									onChange={(e) => setDate(e.target.value)}
+								/>
+							</Flex>
+
+							<Flex my={5}>
+								<Spacer />
+								<Button
+									size={'sm'}
+									colorScheme='purple'
+									variant={'outline'}
+									mr={4}
+									onClick={onClose}
+								>
+									Close
+								</Button>
+								<Button
+									size={'sm'}
+									colorScheme='purple'
+									onClick={handleUpdate}
+									isLoading={isLoading}
+								>
+									Update
+								</Button>
+							</Flex>
+						</Stack>
+					</ModalBody>
+				</ModalContent>
+			</Modal>
+		</>
+	);
+};
 
 const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
 	return (
@@ -34,7 +167,7 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
 
 					<Flex justifyContent={'space-around'}>
 						<VocuherDetailModal voucher={voucher} />
-						
+						<EditVoucherModal voucher={voucher} />
 					</Flex>
 
 					<Flex
@@ -102,7 +235,6 @@ export const MerchantVoucherPage = () => {
 					<Button
 						size={'xs'}
 						colorScheme='purple'
-						
 						onClick={() => navigate('/merchant/marketplace')}
 					>
 						Purchase Voucher

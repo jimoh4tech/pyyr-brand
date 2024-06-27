@@ -96,6 +96,14 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 								<Text fontSize={'small'}>Quantity:</Text>
 								<Text fontSize={'small'}>{voucher.qty}</Text>
 							</Flex>
+							<Flex justifyContent={'space-between'}>
+								<Text fontSize={'small'}>Quantity Used:</Text>
+								<Text fontSize={'small'}>{voucher.qty_used}</Text>
+							</Flex>
+							<Flex justifyContent={'space-between'}>
+								<Text fontSize={'small'}>Expiration Date:</Text>
+								<Text fontSize={'small'}>{voucher?.exp}</Text>
+							</Flex>
 						</Stack>
 					</ModalBody>
 				</ModalContent>
@@ -103,6 +111,7 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 		</>
 	);
 };
+
 
 const MarketPlaceCard = ({
 	voucher,
