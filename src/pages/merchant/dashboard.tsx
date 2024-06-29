@@ -99,7 +99,6 @@ const Empty = () => {
 	);
 };
 
-
 export const DisplayCard = ({
 	value,
 	label,
@@ -299,25 +298,25 @@ const DashboardContent = () => {
 	);
 	const [to, setTo] = useState(moment().format('YYYY-MM-DD'));
 
-		useEffect(() => {
-			const fetchDashboard = async () => {
-				const token = localStorage.getItem('PYMAILYR') || '';
-				const res = await dashboardService.merchantDashboard({
-					merchant_dashboard: token,
-					from,
-					to,
-				});
-				setVouchers(res[1]);
-				setVData(res[0]);
-				console.log({ res });
-			};
+	useEffect(() => {
+		const fetchDashboard = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await dashboardService.merchantDashboard({
+				merchant_dashboard: token,
+				from,
+				to,
+			});
+			setVouchers(res[1]);
+			setVData(res[0]);
+			console.log({ res });
+		};
 
-			try {
-				fetchDashboard();
-			} catch (error) {
-				console.error(error);
-			}
-		}, [to, from]);
+		try {
+			fetchDashboard();
+		} catch (error) {
+			console.error(error);
+		}
+	}, [to, from]);
 	return (
 		<>
 			{' '}

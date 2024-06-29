@@ -41,7 +41,7 @@ const EditVoucherModal = ({ voucher }: { voucher: IVoucherTable }) => {
 				update_voucher: email,
 				v_code: voucher.code,
 				exp: date,
-			};
+			};							
 			console.log(val);
 			const res = await dashboardService.updateVoucher(val);
 			console.log(res);
@@ -223,7 +223,11 @@ export const MerchantVoucherPage = () => {
 					label='Cumulative Balance'
 					isChecked={true}
 				/>
-				<DisplayCard value={vData?.total_used || 0} label='Total Used' isChecked={true} />
+				<DisplayCard
+					value={vData?.total_used || 0}
+					label='Total Used'
+					isChecked={true}
+				/>
 				<DisplayCard
 					value={formatCurrency(vData?.total_purchase?.replace(',', '') || 0)}
 					label='Total Purchased'
