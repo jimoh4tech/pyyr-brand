@@ -6,3 +6,11 @@ export interface ICustomer {
 	status: string;
 	email: string;
 }
+
+
+export interface IManager {
+	Name: string;
+	phone: string;
+	location: string;
+	code: string;
+}

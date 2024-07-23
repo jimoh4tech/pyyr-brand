@@ -4,7 +4,7 @@ export const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export let email = '';
 
- const setToken = (userMail: string): void => {
+const setToken = (userMail: string): void => {
 	email = userMail;
 };
 
@@ -237,6 +237,81 @@ const kyc = async ({
 	return res.data;
 };
 
+const addManager = async ({
+	add_manager,
+	name,
+	phone,
+	location,
+}: {
+	add_manager: string;
+	name: string;
+	phone: string;
+	location: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			add_manager,
+			name,
+			phone,
+			location,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
+const editManager = async ({
+	edit_manager,
+	manager_id,
+	name,
+	phone,
+	location,
+}: {
+	edit_manager: string;
+	manager_id: string;
+	name: string;
+	phone: string;
+	location: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			edit_manager,
+			manager_id,
+			name,
+			phone,
+			location,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
+const removeManager = async ({
+	remove_manager,
+	email,
+}: {
+	remove_manager: string;
+	email: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			remove_manager,
+			email,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
+
 export default {
 	register,
 	verifyOTP,
@@ -245,5 +320,8 @@ export default {
 	resetPassword,
 	changePassword,
 	kyc,
-	setToken
+	setToken,
+	addManager,
+	editManager,
+	removeManager
 };

@@ -11,6 +11,7 @@ import {
 	Heading,
 	Input,
 	InputGroup,
+	InputLeftAddon,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -30,8 +31,15 @@ import {
 	RadioGroup,
 	Select,
 	Stack,
+	Table,
+	TableContainer,
+	Tbody,
+	Td,
 	Text,
 	Textarea,
+	Th,
+	Thead,
+	Tr,
 	useDisclosure,
 	useMediaQuery,
 	useToast,
@@ -44,6 +52,7 @@ import { useNavigate } from 'react-router-dom';
 import transactionsService from '../../../services/transactions';
 import userServices from '../../../services/user';
 import { CurrentUserContext } from '../../../context/user.context';
+import { IManager } from '../../../interface/customer';
 
 const NoConsentModal = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -797,6 +806,235 @@ const Form5 = ({
 						>
 							Back
 						</Button>
+						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(6)}>
+							Proceed
+						</Button>
+					</Flex>
+				</Flex>
+			</Flex>
+		</>
+	);
+};
+
+const ManagerTable = ({
+	managers,
+	setManagers,
+}: {
+	managers: IManager[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setManagers: any;
+}) => {
+	const toast = useToast();
+	const handleRemoveManager = async (code: string) => {
+		try {
+			const email = localStorage.getItem('PYMAILYR') || '';
+			const mObj = {
+				email,
+				remove_manager: code,
+			};
+			const res = await authService.removeManager(mObj);
+			console.log(mObj, res);
+
+			if (res.responseCode == 200) {
+				setManagers(res[0]);
+				toast({
+					title: 'Manager successfully Removed.',
+					description: res.responseMessage,
+					status: 'success',
+					duration: 3000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			} else {
+				toast({
+					title: 'Error',
+					description:
+						res.responseMessage ||
+						'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	return (
+		<TableContainer>
+			<Table size='sm'>
+				<Thead>
+					<Tr>
+						<Th fontSize={'x-small'}>Name</Th>
+						<Th fontSize={'x-small'}>Phone</Th>
+						<Th fontSize={'x-small'}>Location</Th>
+						<Th fontSize={'x-small'}>Action</Th>
+					</Tr>
+				</Thead>
+				<Tbody>
+					{managers.length > 0 ? (
+						managers.map((m) => (
+							<Tr key={m.code} boxSize={'10px'}>
+								<Td fontSize={'x-small'}>{m.Name}</Td>
+								<Td fontSize={'x-small'}>{m.phone}</Td>
+								<Td fontSize={'x-small'}>{m.location}</Td>
+								<Td
+									fontSize={'x-small'}
+									cursor={'pointer'}
+									textDecor={'underline'}
+									onClick={() => handleRemoveManager(m.code)}
+								>
+									remove
+								</Td>
+							</Tr>
+						))
+					) : (
+						<Text fontSize={'small'}>No Record!</Text>
+					)}
+				</Tbody>
+			</Table>
+		</TableContainer>
+	);
+};
+const Form6 = ({
+	setStep,
+	formik,
+}: {
+	setStep: (num: number) => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	formik: any;
+}) => {
+	const toast = useToast();
+	const [name, setName] = useState('');
+	const [phone, setPhone] = useState('');
+	const [location, setLocation] = useState('');
+	const [loading, setLoading] = useState(false);
+	const [managers, setManagers] = useState<IManager[]>([]);
+
+	const handleAddManager = async () => {
+		try {
+			setLoading(true);
+			const email = localStorage.getItem('PYMAILYR') || '';
+			const mObj = {
+				add_manager: email,
+				name,
+				phone: `+234${phone}`,
+				location,
+			};
+			if (!name || !phone || !location) {
+				toast({
+					title: 'Error',
+					description: 'All fields are required',
+					status: 'error',
+					duration: 5000,
+					isClosable: true,
+					position: 'top-right',
+				});
+				setLoading(false);
+				return;
+			}
+			const res = await authService.addManager(mObj);
+			console.log(mObj, res);
+
+			if (res.responseCode == 200) {
+				setManagers(res[0]);
+				setLoading(false);
+
+				// Reset the fields
+				setName('');
+				setLocation('');
+				setPhone('');
+				toast({
+					title: 'Manager successfully Added.',
+					description: res.responseMessage,
+					status: 'success',
+					duration: 3000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			} else {
+				setLoading(true);
+				toast({
+					title: 'Error',
+					description:
+						res.responseMessage ||
+						'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			setLoading(true);
+			console.log(error);
+		}
+	};
+	return (
+		<>
+			<Flex bg={'white'} flex={1} flexDir={'column'}>
+				<Flex p={5} flexDir={'column'} gap={3}>
+					<Heading fontSize={'xs'}>Redemption Locations</Heading>
+					<Text fontSize={'xs'}>Kindly enter all redemption locations</Text>
+					<Divider />
+					<Flex p={5} bg={'#fbfbfb'} flexDir={'column'} gap={10}>
+						<ManagerTable managers={managers} setManagers={setManagers} />
+						<Flex flexDir={'column'} gap={3} w={'100%'}>
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'mName'}>
+									{'Manager Info'}
+								</FormLabel>
+								<Flex flexWrap={'wrap'} gap={1}>
+									<Input
+										id={'mName'}
+										placeholder='Name'
+										type='text'
+										size={'xs'}
+										value={name}
+										onChange={(e) => setName(e.target.value)}
+									/>
+									<InputGroup size={'xs'}>
+										<InputLeftAddon>+234</InputLeftAddon>
+										<Input
+											type='tel'
+											placeholder='Phone'
+											value={phone}
+											onChange={(e) => setPhone(e.target.value)}
+										/>
+									</InputGroup>
+									<Input
+										id={'mName'}
+										placeholder='Location'
+										type='text'
+										size={'xs'}
+										value={location}
+										onChange={(e) => setLocation(e.target.value)}
+									/>
+								</Flex>
+							</FormControl>
+							<Flex justifyContent={'flex-end'}>
+								<Button
+									size={'xs'}
+									colorScheme='green'
+									onClick={handleAddManager}
+									isLoading={loading}
+								>
+									Add
+								</Button>
+							</Flex>
+						</Flex>
+					</Flex>
+					<Divider />
+					<Flex justifyContent={'flex-end'} gap={3}>
+						<Button
+							onClick={() => setStep(5)}
+							colorScheme='purple'
+							size={'xs'}
+							variant={'ghost'}
+						>
+							Back
+						</Button>
 						<Button
 							colorScheme='purple'
 							size={'xs'}
@@ -812,7 +1050,7 @@ const Form5 = ({
 	);
 };
 export const BrandKYC = () => {
-	const [step, setStep] = useState(2);
+	const [step, setStep] = useState(6);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
 	const [bankList, setBankList] = useState<
 		{ code: string; id: string; name: string }[]
@@ -968,12 +1206,12 @@ export const BrandKYC = () => {
 				<Text>Account Validation</Text>
 				<Flex justify={'center'} display={isLessThan600 ? 'flex' : 'none'}>
 					<CircularProgress
-						value={(step - 1) * 25}
+						value={(step - 1) * 20}
 						size={'70px'}
 						color='#825ee4'
 					>
 						<CircularProgressLabel fontSize={'xs'}>
-							{step - 1} of 4
+							{step - 1} of 5
 						</CircularProgressLabel>
 					</CircularProgress>
 				</Flex>
@@ -994,13 +1232,13 @@ export const BrandKYC = () => {
 							justifyContent={'space-between'}
 						>
 							<Progress
-								value={(step - 1) * 25}
+								value={(step - 1) * 20}
 								colorScheme='purple'
 								w='130px'
 								size='xs'
 								borderRadius={'md'}
 							/>
-							<Text width={'32px'}>{step - 1} of 4</Text>
+							<Text width={'32px'}>{step - 1} of 5</Text>
 						</Flex>
 
 						{/* <ItemCheck label='Consent' value={1} step={step} /> */}
@@ -1008,6 +1246,7 @@ export const BrandKYC = () => {
 						<ItemCheck label='Organisational Details' value={3} step={step} />
 						<ItemCheck label='Payment Account Info' value={4} step={step} />
 						<ItemCheck label='Documents/Verification' value={5} step={step} />
+						<ItemCheck label='Redemption Locations' value={6} step={step} />
 					</Flex>
 					<Flex bg={'#fbfbfb'} flex={3} p={isLessThan600 ? 1 : 5}>
 						<form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
@@ -1019,8 +1258,10 @@ export const BrandKYC = () => {
 								<Form3 setStep={setStep} formik={formik} />
 							) : step === 4 ? (
 								<Form4 setStep={setStep} formik={formik} bankList={bankList} />
-							) : (
+							) : step === 5 ? (
 								<Form5 setStep={setStep} formik={formik} />
+							) : (
+								<Form6 setStep={setStep} formik={formik} />
 							)}
 						</form>
 					</Flex>

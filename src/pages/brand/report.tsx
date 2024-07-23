@@ -209,7 +209,7 @@ export const Report = () => {
 						>
 							Export Overview
 						</Button>
-						<Stack direction='row' gap={0}>
+						<Stack direction='row' gap={1	} flexWrap={'wrap'}>
 							<Input
 								type='date'
 								value={fromDate}
