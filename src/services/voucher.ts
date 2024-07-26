@@ -30,7 +30,7 @@ const createVoucher = async ({
 	worth?: string;
 	amount?: string;
 	image?: string;
-	location_name?: string;
+	location_name?: string[];
 	url?: string;
 	description?: string;
 	redeem?: string;
@@ -50,7 +50,7 @@ const createVoucher = async ({
 			worth,
 			amount,
 			image,
-			location_name,
+			"location_name[]": location_name,
 			url,
 			description,
 			redeem,

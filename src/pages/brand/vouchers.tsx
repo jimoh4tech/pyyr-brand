@@ -67,6 +67,10 @@ import { IVoucherTable } from '../../interface/voucher';
 import voucherService from '../../services/voucher';
 import { formatCurrency } from '../../util/format-currency.util';
 import { CurrentUserContext } from '../../context/user.context';
+import authService from '../../services/auth';
+import { IManager } from '../../interface/customer';
+
+import { Select as MultiSelect } from 'chakra-react-select';
 
 const ModalForm1 = () => {
 	return (
@@ -307,7 +311,7 @@ const Form1 = ({
 									/>
 								</InputGroup>
 							</FormControl>
-							<FormControl isRequired>
+							{/* <FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'role'}>
 									{'Voucher Redemption Type'}
 								</FormLabel>
@@ -320,7 +324,7 @@ const Form1 = ({
 									<option value='Single use Voucher'>Single use Voucher</option>
 									<option value='Multi-use Voucher'>Multi-use Voucher</option>
 								</Select>
-							</FormControl>
+							</FormControl> */}
 							<FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'role'}>
 									{'Visibility'}
@@ -386,11 +390,20 @@ const Form1 = ({
 const Form2 = ({
 	setStep,
 	formik,
+	managers,
 }: {
 	setStep: (num: number) => void;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	formik: any;
+	managers: IManager[];
 }) => {
+	const [value, setValue] = useState<
+		readonly { label: string; value: string }[]
+	>([]);
+
+	const managersList = managers.map((m) => {
+		return { label: m.location, value: m.code };
+	});
 	return (
 		<>
 			<Flex bg={'white'} flex={1} flexDir={'column'}>
@@ -402,9 +415,9 @@ const Form2 = ({
 					<Divider />
 					<Flex p={5} bg={'white'}>
 						<Flex flexDir={'column'} gap={3} w={'100%'}>
-							<FormControl isRequired>
+							{/* <FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'location'}>
-									{'Location Name'}
+									{'Locations'}
 								</FormLabel>
 								<InputGroup>
 									<Input
@@ -417,8 +430,33 @@ const Form2 = ({
 										placeholder='Enter location'
 									/>
 								</InputGroup>
+							</FormControl> */}
+							{/* <MultiSelect
+								options={managers.map((m) => {
+									return { label: m.location, value: m.code };
+								})}
+								value={value}
+								label='Select Locations'
+								onChange={setValue}
+								size='sm'
+							/> */}
+							<FormControl isRequired>
+								<FormLabel fontSize={'xs'} htmlFor={'location'}>
+									{'Locations'}
+								</FormLabel>
+								<MultiSelect
+									isMulti
+									name='location_name'
+									options={managersList}
+									placeholder='Select locations'
+									closeMenuOnSelect={false}
+									value={value}
+									onChange={setValue}
+									size={'sm'}
+								/>
 							</FormControl>
-							<FormControl>
+
+							{/* <FormControl>
 								<FormLabel fontSize={'xs'} htmlFor={'url'}>
 									{'URL Location'}
 								</FormLabel>
@@ -433,8 +471,8 @@ const Form2 = ({
 										placeholder='Enter Link'
 									/>
 								</InputGroup>
-							</FormControl>
-							<FormControl isRequired>
+							</FormControl> */}
+							{/* <FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'description'}>
 									{'Description'}
 								</FormLabel>
@@ -448,7 +486,7 @@ const Form2 = ({
 										placeholder='Give more context to the value of this voucher card. E.g Perfect for Staff, Customers and friends incentives'
 									/>
 								</InputGroup>
-							</FormControl>
+							</FormControl> */}
 
 							<FormControl isRequired>
 								<FormLabel fontSize={'xs'} htmlFor={'how'}>
@@ -495,7 +533,7 @@ const Form2 = ({
 						>
 							Back
 						</Button>
-						<Button colorScheme='purple' size={'xs'} onClick={() => setStep(3)}>
+						<Button colorScheme='purple' size={'xs'} onClick={() => console.log(value)}>
 							Proceed
 						</Button>
 					</Flex>
@@ -690,6 +728,7 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 	const [step, setStep] = useState(1);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
 	const toast = useToast();
+	const [managers, setManagers] = useState<IManager[]>([]);
 
 	const formik = useFormik({
 		initialValues: {
@@ -701,7 +740,7 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 			worth: '',
 			amount: '',
 			image: '',
-			location_name: '',
+			location_name: [],
 			url: '',
 			description: '',
 			redeem: '',
@@ -746,6 +785,16 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 			}
 		},
 	});
+
+	useEffect(() => {
+		const fetchManagers = async () => {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await authService.getManagers({ get_managers: token });
+			console.log(res);
+			setManagers(res[1]);
+		};
+		fetchManagers();
+	}, []);
 
 	return (
 		<>
@@ -802,7 +851,7 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
 							{step === 1 ? (
 								<Form1 setStep={setStep} formik={formik} />
 							) : step === 2 ? (
-								<Form2 setStep={setStep} formik={formik} />
+								<Form2 setStep={setStep} formik={formik} managers={managers} />
 							) : step === 3 ? (
 								<Form3 setStep={setStep} formik={formik} />
 							) : (

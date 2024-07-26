@@ -311,6 +311,18 @@ const removeManager = async ({
 	);
 	return res.data;
 };
+const getManagers = async ({ get_managers }: { get_managers: string }) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			get_managers,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
 
 export default {
 	register,
@@ -323,5 +335,6 @@ export default {
 	setToken,
 	addManager,
 	editManager,
-	removeManager
+	removeManager,
+	getManagers
 };
