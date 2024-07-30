@@ -23,6 +23,7 @@ import { MarketPlacePage } from '../pages/merchant/market-place';
 import { MerchantProfile } from '../pages/merchant/profile';
 import { CustomerDetails } from '../pages/merchant/customer-details';
 import { CurrentUserProvider } from '../context/user.context';
+import { GiftsPage } from '../pages/merchant/gifts';
 
 export const Router = () => {
 	return (
@@ -71,6 +72,7 @@ export const Router = () => {
 				<Route path='kyc' element={<MerchantKYC />} />
 				<Route path='customers' element={<CustomerPage />} />
 				<Route path='customers/:id' element={<CustomerDetails />} />
+				<Route path='gifts' element={<GiftsPage />} />
 				<Route path='campaigns' element={<CampaignPage />} />
 				<Route path='wallet' element={<MerchantWalletPage />} />
 				<Route path='vouchers' element={<MerchantVoucherPage />} />

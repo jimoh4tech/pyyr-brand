@@ -671,10 +671,10 @@ export const Wallet = () => {
 					isChecked={false}
 				/>
 				<DisplayCard
-					value='0987 *** ***'
+					value={accountDetails.length !== 0 ? accountDetails[0][0] : ''}
 					label='Account Info'
-					isChecked={true}
-					title='Spotify Limited'
+					isChecked={false}
+					title={accountDetails.length !== 0 ? accountDetails[0][1] : ''}
 				/>
 				<DisplayCard
 					value={formatCurrency(balance)}

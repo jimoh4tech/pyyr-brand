@@ -94,9 +94,9 @@ export const MerchantSidebarContent = ({
 			href: '/merchant',
 		},
 		{
-			label: 'Customers',
+			label: 'Gifts',
 			icon: customer,
-			href: '/merchant/customers',
+			href: '/merchant/gifts',
 		},
 		{
 			label: 'Campaigns',

@@ -181,7 +181,7 @@ const CreateVoucherModal = ({
 						<Button
 							size={'sm'}
 							onClick={() =>
-								step < 3 ? setStep(step + 1) : setStatus('create')
+								step < 2 ? setStep(step + 1) : setStatus('create')
 							}
 							colorScheme='purple'
 						>
@@ -533,7 +533,18 @@ const Form2 = ({
 						>
 							Back
 						</Button>
-						<Button colorScheme='purple' size={'xs'} onClick={() => console.log(value)}>
+						<Button
+							colorScheme='purple'
+							size={'xs'}
+							onClick={() => {
+								formik.setValues({
+									...formik.values,
+									location_name: value.map((v) => v.value),
+								});
+								// console.log(formik.values)
+								setStep(3);
+							}}
+						>
 							Proceed
 						</Button>
 					</Flex>

@@ -981,7 +981,7 @@ const Form6 = ({
 					<Flex p={5} bg={'#fbfbfb'} flexDir={'column'} gap={10}>
 						<ManagerTable managers={managers} setManagers={setManagers} />
 						<Flex flexDir={'column'} gap={3} w={'100%'}>
-							<FormControl isRequired>
+							<FormControl >
 								<FormLabel fontSize={'xs'} htmlFor={'mName'}>
 									{'Manager Info'}
 								</FormLabel>
@@ -1050,7 +1050,7 @@ const Form6 = ({
 	);
 };
 export const BrandKYC = () => {
-	const [step, setStep] = useState(6);
+	const [step, setStep] = useState(2);
 	const [isLessThan600] = useMediaQuery('(max-width: 600px)');
 	const [bankList, setBankList] = useState<
 		{ code: string; id: string; name: string }[]

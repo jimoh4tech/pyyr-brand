@@ -56,7 +56,7 @@ export const MerchantLayout = () => {
 		| 'Dashboard'
 		| 'Vouchers'
 		| 'Wallet'
-		| 'Customers'
+		| 'Gifts'
 		| 'Campaigns'
 		| 'Profile'
 		| 'Marketplace'
@@ -67,7 +67,7 @@ export const MerchantLayout = () => {
 		else if (window.location.href.includes('/vouchers'))
 			setCurrentNav('Vouchers');
 		else if (window.location.href.includes('/wallet')) setCurrentNav('Wallet');
-		else if (window.location.href.includes('/customers')) setCurrentNav('Customers');
+		else if (window.location.href.includes('/gifts')) setCurrentNav('Gifts');
 		else if (window.location.href.includes('/marketplace'))
 			setCurrentNav('Marketplace');
 		else if (window.location.href.includes('/profile'))
