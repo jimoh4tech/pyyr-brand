@@ -14,6 +14,7 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
+	Input,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -27,6 +28,7 @@ import {
 	useToast,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import moment from 'moment';
 import { IVoucherTable } from '../../interface/voucher';
 import voucherService from '../../services/voucher';
 import { IoEyeOutline } from 'react-icons/io5';
@@ -81,10 +83,6 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 								<Text fontSize={'small'}>{voucher.description}</Text>
 							</Flex>
 							<Flex justifyContent={'space-between'}>
-								<Text fontSize={'small'}>Redemption:</Text>
-								<Text fontSize={'small'}>{voucher.redemption}</Text>
-							</Flex>
-							<Flex justifyContent={'space-between'}>
 								<Text fontSize={'small'}>Visibility:</Text>
 								<Text fontSize={'small'}>{voucher.visibility}</Text>
 							</Flex>
@@ -96,10 +94,10 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 								<Text fontSize={'small'}>Quantity:</Text>
 								<Text fontSize={'small'}>{voucher.qty}</Text>
 							</Flex>
-							<Flex justifyContent={'space-between'}>
+							{/* <Flex justifyContent={'space-between'}>
 								<Text fontSize={'small'}>Quantity Used:</Text>
 								<Text fontSize={'small'}>{voucher.qty_used}</Text>
-							</Flex>
+							</Flex> */}
 							<Flex justifyContent={'space-between'}>
 								<Text fontSize={'small'}>Expiration Date:</Text>
 								<Text fontSize={'small'}>{voucher?.exp}</Text>
@@ -111,7 +109,6 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 		</>
 	);
 };
-
 
 const MarketPlaceCard = ({
 	voucher,
@@ -235,6 +232,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 	const [total, setTotal] = useState('0');
 	const [refetchCart, setRefetchCart] = useState(true);
 	const [isLoading, toggleLoading] = useState(false);
+	const [exp, setExp] = useState(moment().add(7, 'days').format('YYYY-MM-DD'));
 	useEffect(() => {
 		const fetchCartVouchers = async () => {
 			try {
@@ -275,7 +273,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 				toggleLoading(false);
 				onClose();
 			} else {
-				toggleLoading(false)
+				toggleLoading(false);
 				toast({
 					title: 'Error',
 					description:
@@ -334,7 +332,15 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 									/>
 								))}
 							</Flex>
-
+							<Flex gap={3} alignItems={'center'}>
+								<Text fontSize={'sm'}>Expiration</Text>
+								<Input
+									size={'sm'}
+									type='datetime-local'
+									value={exp}
+									onChange={(e) => setExp(e.target.value)}
+								/>
+							</Flex>
 							<Divider />
 							<Flex>
 								<Spacer />
@@ -347,7 +353,11 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 						<Button variant='outline' mr={3} onClick={onClose}>
 							Close
 						</Button>
-						<Button colorScheme='purple' onClick={handleCheckout} isLoading={isLoading}>
+						<Button
+							colorScheme='purple'
+							onClick={handleCheckout}
+							isLoading={isLoading}
+						>
 							Checkout
 						</Button>
 					</DrawerFooter>

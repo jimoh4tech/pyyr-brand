@@ -188,15 +188,24 @@ const ModalForm3 = ({ formik }: { formik: any }) => {
 const ModalForm4 = ({
 	pin,
 	setPin,
+	isLoading
 }: {
 	pin: string; // eslint-disable-next-line @typescript-eslint/no-explicit-any
-	setPin: any;
+		setPin: any;
+		isLoading: boolean;
 }) => {
 	return (
 		<>
-			<Flex flexDir={'column'} justifyContent={'center'} alignItems={'center'} gap={4}>
-				<Text fontWeight={'bold'} >Enter the code</Text>
-				<Text fontSize={'small'}>We've sent an OTP to your email to confirm transaction</Text>
+			<Flex
+				flexDir={'column'}
+				justifyContent={'center'}
+				alignItems={'center'}
+				gap={4}
+			>
+				<Text fontWeight={'bold'}>Enter the code</Text>
+				<Text fontSize={'small'}>
+					We've sent an OTP to your email to confirm transaction
+				</Text>
 				<HStack>
 					<PinInput otp value={pin} onChange={(val) => setPin(val)}>
 						<PinInputField />
@@ -206,7 +215,7 @@ const ModalForm4 = ({
 					</PinInput>
 				</HStack>
 
-				<Button colorScheme='purple' type='submit' w={'100%'}>
+				<Button colorScheme='purple' type='submit' w={'100%'} isLoading={isLoading}>
 					Submit
 				</Button>
 			</Flex>
@@ -225,6 +234,7 @@ const WithdrawalModal = ({
 	const [step, setStep] = useState(1);
 	const [pin, setPin] = useState('');
 	const [confirm_ptb, setConfirm] = useState('');
+	const [isLoading, setLoading] = useState(false);
 
 	const toast = useToast();
 
@@ -281,6 +291,7 @@ const WithdrawalModal = ({
 				}
 			} else {
 				try {
+					setLoading(true);
 					const email = localStorage.getItem('PYMAILYR') || '';
 					const newVal = {
 						confirm_ptb,
@@ -291,7 +302,7 @@ const WithdrawalModal = ({
 					const res = await transactionsService.confirmWithdrawal(newVal);
 					console.log(res);
 
-					if (res.responseCode == 200) {
+					if (typeof res === 'string' ? res.includes('"status":true') : null) {
 						toast({
 							title: 'Transfer Successfully completed',
 							description: res.responseMessage,
@@ -303,11 +314,10 @@ const WithdrawalModal = ({
 						setStep(1);
 						onClose();
 					} else {
+						setLoading(false);
 						toast({
 							title: 'Error',
-							description:
-								res.responseMessage ||
-								'Opps! Something went wrong, try again later',
+							description: 'Opps! Something went wrong, try again later',
 							status: 'error',
 							duration: 9000,
 							isClosable: true,
@@ -315,6 +325,7 @@ const WithdrawalModal = ({
 						});
 					}
 				} catch (error) {
+					setLoading(false)
 					console.log(error);
 				}
 			}
@@ -349,7 +360,7 @@ const WithdrawalModal = ({
 							) : step === 3 ? (
 								<ModalForm3 formik={formik} />
 							) : (
-								<ModalForm4 pin={pin} setPin={setPin} />
+								<ModalForm4 pin={pin} setPin={setPin} isLoading={isLoading} />
 							)}
 						</ModalBody>
 						<Divider />

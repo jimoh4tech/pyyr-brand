@@ -80,7 +80,7 @@ const ModalForm1 = ({
 	balance,
 }: {
 	balance: number;
-	amount: number;
+	amount: number | undefined;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setAmount: any;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -110,7 +110,7 @@ const ModalForm1 = ({
 						<InputGroup>
 							<InputLeftAddon>&#8358;</InputLeftAddon>
 							<Input
-								type='number'
+								type='number'							
 								value={amount}
 								onChange={(e) => setAmount(Number(e.target.value))}
 							/>
@@ -148,7 +148,7 @@ const FundModal = ({
 	balance: number;
 }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [amount, setAmount] = useState(0);
+	const [amount, setAmount] = useState<number>();
 	const { currentUser } = useContext(CurrentUserContext);
 	const [reference, setReference] = useState<{
 		trxref?: string;
@@ -163,7 +163,7 @@ const FundModal = ({
 	const config = {
 		reference: new Date().getTime().toString(),
 		email,
-		amount: amount * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
+		amount: amount || 0 * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
 		publicKey,
 	};
 

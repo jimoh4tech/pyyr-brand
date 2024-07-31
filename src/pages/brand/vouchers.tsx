@@ -23,10 +23,6 @@ import {
 	Input,
 	InputGroup,
 	InputLeftElement,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -62,7 +58,6 @@ import { ItemCheck } from './kyc/index';
 import { DisplayCard } from './dashboard';
 import { FiSearch } from 'react-icons/fi';
 import { IoEyeOutline } from 'react-icons/io5';
-import { MdKeyboardArrowDown } from 'react-icons/md';
 import { IVoucherTable } from '../../interface/voucher';
 import voucherService from '../../services/voucher';
 import { formatCurrency } from '../../util/format-currency.util';
@@ -939,7 +934,7 @@ IVoucherTable) => {
 							>
 								How to Redeem Voucher
 							</Text>
-							<Text fontSize={'xs'}>{redemption}</Text>
+							<Text fontSize={'xs'}>{description}</Text>
 							<Text
 								fontSize={'xs'}
 								fontWeight={'semibold'}
@@ -947,11 +942,7 @@ IVoucherTable) => {
 							>
 								Where to Redeem
 							</Text>
-							<Text fontSize={'xs'}>
-								1. At any of our store across the country.
-								<br />
-								2. On our website @ www.shoprite.com
-							</Text>
+							<Text fontSize={'xs'}>{redemption}</Text>
 							<Text
 								fontSize={'xs'}
 								fontWeight={'semibold'}
@@ -963,50 +954,50 @@ IVoucherTable) => {
 								This Voucher Expires 1 month after purchase, after which becomes
 								irredeemable.
 							</Text>
-							<Text fontSize={'xs'} fontWeight={'semibold'}>
-								Additional Information
-							</Text>
-							<Flex justifyContent={'space-between'} gap={3}>
-								<Card size={'sm'} flex={1}>
-									<CardBody>
-										<Stack spacing={'5'}>
-											<Text fontSize={'xs'}>No of times sold</Text>
-											<Text fontSize={'xs'} fontWeight={'semibold'}>
-												35
-											</Text>
-										</Stack>
-									</CardBody>
-								</Card>
-								<Card size={'sm'} flex={1}>
-									<CardBody>
-										<Stack spacing={'5'}>
-											<Flex justifyContent={'space-between'}>
-												<Text fontSize={'xs'}>Merchants</Text>
-												<Text
-													fontSize={'xs'}
-													textDecor={'underline'}
-													textColor={'#825EE4'}
-												>
-													View
+							{/* <Text fontSize={'xs'} fontWeight={'semibold'}>
+									Additional Information
+								</Text>
+								<Flex justifyContent={'space-between'} gap={3}>
+									<Card size={'sm'} flex={1}>
+										<CardBody>
+											<Stack spacing={'5'}>
+												<Text fontSize={'xs'}>No of times sold</Text>
+												<Text fontSize={'xs'} fontWeight={'semibold'}>
+													35
 												</Text>
-											</Flex>
-											<Text fontSize={'xs'} fontWeight={'semibold'}>
-												5
-											</Text>
-										</Stack>
-									</CardBody>
-								</Card>
-								<Card size={'sm'} flex={1}>
-									<CardBody>
-										<Stack spacing={'5'}>
-											<Text fontSize={'xs'}>Quantity Sold</Text>
-											<Text fontSize={'xs'} fontWeight={'semibold'}>
-												350
-											</Text>
-										</Stack>
-									</CardBody>
-								</Card>
-							</Flex>
+											</Stack>
+										</CardBody>
+									</Card>
+									<Card size={'sm'} flex={1}>
+										<CardBody>
+											<Stack spacing={'5'}>
+												<Flex justifyContent={'space-between'}>
+													<Text fontSize={'xs'}>Merchants</Text>
+													<Text
+														fontSize={'xs'}
+														textDecor={'underline'}
+														textColor={'#825EE4'}
+													>
+														View
+													</Text>
+												</Flex>
+												<Text fontSize={'xs'} fontWeight={'semibold'}>
+													5
+												</Text>
+											</Stack>
+										</CardBody>
+									</Card>
+									<Card size={'sm'} flex={1}>
+										<CardBody>
+											<Stack spacing={'5'}>
+												<Text fontSize={'xs'}>Quantity Sold</Text>
+												<Text fontSize={'xs'} fontWeight={'semibold'}>
+													350
+												</Text>
+											</Stack>
+										</CardBody>
+									</Card>
+								</Flex> */}
 						</Stack>
 						<Divider />
 					</DrawerBody>
@@ -1026,18 +1017,18 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
 								Voucher Name
 							</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>
+							{/* <Th fontSize={'xs'} textTransform={'capitalize'}>
 								Voucher Type
-							</Th>
+							</Th> */}
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
 								Worth
 							</Th>
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
 								Voucher ID
 							</Th>
-							<Th fontSize={'xs'} textTransform={'capitalize'}>
+							{/* <Th fontSize={'xs'} textTransform={'capitalize'}>
 								Quantity Sold
-							</Th>
+							</Th> */}
 							<Th fontSize={'xs'} textTransform={'capitalize'}>
 								Sales Price
 							</Th>
@@ -1053,10 +1044,10 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 						{vouchers?.map((v) => (
 							<Tr fontSize={'xs'} key={v.code}>
 								<Td fontSize={'xs'}>{v.Name}</Td>
-								<Td fontSize={'xs'}>{v.redemption}</Td>
+								{/* <Td fontSize={'xs'}>{v.redemption}</Td> */}
 								<Td fontSize={'xs'}>{formatCurrency(v.worth)}</Td>
 								<Td fontSize={'xs'}>{v.code}</Td>
-								<Td fontSize={'xs'}>{v.qty}</Td>
+								{/* <Td fontSize={'xs'}>{v.qty}</Td> */}
 								<Td fontSize={'xs'}>{formatCurrency(v.amount)}</Td>
 								<Td fontSize={'xs'}>
 									<Badge
@@ -1107,6 +1098,10 @@ const VoucherContent = ({
 		total_voucher: number;
 	} | null;
 }) => {
+	const [filterText, setFilterText] = useState('');
+	// const [filter, setFilter] = useState<'All' | 'Draft' | 'Private' | 'Public'>(
+	// 	'All'
+	// );
 	return (
 		<>
 			<Flex gap={{ base: 1, md: 3 }}>
@@ -1147,9 +1142,15 @@ const VoucherContent = ({
 						<InputLeftElement alignItems={'center'}>
 							<FiSearch size={'15px'} />
 						</InputLeftElement>
-						<Input placeholder='Search' size={'sm'} borderRadius={'30px'} />
+						<Input
+							placeholder='Search'
+							size={'sm'}
+							borderRadius={'30px'}
+							value={filterText}
+							onChange={(e) => setFilterText(e.target.value)}
+						/>
 					</InputGroup>
-					<Menu>
+					{/* <Menu>
 						<MenuButton
 							fontSize={'sm'}
 							as={Button}
@@ -1157,17 +1158,37 @@ const VoucherContent = ({
 						>
 							All
 						</MenuButton>
-						<MenuList>
-							<MenuItem fontSize={'sm'}>All</MenuItem>
-							<MenuItem fontSize={'sm'}>Draft</MenuItem>
-							<MenuItem fontSize={'sm'}>Private</MenuItem>
-							<MenuItem fontSize={'sm'}>Public</MenuItem>
+						<MenuList
+							defaultValue={'All'}
+							// onChange={(e) => setFilter(e.target)}
+						>
+							<MenuItem fontSize={'sm'} value={'All'}>
+								All
+							</MenuItem>
+							<MenuItem fontSize={'sm'} value={'Draft'}>
+								Draft
+							</MenuItem>
+							<MenuItem fontSize={'sm'} value={'Private'}>
+								Private
+							</MenuItem>
+							<MenuItem fontSize={'sm'} value={'Public'}>
+								Public
+							</MenuItem>
 						</MenuList>
-					</Menu>
+					</Menu> */}
 					<CreateVoucherModal setStatus={setStatus} />
 				</Flex>
 				<Divider />
-				<VoucherTable vouchers={vouchers} />
+				<VoucherTable
+					vouchers={vouchers.filter(
+						(v) =>
+							v.Name.toLowerCase().includes(filterText.toLowerCase()) ||
+							v.code.toLowerCase().includes(filterText.toLowerCase()) ||
+							v.amount.toLowerCase().includes(filterText.toLowerCase()) ||
+							v.worth.toLowerCase().includes(filterText.toLowerCase()) ||
+							v.visibility.toLowerCase().includes(filterText.toLowerCase())
+					)}
+				/>
 			</Flex>
 		</>
 	);
