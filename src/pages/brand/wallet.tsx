@@ -170,7 +170,7 @@ const ModalForm3 = ({ formik }: { formik: any }) => {
 				</Flex>
 				<Flex justifyContent={'space-between'}>
 					<Text fontSize={'xs'}>Processing Fee</Text>
-					<Text fontSize={'xs'}>{formatCurrency(250)}</Text>
+					<Text fontSize={'xs'}>{formatCurrency(Number(formik.values.amount) * 0.1)}</Text>
 				</Flex>
 				<Flex justifyContent={'space-between'}>
 					<Text fontSize={'xs'}>Receiving Account</Text>

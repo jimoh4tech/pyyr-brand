@@ -161,7 +161,7 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
 								fontSize={'xs'}
 								fontWeight={'bold'}
 							>{`${voucher.Name} | ${voucher.code}`}</Text>
-							<Text fontSize={'xs'}>{voucher.redemption}</Text>
+							<Text fontSize={'xs'}>{voucher.promotional_title}</Text>
 						</Stack>
 					</Flex>
 

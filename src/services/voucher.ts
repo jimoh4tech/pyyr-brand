@@ -50,7 +50,7 @@ const createVoucher = async ({
 			worth,
 			amount,
 			image,
-			"location_name[]": location_name,
+			'location_name[]': location_name,
 			url,
 			description,
 			redeem,
@@ -197,11 +197,18 @@ const getAllMerchantVouchers = async ({
 	);
 	return res.data;
 };
-const checkoutOrder = async ({ checkout }: { checkout: string }) => {
+const checkoutOrder = async ({
+	checkout,
+	exp,
+}: {
+	checkout: string;
+	exp: string;
+}) => {
 	const res = await axios.post(
 		`${baseUrl}`,
 		{
 			checkout,
+			exp,
 		},
 		{
 			headers: { 'Content-Type': 'multipart/form-data' },

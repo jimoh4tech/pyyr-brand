@@ -87,12 +87,16 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
 								<Text fontSize={'small'}>{voucher.visibility}</Text>
 							</Flex>
 							<Flex justifyContent={'space-between'}>
-								<Text fontSize={'small'}>Worth:</Text>
-								<Text fontSize={'small'}>{formatCurrency(voucher.worth)}</Text>
+								<Text fontSize={'small'}>Amount:</Text>
+								<Text fontSize={'small'}>{formatCurrency(voucher.amount)}</Text>
 							</Flex>
 							<Flex justifyContent={'space-between'}>
 								<Text fontSize={'small'}>Quantity:</Text>
 								<Text fontSize={'small'}>{voucher.qty}</Text>
+							</Flex>
+							<Flex justifyContent={'space-between'}>	
+								<Text fontSize={'small'}>Redemption:</Text>
+								<Text fontSize={'small'}>{voucher.redemption}</Text>
 							</Flex>
 							{/* <Flex justifyContent={'space-between'}>
 								<Text fontSize={'small'}>Quantity Used:</Text>
@@ -166,7 +170,7 @@ const MarketPlaceCard = ({
 								fontSize={'xs'}
 								fontWeight={'bold'}
 							>{`${voucher.Name} | ${voucher.code}`}</Text>
-							<Text fontSize={'xs'}>{voucher.redemption}</Text>
+							<Text fontSize={'xs'}>{voucher.promotional_title}</Text>
 						</Stack>
 					</Flex>
 
@@ -257,6 +261,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 			const email = localStorage.getItem('PYMAILYR') || '';
 			const val = {
 				checkout: email,
+				exp
 			};
 			console.log(val);
 			const res = await voucherService.checkoutOrder(val);
