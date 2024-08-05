@@ -216,6 +216,26 @@ const checkoutOrder = async ({
 	);
 	return res.data;
 };
+
+const toggleVoucherAvailabiility = async ({
+	voucher_code,
+	update_availability,
+}: {
+	voucher_code: string;
+	update_availability: string;
+}) => {
+	const res = await axios.post(
+		`${baseUrl}`,
+		{
+			voucher_code,
+			update_availability,
+		},
+		{
+			headers: { 'Content-Type': 'multipart/form-data' },
+		}
+	);
+	return res.data;
+};
 export default {
 	createVoucher,
 	getVouchers,
@@ -227,4 +247,5 @@ export default {
 	getAllCartVouchers,
 	getAllMerchantVouchers,
 	checkoutOrder,
+	toggleVoucherAvailabiility
 };

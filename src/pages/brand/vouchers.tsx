@@ -1007,7 +1007,42 @@ IVoucherTable) => {
 	);
 };
 
-const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
+const VoucherTable = ({ vouchers, update, setUpdate }: { vouchers: IVoucherTable[] // eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setUpdate: any;
+	update: number; }) => {
+	const toast = useToast();
+
+	const handleToggleAvailability = async(voucher_code: string) => {
+		try {
+			const token = localStorage.getItem('PYMAILYR') || '';
+			const res = await voucherService.toggleVoucherAvailabiility({ update_availability: token, voucher_code });
+			if (res.responseCode == 200) {
+				setUpdate(update + 1);
+				toast({
+					title: 'Voucher successfully updated',
+					description: res.responseMessage,
+					status: 'success',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+
+			} else {
+				toast({
+					title: 'Error',
+					description:
+						res.responseMessage ||
+						'Opps! Something went wrong, try again later',
+					status: 'error',
+					duration: 9000,
+					isClosable: true,
+					position: 'top-right',
+				});
+			}
+		} catch (error) {
+			
+		}
+	}
 	return (
 		<>
 			<TableContainer>
@@ -1053,11 +1088,9 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 									<Badge
 										// eslint-disable-next-line no-constant-condition
 										bgColor={
-											v.visibility === 'Draft'
-												? '#ffd5d0'
-												: v.visibility === 'Private'
-												? '#ffe3b2'
-												: '#d4f7e1'
+											v.visibility === "Available"
+												? '#d4f7e1'
+												: '#ffd5d0'
 										}
 										textTransform={'capitalize'}
 										borderRadius={'10px'}
@@ -1071,7 +1104,7 @@ const VoucherTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 										alignItems={'center'}
 										gap={2}
 									>
-										<Switch colorScheme='purple' size={'sm'} />{' '}
+										<Switch colorScheme='purple' onChange={() => handleToggleAvailability(v.code)} size={'sm'} isChecked={v.visibility === "Available" ? true : false} />{' '}
 										<ViewVoucherDrawer {...v} />
 									</Flex>
 								</Td>
@@ -1088,6 +1121,8 @@ const VoucherContent = ({
 	setStatus,
 	vouchers,
 	vData,
+	setUpdate,
+	update
 }: {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	setStatus: any;
@@ -1097,6 +1132,9 @@ const VoucherContent = ({
 		total_used: string;
 		total_voucher: number;
 	} | null;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	setUpdate: any;
+	update: number;
 }) => {
 	const [filterText, setFilterText] = useState('');
 	// const [filter, setFilter] = useState<'All' | 'Draft' | 'Private' | 'Public'>(
@@ -1187,7 +1225,8 @@ const VoucherContent = ({
 							v.amount.toLowerCase().includes(filterText.toLowerCase()) ||
 							v.worth.toLowerCase().includes(filterText.toLowerCase()) ||
 							v.visibility.toLowerCase().includes(filterText.toLowerCase())
-					)}
+					) } setUpdate={setUpdate}
+					update={update}
 				/>
 			</Flex>
 		</>
@@ -1197,6 +1236,7 @@ const VoucherContent = ({
 export const Voucher = () => {
 	const [status, setStatus] = useState<'empty' | 'create' | 'list'>('empty');
 	const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+	const [update, setUpdate] = useState(0);
 	const [vData, setVData] = useState<{
 		total_purchase: string;
 		total_used: string;
@@ -1219,7 +1259,7 @@ export const Voucher = () => {
 			console.error(error);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [status]);
+	}, [status, update]);
 	return (
 		<>
 			<Flex flexDir={'column'} gap={3} justifyContent={'space-between'}>
@@ -1232,6 +1272,8 @@ export const Voucher = () => {
 						setStatus={setStatus}
 						vouchers={vouchers}
 						vData={vData}
+						setUpdate={setUpdate}
+						update={update}
 					/>
 				)}
 			</Flex>
