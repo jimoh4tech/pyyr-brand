@@ -88,74 +88,7 @@ const CustomersDetailsChart = () => {
 };
 
 const CustomerRewardTable = () => {
-	const vouchers: IVoucherTable[] = [
-		{
-			name: 'Emerald',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Partially Redeemed',
-			expireDate: 'N/A',
-			merchant: 'Dangote',
-		},
-		{
-			name: 'Platinum',
-			type: 'Multiple Use	',
-			worth: '₦500,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Partially Redeemed',
-			expireDate: '20/02/2024',
-			merchant: 'Coca-cola',
-		},
-		{
-			name: 'Beryl',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Not Redeemed',
-			expireDate: '20/02/2024',
-			merchant: 'Maggi',
-		},
-		{
-			name: 'Emerald',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Redeemed',
-			expireDate: '20/02/2024',
-			merchant: 'Nestle',
-		},
-		{
-			name: 'Platinum',
-			type: 'Multiple Use	',
-			worth: '₦500,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Redeemed',
-			expireDate: '20/02/2024',
-			merchant: 'Huggies',
-		},
-		{
-			name: 'Beryl',
-			type: 'Single Use',
-			worth: '₦20,000',
-			id: '#768',
-			quantity: '350',
-			price: '₦100,000',
-			status: 'Not Redeemed',
-			expireDate: '20/02/2024',
-			merchant: 'Kellogs',
-		},
-	];
+	const vouchers: IVoucherTable[] = [];
 	return (
 		<>
 			<TableContainer>
@@ -185,9 +118,9 @@ const CustomerRewardTable = () => {
 					</Thead>
 					<Tbody>
 						{vouchers.map((v) => (
-							<Tr fontSize={'xs'} key={v.id}>
-								<Td fontSize={'xs'}>{v.name}</Td>
-								<Td fontSize={'xs'}>#{v.id}</Td>
+							<Tr fontSize={'xs'} key={v.code}>
+								<Td fontSize={'xs'}>{v.Name}</Td>
+								<Td fontSize={'xs'}>#{v.code}</Td>
 								<Td fontSize={'xs'}>{v.worth}</Td>
 								<Td fontSize={'xs'}>{v.expireDate}</Td>
 								<Td fontSize={'xs'}>{v.price}</Td>
@@ -195,16 +128,16 @@ const CustomerRewardTable = () => {
 									<Badge
 										// eslint-disable-next-line no-constant-condition
 										bgColor={
-											v.status === 'Not Redeemed'
+											v.visibility === 'Not Redeemed'
 												? '#ffd5d0'
-												: v.status === 'Partially Redeemed'
+												: v.visibility === 'Partially Redeemed'
 												? '#ffe3b2'
 												: '#d4f7e1'
 										}
 										textTransform={'capitalize'}
 										borderRadius={'10px'}
 									>
-										{v.status}
+										{v.visibility}
 									</Badge>{' '}
 								</Td>
 							</Tr>

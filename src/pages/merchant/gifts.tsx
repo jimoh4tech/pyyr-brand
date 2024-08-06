@@ -29,7 +29,7 @@ import { CiEdit } from 'react-icons/ci';
 
 const EditGiftModal = ({ invitee }: { invitee: string }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const toast = useToast();
+	// const toast = useToast();
 	const [isLoading, toggleLoading] = useState(false);
 	const [email, setEmail] = useState(invitee);
 
@@ -41,32 +41,32 @@ const EditGiftModal = ({ invitee }: { invitee: string }) => {
 				update_voucher: email,
 			};
 			console.log(val);
-			const res = await dashboardService.updateVoucher(val);
-			console.log(res);
-			if (res.responseCode == 200) {
-				toast({
-					title: 'Gift Successfully Updated',
-					description: res.responseMessage,
-					status: 'success',
-					duration: 9000,
-					isClosable: true,
-					position: 'top-right',
-				});
-				toggleLoading(false);
-				onClose();
-			} else {
-				toggleLoading(false);
-				toast({
-					title: 'Error',
-					description:
-						res.responseMessage ||
-						'Opps! Something went wrong, try again later',
-					status: 'error',
-					duration: 9000,
-					isClosable: true,
-					position: 'top-right',
-				});
-			}
+			// const res = await dashboardService.updateVoucher(val);
+			// console.log(res);
+			// if (res.responseCode == 200) {
+			// 	toast({
+			// 		title: 'Gift Successfully Updated',
+			// 		description: res.responseMessage,
+			// 		status: 'success',
+			// 		duration: 9000,
+			// 		isClosable: true,
+			// 		position: 'top-right',
+			// 	});
+			// 	toggleLoading(false);
+			// 	onClose();
+			// } else {
+			// 	toggleLoading(false);
+			// 	toast({
+			// 		title: 'Error',
+			// 		description:
+			// 			res.responseMessage ||
+			// 			'Opps! Something went wrong, try again later',
+			// 		status: 'error',
+			// 		duration: 9000,
+			// 		isClosable: true,
+			// 		position: 'top-right',
+			// 	});
+			// }
 		} catch (error) {
 			console.log(error);
 		}

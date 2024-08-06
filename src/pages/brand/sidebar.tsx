@@ -224,6 +224,7 @@ export const BrandSidebarContent = ({
 			{...rest}
 			gap={10}
 			justifyContent={'space-between'}
+			overflowY={'scroll'}
 		>
 			<Stack gap={1}>
 				<Flex h='20' alignItems='center' ml='6'>
