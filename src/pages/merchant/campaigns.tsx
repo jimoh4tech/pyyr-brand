@@ -1,3 +1,3 @@
 export const CampaignPage = () => {
-	return <>Comin Soon!</>;
+  return <>Coming Soon!</>;
 };
