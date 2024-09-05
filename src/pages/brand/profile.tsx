@@ -591,7 +591,8 @@ export const Profile = () => {
           <Text fontSize={"sm"} fontWeight={"bold"}>
             Profile information
           </Text>
-          <EditProfileDrawer />
+          {/* Temporarily diabled edit profile */}
+          {currentUser?.email === "2" && <EditProfileDrawer />}
         </Flex>
 
         <Flex gap={4} alignItems={"center"}>

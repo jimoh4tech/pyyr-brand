@@ -49,6 +49,7 @@ import { useFormik } from "formik";
 import transactionsService from "../../services/transactions";
 import { formatCurrency } from "../../util/format-currency.util";
 import userService from "../../services/user";
+import { EmptyWallet } from "../merchant/wallet";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ModalForm1 = ({ formik, balance }: { formik: any; balance: number }) => {
@@ -394,50 +395,8 @@ const WithdrawalModal = ({
 };
 
 const WalletChart = () => {
-  const data = [
-    {
-      name: "Nov 12",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Nov 14",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Nov 16",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Nov 18",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Nov 23",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Nov 24",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Nov 11",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: any[] | undefined = [];
   return (
     <ResponsiveContainer width="99%" height="99%">
       <AreaChart
@@ -551,35 +510,8 @@ const ViewWalletDrawer = ({
 };
 
 const WalletTable = () => {
-  const transactionList: IWalletTable[] = [
-    {
-      recipient: "Orange Fly",
-      amount: "₦200,000",
-      bank: "Access Bank",
-      id: "105DU9192W",
-      type: "Debit",
-      date: "10/12/23",
-      status: "Pending",
-    },
-    {
-      recipient: "Ebenor Couture",
-      amount: "₦100,000",
-      bank: "Access Bank",
-      id: "305DP9192W",
-      type: "Credit",
-      date: "10/12/23",
-      status: "Failed",
-    },
-    {
-      recipient: "Dangote Plc",
-      amount: "₦200,000",
-      bank: "Access Bank",
-      id: "105DU192W",
-      type: "Credit",
-      date: "09/11/23",
-      status: "Successful",
-    },
-  ];
+  const transactionList: IWalletTable[] = [];
+  if (transactionList.length === 0) return <EmptyWallet />;
   return (
     <>
       <TableContainer>
@@ -713,7 +645,7 @@ export const Wallet = () => {
           alignItems={"center"}
           borderRadius={"md"}
         >
-          <Text>Overall Earning Trend</Text>
+          <Text>Total Amount Spent</Text>
           <Stack direction="row" gap={0}>
             <Input
               type="date"
@@ -742,11 +674,11 @@ export const Wallet = () => {
         >
           <Flex gap={2} alignItems={"center"}>
             <Text fontSize={"xs"}>Transaction History</Text>
-            <Select placeholder="This Week" size={"xs"}>
+            {/* <Select placeholder="This Week" size={"xs"}>
               <option value="option1">This Week</option>
               <option value="option2">Last Week</option>
               <option value="option3">Last Month</option>
-            </Select>
+            </Select> */}
           </Flex>
           <WithdrawalModal balance={balance} accountDetails={accountDetails} />
         </Flex>
