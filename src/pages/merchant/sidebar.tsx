@@ -90,6 +90,7 @@ export const MerchantSidebarContent = ({
   onClose,
   currentNav,
   setCurrentNav,
+  ...rest
 }: SidebarProps) => {
   const navigate = useNavigate();
   const { currentUser } = useContext(CurrentUserContext);
@@ -145,9 +146,10 @@ export const MerchantSidebarContent = ({
       pos="fixed"
       h={"full"}
       pr={5}
-      display={"flex"}
+      // display={"flex"}
       flexDir={"column"}
       justifyContent={"space-between"}
+      {...rest}
     >
       <Stack gap={1}>
         <Flex h="20" alignItems="center" ml="6">

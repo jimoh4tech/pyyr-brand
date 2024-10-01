@@ -80,7 +80,7 @@ export const MerchantLayout = () => {
     <Box minH="100vh" bg={"#fbfbfb"}>
       <MerchantSidebarContent
         onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "flex" }}
         currentNav={currentNav}
         setCurrentNav={setCurrentNav}
       />

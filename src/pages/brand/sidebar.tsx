@@ -172,6 +172,7 @@ export const BrandSidebarContent = ({
   onClose,
   currentNav,
   setCurrentNav,
+  ...rest
 }: SidebarProps) => {
   const [isControlVisible, toggleControlVisibility] = useState(false);
   const navigate = useNavigate();
@@ -218,12 +219,10 @@ export const BrandSidebarContent = ({
       pos="fixed"
       h={"full"}
       pr={5}
-      display={"flex"}
       flexDir={"column"}
-      // {...rest}
-      // gap={10}
       justifyContent={"space-between"}
       overflowY={"scroll"}
+      {...rest}
     >
       <Stack gap={1}>
         <Flex h="20" alignItems="center" ml="6">
