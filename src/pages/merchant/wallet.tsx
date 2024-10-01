@@ -164,9 +164,10 @@ const FundModal = ({
   const config = {
     reference: new Date().getTime().toString(),
     email,
-    amount: amount || 0 * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
+    amount: (amount || 0) * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
     publicKey,
   };
+  console.log(config);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSuccess = (reference: any) => {

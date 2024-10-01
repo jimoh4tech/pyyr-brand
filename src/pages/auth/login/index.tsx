@@ -1,16 +1,25 @@
 import {
   Box,
+  Button,
   Center,
   Grid,
   GridItem,
   Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
+  Text,
+  useDisclosure,
   useMediaQuery,
   useToast,
 } from "@chakra-ui/react";
 import welcome from "../../../assets/welcome.svg";
 import splashing from "../../../assets/splashing1.svg";
-import back from "../../../assets/back.svg";
 import pyyr from "../../../assets/pyyr.svg";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
@@ -21,10 +30,41 @@ import { useNavigate } from "react-router-dom";
 import userService from "../../../services/user";
 import { CurrentUserContext } from "../../../context/user.context";
 
+const VerifyOTP = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) => {
+  return (
+    <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Verify OTP</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Just</Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
 export const LoginPage = () => {
   const [isLessThan700] = useMediaQuery("(max-width: 700px)");
   const toast = useToast();
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { setCurrentUser } = useContext(CurrentUserContext);
 
   const [isloading, setLoading] = useState(true);
@@ -37,7 +77,7 @@ export const LoginPage = () => {
       // console.log(values);
       try {
         const res = await authServices.login(values);
-        // console.log(res);
+        console.log(res);
         authServices.setToken(res.token);
 
         const user = await userService.getFullUserDetail({
@@ -68,6 +108,7 @@ export const LoginPage = () => {
             isClosable: true,
             position: "top-right",
           });
+          if (res.responseCode == 200) onOpen();
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
@@ -123,7 +164,6 @@ export const LoginPage = () => {
               alignItems={"center"}
               justifyContent={"space-between"}
             >
-              <Image cursor={"pointer"} boxSize={"50px"} src={back} />
               <Image
                 boxSize={"70px"}
                 src={pyyr}
@@ -139,6 +179,7 @@ export const LoginPage = () => {
               handleSubmit={formik.handleSubmit}
               isSubmitting={formik.isSubmitting}
             />
+            <VerifyOTP isOpen={isOpen} onClose={onClose} />
           </GridItem>
         </Grid>
       )}

@@ -374,14 +374,18 @@ const WithdrawalModal = ({
             <Divider />
             {step < 4 && (
               <ModalFooter>
-                <Button
-                  size={"sm"}
-                  mr={3}
-                  variant={"outline"}
-                  onClick={() => (step === 1 ? setStep(1) : setStep(step - 1))}
-                >
-                  Back
-                </Button>
+                {step > 1 && (
+                  <Button
+                    size={"sm"}
+                    mr={3}
+                    variant={"outline"}
+                    onClick={() =>
+                      step === 1 ? setStep(1) : setStep(step - 1)
+                    }
+                  >
+                    Back
+                  </Button>
+                )}
                 <Button size={"sm"} colorScheme="purple" type="submit">
                   {step < 3 ? "Proceed" : "Yes, proceed"}
                 </Button>
