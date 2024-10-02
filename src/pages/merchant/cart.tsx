@@ -140,7 +140,6 @@ export const CartItem = ({
 }) => {
   const toast = useToast();
   const total = Number(voucher.price?.replace(",", "")) * Number(voucher.qty);
-  // console.log({ total });
 
   const removeCartItem = async () => {
     try {
