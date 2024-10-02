@@ -35,7 +35,7 @@ export const RegistrationPage = () => {
       account_type: "",
     },
     async onSubmit(values) {
-      console.log(values);
+      // console.log(values);
       try {
         if (values.password.length < 6) {
           toast({

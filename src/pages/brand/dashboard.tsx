@@ -289,7 +289,7 @@ const DashboardContent = () => {
         }
       );
       setGraphData(processedGraphData);
-      console.log({ res, processedGraphData });
+      // console.log({ res, processedGraphData });
     };
 
     try {
