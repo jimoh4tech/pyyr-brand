@@ -60,7 +60,7 @@ export const RegistrationPage = () => {
           return;
         }
         const res = await authServices.register(values);
-        console.log(res);
+        // console.log(res);
         if (res.responseCode == 200) {
           toast({
             title: "Account created.",

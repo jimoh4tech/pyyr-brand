@@ -268,7 +268,7 @@ export const Form3 = ({
     toggleLoading(true);
     try {
       const res = await authServices.verifyOTP({ checkotp: value, email });
-      console.log(res);
+      // console.log(res);
       if (res.responseCode == 200) {
         toast({
           title: `${type === "Login" ? "Login success" : "Account verified."}`,
