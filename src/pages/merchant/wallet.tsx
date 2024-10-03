@@ -111,9 +111,9 @@ const ModalForm1 = ({
             <InputGroup>
               <InputLeftAddon>&#8358;</InputLeftAddon>
               <Input
-                type="number"
+                type={"number"}
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => setAmount(e.target.value)}
               />
             </InputGroup>
           </Stack>
