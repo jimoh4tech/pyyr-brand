@@ -382,6 +382,7 @@ const Form3 = ({
     "Logistics",
     "Travel",
     "Utility",
+    "others",
   ];
 
   const businesses = [
@@ -394,6 +395,7 @@ const Form3 = ({
     "Franchise",
     "Social Enterprise",
     "Startup",
+    "others",
   ];
   return (
     <>
@@ -522,6 +524,7 @@ const Form3 = ({
                   value={formik.values.date}
                   onChange={formik.handleChange}
                   placeholder="Enter Date"
+                  max={new Date().toISOString().slice(0, -14)}
                 />
               </FormControl>
               <FormControl isRequired>
@@ -781,7 +784,7 @@ const Form5 = ({
                   }}
                 />
               </FormControl>
-              <FormControl isRequired>
+              {/* <FormControl isRequired>
                 <FormLabel fontSize={"xs"} htmlFor={"cac"}>
                   {"Form CAC"}
                 </FormLabel>
@@ -797,7 +800,7 @@ const Form5 = ({
                     );
                   }}
                 />
-              </FormControl>
+              </FormControl> */}
               <FormControl isRequired>
                 <FormLabel fontSize={"xs"} htmlFor={"id"}>
                   {"National Identity"}

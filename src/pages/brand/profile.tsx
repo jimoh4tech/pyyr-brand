@@ -354,6 +354,7 @@ const Form2 = () => {
                 value={formik.values.date}
                 onChange={formik.handleChange}
                 placeholder="Enter Date"
+                max={new Date().toISOString().slice(0, -14)}
               />
             </FormControl>
             <FormControl isRequired>
