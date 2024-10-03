@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   Grid,
   GridItem,
@@ -9,11 +8,9 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Stack,
-  Text,
   useDisclosure,
   useMediaQuery,
   useToast,
@@ -29,13 +26,16 @@ import authServices from "../../../services/auth";
 import { useNavigate } from "react-router-dom";
 import userService from "../../../services/user";
 import { CurrentUserContext } from "../../../context/user.context";
+import { Form3 } from "../register/forms";
 
 const VerifyOTP = ({
   isOpen,
   onClose,
+  email,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  email: string;
 }) => {
   return (
     <>
@@ -45,15 +45,8 @@ const VerifyOTP = ({
           <ModalHeader>Verify OTP</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>Just</Text>
+            <Form3 setStep={() => {}} email={email} />
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
@@ -108,7 +101,14 @@ export const LoginPage = () => {
             isClosable: true,
             position: "top-right",
           });
-          if (res.responseCode == 200) onOpen();
+          // Allow yet to be verified users to get verification code
+          if (res.responseCode === "403") {
+            onOpen();
+            const res = await authServices.resendCode({
+              resend_otp: values.username,
+            });
+            console.log(res);
+          }
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
@@ -179,7 +179,11 @@ export const LoginPage = () => {
               handleSubmit={formik.handleSubmit}
               isSubmitting={formik.isSubmitting}
             />
-            <VerifyOTP isOpen={isOpen} onClose={onClose} />
+            <VerifyOTP
+              isOpen={isOpen}
+              onClose={onClose}
+              email={formik.values.username}
+            />
           </GridItem>
         </Grid>
       )}

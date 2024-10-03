@@ -32,9 +32,9 @@ const QuantitySelect = ({
         email,
         add_cart: voucher.code,
       };
-      console.log(val);
+      // console.log(val);
       const res = await voucherService.addVoucherToCart(val);
-      console.log(res);
+      // console.log(res);
       setRefetchCart(!refetchCart);
       if (res.responseCode == 200) {
         toast({
@@ -71,9 +71,9 @@ const QuantitySelect = ({
         email,
         reduce_cart: voucher.code,
       };
-      console.log(val);
+      // console.log(val);
       const res = await voucherService.reduceQtyVoucherFromCart(val);
-      console.log(res);
+      // console.log(res);
       setRefetchCart(!refetchCart);
       if (res.responseCode == 200) {
         toast({
@@ -148,9 +148,9 @@ export const CartItem = ({
         email,
         remove_cart: voucher.code,
       };
-      console.log(val);
+      // console.log(val);
       const res = await voucherService.removeVoucherFromCart(val);
-      console.log(res);
+      // console.log(res);
       setRefetchCart(!refetchCart);
       if (res.responseCode == 200) {
         toast({

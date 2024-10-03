@@ -47,6 +47,19 @@ export const CurrentUserProvider = ({ ...props }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser && !currentUser?.businessName) {
+      currentUser?.account_type === "Business"
+        ? navigate("/merchant/kyc")
+        : navigate("/kyc");
+    }
+  }, [
+    currentUser,
+    currentUser?.account_type,
+    currentUser?.businessName,
+    navigate,
+  ]);
   return (
     <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>
       {props.children}

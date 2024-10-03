@@ -355,14 +355,14 @@ const Form3 = ({
   const fetchCountry = async () => {
     const ctr = await authService.getAllCountries();
     setCountries(ctr);
-    console.log({ ctr });
+    // console.log({ ctr });
   };
   const fetchState = async () => {
     const ctr = await authService.getAllStatesByCountry(
       formik.values.country?.split("|")[1] || ""
     );
     setStates(ctr);
-    console.log({ ctr });
+    // console.log({ ctr });
   };
 
   useEffect(() => {
@@ -854,7 +854,7 @@ const ManagerTable = ({
         remove_manager: code,
       };
       const res = await authService.removeManager(mObj);
-      console.log(mObj, res);
+      // console.log(mObj, res);
 
       if (res.responseCode == 200) {
         setManagers(res[0]);
@@ -956,7 +956,7 @@ const Form6 = ({
         return;
       }
       const res = await authService.addManager(mObj);
-      console.log(mObj, res);
+      // console.log(mObj, res);
 
       if (res.responseCode == 200) {
         setManagers(res[0]);
@@ -1165,10 +1165,10 @@ export const BrandKYC = () => {
           b_phone: values.b_phone.toString(),
           phone: values.phone.toString(),
         };
-        console.log({ newVal });
+        // console.log({ newVal });
         const res = await authService.kyc(newVal);
         const user = await userServices.getFullUserDetail({ full_user: email });
-        console.log({ res, user });
+        // console.log({ res, user });
         setCurrentUser(user);
         if (res.responseCode == 200) {
           toast({
@@ -1201,14 +1201,14 @@ export const BrandKYC = () => {
   useEffect(() => {
     const fetchBankList = async () => {
       const banks = await transactionsService.getBankList();
-      console.log({ banks });
+      // console.log({ banks });
       setBankList(banks.data);
     };
 
     if (bankList.length === 0) fetchBankList();
 
     if (formik.values.accountNumber.toString().length === 10) {
-      console.log(formik.values.accountNumber.toString().length === 10);
+      // console.log(formik.values.accountNumber.toString().length === 10);
       fetchAccountName();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

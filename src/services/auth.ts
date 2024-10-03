@@ -325,6 +325,18 @@ const getManagers = async ({ get_managers }: { get_managers: string }) => {
   );
   return res.data;
 };
+const resendCode = async ({ resend_otp }: { resend_otp: string }) => {
+  const res = await axios.post(
+    `${baseUrl}`,
+    {
+      resend_otp,
+    },
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+  return res.data;
+};
 
 const getAllCountries = async () => {
   const res = await axios.get("https://api.countrystatecity.in/v1/countries", {
@@ -361,4 +373,5 @@ export default {
   getManagers,
   getAllCountries,
   getAllStatesByCountry,
+  resendCode,
 };

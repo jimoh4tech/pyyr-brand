@@ -267,9 +267,9 @@ const WithdrawalModal = ({
             ptb: email,
             amount: values.amount.toString(),
           };
-          console.log({ newVal });
+          // console.log({ newVal });
           const res = await transactionsService.withdrawal(newVal);
-          console.log(res);
+          // console.log(res);
 
           if (res.responseCode == 200) {
             toast({
@@ -306,9 +306,9 @@ const WithdrawalModal = ({
             pin,
             email,
           };
-          console.log({ newVal });
+          // console.log({ newVal });
           const res = await transactionsService.confirmWithdrawal(newVal);
-          console.log(res);
+          // console.log(res);
 
           if (typeof res === "string" ? res.includes('"status":true') : null) {
             toast({
@@ -596,18 +596,18 @@ export const Wallet = () => {
   useEffect(() => {
     const token = localStorage.getItem("PYMAILYR") || "";
     const fetchBalance = async () => {
-      console.log({ token });
+      // console.log({ token });
       const res = await transactionsService.walletBalance({
         pyyr_accounts: token,
       });
-      console.log(res);
+      // console.log(res);
       setBalance(res.currentBalance);
     };
     const fetchAccountDetails = async () => {
       const res = await userService.getBankDetails({
         get_bank: token,
       });
-      console.log({ res: res[1] });
+      // console.log({ res: res[1] });
       setAccountDetails(res[1]);
     };
     fetchBalance();

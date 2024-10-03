@@ -176,7 +176,7 @@ export const BrandSidebarContent = ({
 }: SidebarProps) => {
   const [isControlVisible, toggleControlVisibility] = useState(false);
   const navigate = useNavigate();
-  const { currentUser } = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
 
   const navItems: INavItem[] = [
     {
@@ -208,6 +208,7 @@ export const BrandSidebarContent = ({
 
   const handleLogout = () => {
     localStorage.removeItem("PYMAILYR");
+    setCurrentUser(null);
     navigate("/signin");
   };
 

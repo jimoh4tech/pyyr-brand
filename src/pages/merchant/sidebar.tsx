@@ -93,7 +93,7 @@ export const MerchantSidebarContent = ({
   ...rest
 }: SidebarProps) => {
   const navigate = useNavigate();
-  const { currentUser } = useContext(CurrentUserContext);
+  const { currentUser, setCurrentUser } = useContext(CurrentUserContext);
   const navItems: INavItem[] = [
     {
       label: "Dashboard",
@@ -135,6 +135,7 @@ export const MerchantSidebarContent = ({
 
   const handleLogout = () => {
     localStorage.removeItem("PYMAILYR");
+    setCurrentUser(null);
     navigate("/signin");
   };
 

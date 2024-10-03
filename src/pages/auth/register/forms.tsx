@@ -254,10 +254,12 @@ export const Form3 = ({
   setStep,
   email,
   type,
+  onClose,
 }: {
   setStep: (num: number) => void;
   email: string;
   type?: string;
+  onClose?: () => void;
 }) => {
   const [value, setValue] = useState("");
   const [isLoading, toggleLoading] = useState(false);
@@ -278,11 +280,14 @@ export const Form3 = ({
           isClosable: true,
           position: "top-right",
         });
+
         type === "Login"
           ? navigate("/")
           : type === "Forget"
           ? setStep(3)
           : setStep(4);
+
+        onClose ? onClose() : "";
       } else {
         toast({
           title: "Error",
@@ -295,6 +300,35 @@ export const Form3 = ({
           position: "top-right",
         });
         toggleLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleResend = async () => {
+    try {
+      const res = await authServices.resendCode({ resend_otp: email });
+      console.log(res);
+      if (res.responseCode == 200) {
+        toast({
+          title: `${type === "Login" ? "OTP Resent" : "Account verified."}`,
+          description: res.responseMessage,
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description:
+            res.responseMessage ||
+            "Opps! Something went wrong, try again later",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
       }
     } catch (error) {
       console.log(error);
@@ -328,7 +362,10 @@ export const Form3 = ({
             </HStack>
             <Text textAlign={"center"} fontSize={"sm"}>
               Didn't get the code?{" "}
-              <Link color={"#825EE4"}> Click to resend.</Link>
+              <Link color={"#825EE4"} onClick={handleResend}>
+                {" "}
+                Click to resend.
+              </Link>
             </Text>
             <Button
               loadingText="Submitting"
