@@ -306,7 +306,7 @@ export const GiftsPage = () => {
         list_giftvoucher: token,
       });
 
-      console.log({ res });
+      // console.log({ res });
       setVouchers(res[1]);
       // setVData(res[0]);
     };
