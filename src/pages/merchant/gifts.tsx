@@ -55,9 +55,9 @@ const GiftVoucherModal = ({
         code,
         user,
       };
-      console.log(val);
+      // console.log(val);
       const res = await voucherService.giftVoucher(val);
-      console.log(res);
+      // console.log(res);
       if (res.responseCode == 200) {
         toast({
           title: "Gift Successfully Updated",
@@ -163,9 +163,9 @@ const GiftedUsersPopover = ({
         gift_all: email,
         code,
       };
-      console.log(val);
+      // console.log(val);
       const res = await voucherService.viewGiftVoucher(val);
-      console.log(res, res[0].responseCode);
+      // console.log(res, res[0].responseCode);
       if (res[0].responseCode == 200) {
         toast({
           title: "Fetched gifted successfully",
