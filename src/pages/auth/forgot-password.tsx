@@ -16,7 +16,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import splashing from "../../assets/splashing1.svg";
-import back from "../../assets/back.svg";
 import pyyr from "../../assets/pyyr.svg";
 import { useFormik } from "formik";
 import authServices from "../../services/auth";
@@ -94,7 +93,6 @@ export const ForgotPasswordPage = () => {
             alignItems={"center"}
             justifyContent={"space-between"}
           >
-            <Image cursor={"pointer"} boxSize={"50px"} src={back} />
             <Image
               boxSize={"70px"}
               src={pyyr}

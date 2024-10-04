@@ -223,15 +223,31 @@ export const Form2 = ({
                 value={confirmPassword}
                 onChange={onChange}
               />
-              <Checkbox
-                size={"sm"}
-                fontSize={"xs"}
-                onChange={() => setChecked(!isChecked)}
-              >
-                By signing up you agree to our{" "}
-                <Link color={"#825EE4"}>Terms & Conditions </Link> and{" "}
-                <Link color={"#825EE4"}>Privacy</Link>
-              </Checkbox>
+              <Flex gap={1} alignItems={"center"}>
+                <Checkbox
+                  size={"md"}
+                  fontSize={"xs"}
+                  onChange={() => setChecked(!isChecked)}
+                />
+                <Text fontSize={"small"}>By signing up you agree to our </Text>
+                <Link
+                  color={"#825EE4"}
+                  fontSize={"small"}
+                  href="https://www.pyyr.io/terms-conditions"
+                  target="_blank"
+                >
+                  Terms & Conditions{" "}
+                </Link>{" "}
+                <Text fontSize={"small"}>and </Text>
+                <Link
+                  color={"#825EE4"}
+                  fontSize={"small"}
+                  href="https://www.pyyr.io/privacy-policy"
+                  target="_blank"
+                >
+                  Privacy
+                </Link>
+              </Flex>
               <Button
                 loadingText="Submitting"
                 colorScheme="purple"

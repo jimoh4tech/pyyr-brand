@@ -280,6 +280,7 @@ const Form2 = ({
                     value={formik.values.dob}
                     onChange={formik.handleChange}
                     placeholder="Enter date"
+                    max={new Date().toISOString().slice(0, -14)}
                   />
                 </InputGroup>
               </FormControl>
@@ -382,7 +383,7 @@ const Form3 = ({
     "Logistics",
     "Travel",
     "Utility",
-    "others",
+    "Others",
   ];
 
   const businesses = [
@@ -395,7 +396,7 @@ const Form3 = ({
     "Franchise",
     "Social Enterprise",
     "Startup",
-    "others",
+    "Others",
   ];
   return (
     <>
