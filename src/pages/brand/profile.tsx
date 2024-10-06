@@ -29,6 +29,7 @@ import { useContext, useEffect, useState } from "react";
 import { CiEdit, CiLocationOn, CiMobile2 } from "react-icons/ci";
 import { CurrentUserContext } from "../../context/user.context";
 import userService from "../../services/user";
+import { QRCodeSVG } from "qrcode.react";
 
 const Form1 = () => {
   const { currentUser } = useContext(CurrentUserContext);
@@ -682,6 +683,16 @@ export const Profile = () => {
             <Text fontSize={"xs"}>Account Name</Text>
             <Text fontSize={"xs"}>{accountDetails[1]}</Text>
           </Flex>
+        </Stack>
+      </Stack>
+
+      <Stack gap={4}>
+        <Text fontSize={"sm"} fontWeight={"bold"}>
+          QR Code
+        </Text>
+
+        <Stack gap={3}>
+          <QRCodeSVG value={currentUser?.wallet_id || "pyyr"} />
         </Stack>
       </Stack>
     </Stack>

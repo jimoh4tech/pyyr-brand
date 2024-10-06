@@ -931,6 +931,8 @@ export const MerchantKYC = () => {
           b_phone: values.b_phone.toString(),
           phone: values.phone.toString(),
         };
+        // TODO: verify BVN
+
         console.log({ newVal });
         const res = await authService.kyc(newVal);
         const user = await userServices.getFullUserDetail({ full_user: email });
