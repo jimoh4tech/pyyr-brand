@@ -3,8 +3,8 @@ import axios from "axios";
 export const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const COUNTRY_API_KEY = import.meta.env.VITE_COUNTRY_API_KEY;
-// const IDENTITY_PASS_API_KEY = import.meta.env.VITE_IDENTITY_PASS_API_KEY;
-// const IDENTITY_PASS_APP_ID = import.meta.env.VITE_IDENTITY_PASS_APP_ID;
+const IDENTITY_PASS_API_KEY = import.meta.env.VITE_IDENTITY_PASS_API_KEY;
+const IDENTITY_PASS_APP_ID = import.meta.env.VITE_IDENTITY_PASS_APP_ID;
 
 export let email = "";
 
@@ -359,19 +359,45 @@ const getAllStatesByCountry = async (iso2: string) => {
   );
   return res.data;
 };
-// const verifyBVN = async (number: string) => {
-//   const res = await axios.post(
-//     `https://api.prembly.com/identitypass/verification/bvn_validation`,
-//     { number },
-//     {
-//       headers: {
-//         "app-id": IDENTITY_PASS_APP_ID,
-//         "x-api-key": IDENTITY_PASS_API_KEY,
-//       },
-//     }
-//   );
-//   return res.data;
-// };
+const verifyBVN = async (number: string) => {
+  const res = await axios.post(
+    `https://api.prembly.com/identitypass/verification/bvn_validation`,
+    { number },
+    {
+      headers: {
+        "app-id": IDENTITY_PASS_APP_ID,
+        "x-api-key": IDENTITY_PASS_API_KEY,
+      },
+    }
+  );
+  return res.data;
+};
+const verifyCAC = async (rc_number: string) => {
+  const res = await axios.post(
+    `https://api.prembly.com/identitypass/verification/cac`,
+    { rc_number, company_type: "RC" },
+    {
+      headers: {
+        "app-id": IDENTITY_PASS_APP_ID,
+        "x-api-key": IDENTITY_PASS_API_KEY,
+      },
+    }
+  );
+  return res.data;
+};
+const verifyCACImage = async (document_image: string) => {
+  const res = await axios.post(
+    `https://api.prembly.com/identitypass/verification/cac/image`,
+    { document_image, document_type: "image" },
+    {
+      headers: {
+        "app-id": IDENTITY_PASS_APP_ID,
+        "x-api-key": IDENTITY_PASS_API_KEY,
+      },
+    }
+  );
+  return res.data;
+};
 
 export default {
   register,
@@ -389,5 +415,7 @@ export default {
   getAllCountries,
   getAllStatesByCountry,
   resendCode,
-  // verifyBVN,
+  verifyBVN,
+  verifyCAC,
+  verifyCACImage,
 };

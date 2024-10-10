@@ -29,7 +29,7 @@ import { useContext, useEffect, useState } from "react";
 import { CiEdit, CiLocationOn, CiMobile2 } from "react-icons/ci";
 import { CurrentUserContext } from "../../context/user.context";
 import userService from "../../services/user";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 const Form1 = () => {
   const { currentUser } = useContext(CurrentUserContext);
@@ -572,7 +572,22 @@ export const Profile = () => {
   const { currentUser } = useContext(CurrentUserContext);
 
   const [accountDetails, setAccountDetails] = useState([]);
+  const downloadQRCode = () => {
+    const canvas = document.querySelector(
+      "#qrcode-canvas"
+    ) as HTMLCanvasElement;
+    if (!canvas) throw new Error("<canvas> not found in the DOM");
 
+    const pngUrl = canvas
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
+    const downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = "QR code.png";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
   useEffect(() => {
     const fetchAccountDetails = async () => {
       const token = localStorage.getItem("PYMAILYR") || "";
@@ -692,7 +707,16 @@ export const Profile = () => {
         </Text>
 
         <Stack gap={3}>
-          <QRCodeSVG value={currentUser?.wallet_id || "pyyr"} />
+          <QRCodeCanvas
+            id="qrcode-canvas"
+            value={currentUser?.wallet_id || "pyyr"}
+            size={290}
+            level={"H"}
+            marginSize={2}
+          />
+          <Button colorScheme="purple" onClick={downloadQRCode}>
+            Download QR Code
+          </Button>
         </Stack>
       </Stack>
     </Stack>

@@ -257,6 +257,17 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
   const toast = useToast();
   const handleCheckout = async () => {
     if (!exp) return;
+    if (total == "0.00") {
+      toast({
+        title: "Error",
+        description: "Cannot checkout empty cart.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
+      });
+      return;
+    }
     try {
       toggleLoading(true);
       const email = localStorage.getItem("PYMAILYR") || "";

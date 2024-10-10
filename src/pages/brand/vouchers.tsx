@@ -557,6 +557,7 @@ const Form3 = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
 }) => {
+  const toast = useToast();
   return (
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
@@ -624,7 +625,31 @@ const Form3 = ({
             >
               Back
             </Button>
-            <Button colorScheme="purple" size={"xs"} onClick={() => setStep(4)}>
+            <Button
+              colorScheme="purple"
+              size={"xs"}
+              onClick={() => {
+                if (
+                  formik.values.amount &&
+                  formik.values.worth &&
+                  formik.values.visibility &&
+                  formik.values.promotional_title &&
+                  formik.values.visibility &&
+                  formik.values.voucher_name
+                )
+                  setStep(4);
+                else {
+                  toast({
+                    title: "Error",
+                    description: "Some required fields are empty",
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                    position: "top-right",
+                  });
+                }
+              }}
+            >
               Proceed
             </Button>
           </Flex>

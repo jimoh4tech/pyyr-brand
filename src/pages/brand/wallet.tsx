@@ -73,7 +73,9 @@ const ModalForm1 = ({ formik, balance }: { formik: any; balance: number }) => {
             name="amount"
             value={formik.values.amount}
             onChange={formik.handleChange}
-            isInvalid={formik.values.amount > balance}
+            isInvalid={
+              formik.values.amount > balance || formik.values.amount == 0
+            }
             width={"70%"}
           />
         </Flex>
@@ -257,7 +259,17 @@ const WithdrawalModal = ({
     },
     async onSubmit(values) {
       console.log(values);
-      if (values.amount > balance) return;
+      if (values.amount > balance || values.amount == 0) {
+        toast({
+          title: "Error",
+          description: "Invalid amount",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+        return;
+      }
       if (step < 3) setStep(step + 1);
       else if (step === 3) {
         try {

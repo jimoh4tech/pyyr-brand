@@ -79,6 +79,7 @@ const ModalForm1 = ({
   setAmount,
   handleTopUp,
   balance,
+  onClose,
 }: {
   balance: number;
   amount: number | undefined;
@@ -86,6 +87,7 @@ const ModalForm1 = ({
   setAmount: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleTopUp: any;
+  onClose: () => void;
 }) => {
   return (
     <>
@@ -119,8 +121,8 @@ const ModalForm1 = ({
           </Stack>
           <Flex flexWrap={"wrap"} justifyContent={"space-between"} gap={2}>
             {[
-              50000, 100000, 10000, 20000, 500000, 1000000, 1000, 5000000, 5000,
-              1500000, 2000000, 3000000,
+              1000, 5000, 10000, 20000, 50000, 100000, 500000, 1000000, 1500000,
+              2000000, 3000000, 5000000,
             ].map((c) => (
               <AmountCard amount={c} setAmount={setAmount} key={c} />
             ))}
@@ -129,7 +131,7 @@ const ModalForm1 = ({
       </ModalBody>
       <Divider />
       <ModalFooter>
-        <Button size={"xs"} mr={2}>
+        <Button size={"xs"} mr={2} onClick={onClose}>
           Cancel
         </Button>
         <Button size={"xs"} onClick={handleTopUp} colorScheme="purple">
@@ -241,6 +243,7 @@ const FundModal = ({
             handleTopUp={() => {
               initializePayment({ onSuccess, onClose: onClosed });
             }}
+            onClose={onClose}
           />
         </ModalContent>
       </Modal>
