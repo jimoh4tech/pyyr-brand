@@ -702,6 +702,10 @@ export const Profile = () => {
       </Stack>
 
       <Stack gap={4}>
+        <Flex justifyContent={"space-between"}>
+          <Text fontSize={"xs"}>Wallet ID</Text>
+          <Text fontSize={"xs"}>{currentUser?.wallet_id}</Text>
+        </Flex>
         <Text fontSize={"sm"} fontWeight={"bold"}>
           QR Code
         </Text>
@@ -709,7 +713,7 @@ export const Profile = () => {
         <Stack gap={3}>
           <QRCodeCanvas
             id="qrcode-canvas"
-            value={currentUser?.wallet_id || "pyyr"}
+            value={currentUser?.email || "pyyr@pyyr.io"}
             size={290}
             level={"H"}
             marginSize={2}

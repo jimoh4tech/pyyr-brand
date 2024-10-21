@@ -1,16 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Flex,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { FiSearch } from "react-icons/fi";
-import notification from "../../assets/notification.svg";
+import { Avatar, Box, Flex, Link, Stack, Text } from "@chakra-ui/react";
+// import { FiSearch } from "react-icons/fi";
+// import notification from "../../assets/notification.svg";
 import help from "../../assets/help.svg";
 import { CurrentUserContext } from "../../context/user.context";
 import { useContext } from "react";
@@ -34,12 +24,12 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
           display={{ base: "none", md: "flex" }}
         >
           <Text width={"135px"}>{currentNav}</Text>
-          <InputGroup p={1}>
+          {/* <InputGroup p={1}>
             <InputLeftElement alignItems={"center"}>
               <FiSearch size={"15px"} />
             </InputLeftElement>
             <Input placeholder="Search" size={"sm"} borderRadius={"30px"} />
-          </InputGroup>
+          </InputGroup> */}
         </Flex>
         <Flex gap={3} alignItems={"center"}>
           <Stack
@@ -57,9 +47,9 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
               Get help
             </Link>
           </Stack>
-          <Box>
+          {/* <Box>
             <Avatar size={"xs"} src={notification} />
-          </Box>
+          </Box> */}
           <Box>
             <Avatar
               size={"sm"}
