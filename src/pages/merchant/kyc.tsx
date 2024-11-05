@@ -287,7 +287,6 @@ const Form2 = ({
                   placeholder="Select option"
                 >
                   <option value="NIN">NIN</option>
-                  <option value="BVN">BVN</option>
                   <option value="Driver Lisence">Driver's Lisence</option>
                   <option value="Internation Passport">
                     Internation Passport
