@@ -236,7 +236,9 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
   const [total, setTotal] = useState("0");
   const [refetchCart, setRefetchCart] = useState(true);
   const [isLoading, toggleLoading] = useState(false);
-  const [exp, setExp] = useState(moment().add(60, "days").format("YYYY-MM-DD"));
+  const [exp, setExp] = useState(
+    moment().add(60, "days").format("YYYY-MM-DDTHH:mm")
+  );
   useEffect(() => {
     const fetchCartVouchers = async () => {
       try {
@@ -354,7 +356,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
                 <Input
                   size={"sm"}
                   type="datetime-local"
-                  value={exp}
+                  defaultValue={exp}
                   onChange={(e) => setExp(e.target.value)}
                 />
               </Flex>

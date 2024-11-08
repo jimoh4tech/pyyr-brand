@@ -55,6 +55,18 @@ const GiftVoucherModal = ({
         code,
         user,
       };
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(user)) {
+        toast({
+          title: "Error",
+          description: "Invalid mail! Kindly enter a valid mail",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top-right",
+        });
+        toggleLoading(false);
+      }
       // console.log(val);
       const res = await voucherService.giftVoucher(val);
       // console.log(res);
