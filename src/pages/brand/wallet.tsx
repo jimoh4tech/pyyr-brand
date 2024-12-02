@@ -96,7 +96,7 @@ const ModalForm2 = ({
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const value = e.target.value.split(":");
-    console.log({ value });
+    // console.log({ value });
     formik.setValues({
       ...formik.values,
       accountNumber: value[0] || "",
@@ -258,7 +258,7 @@ const WithdrawalModal = ({
       amount: 0,
     },
     async onSubmit(values) {
-      console.log(values);
+      // console.log(values);
       if (values.amount > balance || values.amount == 0) {
         toast({
           title: "Error",

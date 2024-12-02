@@ -169,11 +169,11 @@ const FundModal = ({
     amount: (amount || 0) * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
     publicKey,
   };
-  console.log(config);
+  // console.log(config);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSuccess = (reference: any) => {
-    console.log(reference);
+    // console.log(reference);
     setReference(reference);
   };
 
@@ -196,7 +196,7 @@ const FundModal = ({
       email: token,
       payment_ref: reference?.trxref || "",
     };
-    console.log(payload);
+    // console.log(payload);
     const res = await transactionsService.verifyTopUp(payload);
     console.log(res);
     toast({
@@ -210,7 +210,7 @@ const FundModal = ({
     const wallet = await transactionsService.walletBalance({
       pyyr_accounts: token,
     });
-    console.log(wallet);
+    // console.log(wallet);
     setBalance(wallet.currentBalance);
     onClose();
   };
@@ -233,7 +233,13 @@ const FundModal = ({
         Fund Wallet
       </Button>
 
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+        trapFocus={false}
+        blockScrollOnMount={false}
+      >
         <ModalOverlay />
         <ModalContent gap={4}>
           <ModalForm1
@@ -469,15 +475,15 @@ export const MerchantWalletPage = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       const email = localStorage.getItem("PYMAILYR") || "";
-      console.log({ email });
+      // console.log({ email });
       const res = await transactionsService.walletBalance({
         pyyr_accounts: email,
       });
-      console.log(res);
+      // console.log(res);
       setBalance(res.currentBalance);
 
-      const bankList = await transactionsService.getBankList();
-      console.log({ bankList });
+      // const bankList = await transactionsService.getBankList();
+      // console.log({ bankList });
     };
     fetchBalance();
   }, []);
