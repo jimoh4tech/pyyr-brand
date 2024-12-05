@@ -25,6 +25,7 @@ import { CustomerDetails } from "../pages/merchant/customer-details";
 import { CurrentUserProvider } from "../context/user.context";
 import { GiftsPage } from "../pages/merchant/gifts";
 import { PaymentLinkPage } from "../pages/payment-link";
+import { PageNotFound } from "../pages/page-not-found";
 
 export const Router = () => {
   return (
@@ -81,6 +82,7 @@ export const Router = () => {
         <Route path="marketplace" element={<MarketPlacePage />} />
         <Route path="profile" element={<MerchantProfile />} />
       </Route>
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };

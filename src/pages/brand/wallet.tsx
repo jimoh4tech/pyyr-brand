@@ -71,7 +71,7 @@ const ModalForm1 = ({ formik, balance }: { formik: any; balance: number }) => {
             id="amount"
             type="number"
             name="amount"
-            value={formik.values.amount}
+            // value={formik.values.amount}
             onChange={formik.handleChange}
             isInvalid={
               formik.values.amount > balance || formik.values.amount == 0
@@ -603,6 +603,7 @@ export const Wallet = () => {
   const [toDate, setToDate] = useState(moment().format("YYYY-MM-DD"));
 
   const [balance, setBalance] = useState(0);
+  const [earnings, setEarnings] = useState(0);
   const [accountDetails, setAccountDetails] = useState([]);
 
   useEffect(() => {
@@ -614,6 +615,7 @@ export const Wallet = () => {
       });
       // console.log(res);
       setBalance(res.currentBalance);
+      setEarnings(Number(res?.earnings));
     };
     const fetchAccountDetails = async () => {
       const res = await userService.getBankDetails({
@@ -641,7 +643,7 @@ export const Wallet = () => {
           title={accountDetails.length !== 0 ? accountDetails[0][1] : ""}
         />
         <DisplayCard
-          value={formatCurrency(balance)}
+          value={formatCurrency(earnings)}
           label="Earnings"
           isChecked={false}
         />

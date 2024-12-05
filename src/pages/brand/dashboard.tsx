@@ -281,6 +281,7 @@ const DashboardContent = () => {
         from,
         to,
       });
+      console.log(res);
       setVouchers(res[2]);
       setVData(res[0]);
       const processedGraphData = res[1]?.map(

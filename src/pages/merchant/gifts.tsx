@@ -310,6 +310,11 @@ const GiftTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 
 export const GiftsPage = () => {
   const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+  const [giftValue, setGiftValue] = useState<{
+    total_gifted: string;
+    total_redeemed: string;
+    total_redeemed_amount: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchVouchers = async () => {
@@ -318,9 +323,9 @@ export const GiftsPage = () => {
         list_giftvoucher: token,
       });
 
-      // console.log({ res });
+      console.log({ res });
       setVouchers(res[1]);
-      // setVData(res[0]);
+      setGiftValue(res[0]);
     };
 
     fetchVouchers();
@@ -332,10 +337,18 @@ export const GiftsPage = () => {
     <Stack gap={5}>
       {" "}
       <Flex gap={{ base: 1, md: 3 }}>
-        <DisplayCard value="0" label="Total No of Invitees" isChecked={true} />
-        <DisplayCard value="0" label="Total No Redeemed" isChecked={true} />
         <DisplayCard
-          value="0"
+          value={giftValue?.total_gifted || 0}
+          label="Total No Gifted"
+          isChecked={true}
+        />
+        <DisplayCard
+          value={giftValue?.total_redeemed || 0}
+          label="Total No Redeemed"
+          isChecked={true}
+        />
+        <DisplayCard
+          value={giftValue?.total_redeemed_amount || 0}
           label="Total No to be claimed"
           isChecked={true}
         />

@@ -5,6 +5,8 @@ import {
   CardBody,
   Flex,
   Input,
+  InputGroup,
+  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -26,6 +28,7 @@ import { formatCurrency } from "../../util/format-currency.util";
 import { useNavigate } from "react-router-dom";
 import { CiEdit } from "react-icons/ci";
 import dashboardService from "../../services/dashboard";
+import { FiSearch } from "react-icons/fi";
 
 const EditVoucherModal = ({ voucher }: { voucher: IVoucherTable }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -193,6 +196,7 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
 
 export const MerchantVoucherPage = () => {
   const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+  const [searchText, setSearchText] = useState("");
   const [vData, setVData] = useState<{
     total_purchase: string;
     total_used: string;
@@ -241,6 +245,7 @@ export const MerchantVoucherPage = () => {
         borderRadius={"md"}
         flexDir={"column"}
         p={1}
+        gap={3}
       >
         <Flex
           justifyContent={"space-between"}
@@ -249,7 +254,7 @@ export const MerchantVoucherPage = () => {
           p={2}
         >
           <Flex gap={2} alignItems={"center"}>
-            <Text fontSize={"xs"}>Voucher Balances</Text>
+            <Text fontSize={"xs"}>Available vouchers</Text>
           </Flex>
           <Button
             size={"xs"}
@@ -259,11 +264,25 @@ export const MerchantVoucherPage = () => {
             Purchase Voucher
           </Button>
         </Flex>
+        <InputGroup p={1}>
+          <InputLeftElement alignItems={"center"}>
+            <FiSearch size={"15px"} />
+          </InputLeftElement>
+          <Input
+            placeholder="Search"
+            size={"sm"}
+            borderRadius={"30px"}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </InputGroup>
 
         <Flex flexWrap={"wrap"} gap={3} justifyContent={"center"}>
-          {vouchers.map((v) => (
-            <VoucherCard key={v.code} voucher={v} />
-          ))}
+          {vouchers
+            .filter((v) => v.Name.includes(searchText))
+            .map((v) => (
+              <VoucherCard key={v.code} voucher={v} />
+            ))}
         </Flex>
       </Flex>
     </Stack>

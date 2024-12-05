@@ -471,6 +471,8 @@ export const MerchantWalletPage = () => {
   const [toDate, setToDate] = useState(moment().format("YYYY-MM-DD"));
 
   const [balance, setBalance] = useState(0);
+  const [earnings, setEarnings] = useState(0);
+  const [withdraw, setWithdraw] = useState(0);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -480,7 +482,9 @@ export const MerchantWalletPage = () => {
         pyyr_accounts: email,
       });
       // console.log(res);
-      setBalance(res.currentBalance);
+      setBalance(res?.currentBalance);
+      setEarnings(Number(res?.earnings));
+      setWithdraw(Number(res?.withdraw));
 
       // const bankList = await transactionsService.getBankList();
       // console.log({ bankList });
@@ -507,12 +511,12 @@ export const MerchantWalletPage = () => {
           isChecked={false}
         />
         <DisplayCard
-          value={formatCurrency(balance)}
+          value={formatCurrency(earnings)}
           label="Total Deposits"
           isChecked={false}
         />
         <DisplayCard
-          value={formatCurrency(balance)}
+          value={formatCurrency(withdraw)}
           label="Total Pay Out"
           isChecked={false}
         />

@@ -15,6 +15,8 @@ import {
   DrawerOverlay,
   Flex,
   Input,
+  InputGroup,
+  InputLeftElement,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -38,6 +40,7 @@ import {
   MdOutlineShoppingCart,
 } from "react-icons/md";
 import { CartItem } from "./cart";
+import { FiSearch } from "react-icons/fi";
 
 export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -388,6 +391,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 
 export const MarketPlacePage = () => {
   const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+  const [searchText, setSearchText] = useState("");
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
@@ -429,8 +433,22 @@ export const MarketPlacePage = () => {
             <CartDrawer cartCount={cartCount} />
           </Flex>
         </Flex>
-
-        <MarketPlaceCardList vouchers={vouchers} setCartCount={setCartCount} />
+        <InputGroup p={1}>
+          <InputLeftElement alignItems={"center"}>
+            <FiSearch size={"15px"} />
+          </InputLeftElement>
+          <Input
+            placeholder="Search"
+            size={"sm"}
+            borderRadius={"30px"}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </InputGroup>
+        <MarketPlaceCardList
+          vouchers={vouchers.filter((v) => v.Name.includes(searchText))}
+          setCartCount={setCartCount}
+        />
       </Flex>
     </Stack>
   );
