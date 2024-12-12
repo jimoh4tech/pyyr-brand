@@ -284,14 +284,15 @@ const Form2 = ({
                   size={"xs"}
                   onChange={formik.handleChange}
                   name="id_type"
+                  value={formik.values.id_type}
                   placeholder="Select option"
                 >
                   <option value="NIN">NIN</option>
-                  <option value="Driver Lisence">Driver's Lisence</option>
+                  <option value="Driver's Lisence">Driver's Lisence</option>
                   <option value="Internation Passport">
                     Internation Passport
                   </option>
-                  <option value="Voter Card">Voter's Card</option>
+                  <option value="Voter's Card">Voter's Card</option>
                 </Select>
               </FormControl>
               <FormControl isRequired>
@@ -441,6 +442,7 @@ const Form3 = ({
                   <Select
                     size={"xs"}
                     name="businessType"
+                    value={formik.values.businessType}
                     placeholder="Select Type"
                     onChange={formik.handleChange}
                   >
@@ -454,6 +456,7 @@ const Form3 = ({
                     size={"xs"}
                     onChange={formik.handleChange}
                     name="industry"
+                    value={formik.values.industry}
                     placeholder="Industry"
                   >
                     {industries.map((i) => (
@@ -473,6 +476,7 @@ const Form3 = ({
                     size={"xs"}
                     onChange={formik.handleChange}
                     name="country"
+                    value={formik.values.country}
                     placeholder="Country"
                   >
                     {countries.map((c) => (
@@ -486,6 +490,7 @@ const Form3 = ({
                     size={"xs"}
                     onChange={formik.handleChange}
                     name="state"
+                    value={formik.values.state}
                     placeholder="State"
                   >
                     {states.map((c) => (
@@ -631,6 +636,7 @@ const Form4 = ({
                 <Select
                   size={"xs"}
                   name="accountBank"
+                  value={formik.values.accountBank}
                   placeholder="Select Back"
                   onChange={formik.handleChange}
                 >

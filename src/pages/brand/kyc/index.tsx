@@ -293,6 +293,7 @@ const Form2 = ({
                   size={"xs"}
                   onChange={formik.handleChange}
                   name="id_type"
+                  value={formik.values.id_type}
                   placeholder="Select option"
                 >
                   <option value="NIN">NIN</option>
@@ -323,14 +324,14 @@ const Form2 = ({
           </Flex>
           <Divider />
           <Flex justifyContent={"flex-end"} gap={3}>
-            <Button
+            {/* <Button
               onClick={() => setStep(1)}
               colorScheme="purple"
               size={"xs"}
               variant={"ghost"}
             >
               Back
-            </Button>
+            </Button> */}
             <Button colorScheme="purple" size={"xs"} onClick={() => setStep(3)}>
               Proceed
             </Button>
@@ -450,6 +451,7 @@ const Form3 = ({
                   <Select
                     size={"xs"}
                     name="businessType"
+                    value={formik.values.businessType}
                     placeholder="Select Type"
                     onChange={formik.handleChange}
                   >
@@ -463,6 +465,7 @@ const Form3 = ({
                     size={"xs"}
                     onChange={formik.handleChange}
                     name="industry"
+                    value={formik.values.industry}
                     placeholder="Industry"
                   >
                     {industries.map((i) => (
@@ -482,6 +485,7 @@ const Form3 = ({
                     size={"xs"}
                     onChange={formik.handleChange}
                     name="country"
+                    value={formik.values.country}
                     placeholder="Country"
                   >
                     {countries.map((c) => (
@@ -495,6 +499,7 @@ const Form3 = ({
                     size={"xs"}
                     onChange={formik.handleChange}
                     name="state"
+                    value={formik.values.state}
                     placeholder="State"
                   >
                     {states.map((c) => (
@@ -640,6 +645,7 @@ const Form4 = ({
                 <Select
                   size={"xs"}
                   name="accountBank"
+                  value={formik.values.accountBank}
                   placeholder="Select Back"
                   onChange={formik.handleChange}
                 >
