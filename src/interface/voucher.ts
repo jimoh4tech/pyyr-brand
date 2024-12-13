@@ -10,6 +10,7 @@ export interface IVoucherTable {
   exp?: string;
   qty_gifted?: number;
   redeem?: number;
+  User?: string;
 
   // Date: string;
   Name: string;

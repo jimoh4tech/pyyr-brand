@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Badge,
   Box,
   Button,
@@ -163,18 +164,19 @@ export const CustomerDetails = () => {
             Customer List
           </Button>
           <Text>|</Text>
-          <Button size={"xs"}>View Single Customer</Button>
+          <Button size={"xs"}>Single customer</Button>
         </Flex>
 
         <Stack p={5}>
-          <Text
-            fontSize={"xs"}
-            fontWeight={"bold"}
-          >{`Demi Charlse | demi@gms.com | #w2342`}</Text>
-          <Text fontSize={"xs"}>{`Added on 12/02/2012`}</Text>
-          <Badge w={"60px"} fontSize={"xs"} borderRadius={"lg"}>
-            Active
-          </Badge>
+          <Avatar name="Adams Umar" size={"sm"} />
+          <Text fontSize={"xs"} fontWeight={"bold"}>{`Demi Charlse`}</Text>
+          <Flex justifyContent={"space-between"}>
+            <Text fontSize={"xs"}>{`Email:        demi@gmail.com`}</Text>
+            <Badge w={"60px"} fontSize={"xs"} borderRadius={"lg"}>
+              Active
+            </Badge>
+          </Flex>
+          <Text fontSize={"xs"}>{`Date added:   12/02/2012`}</Text>
         </Stack>
 
         <Flex

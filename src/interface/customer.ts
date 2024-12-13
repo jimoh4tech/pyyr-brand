@@ -1,16 +1,19 @@
 export interface ICustomer {
-	id: string;
-	name: string;
-	voucher: string;
+  city: string;
   date: string;
-	status: string;
-	email: string;
+  email: string;
+  fname: string;
+  gender: string;
+  ig: string;
+  interests: string;
+  lname: string;
+  state: string;
+  twitter: string;
 }
 
-
 export interface IManager {
-	Name: string;
-	phone: string;
-	location: string;
-	code: string;
+  Name: string;
+  phone: string;
+  location: string;
+  code: string;
 }

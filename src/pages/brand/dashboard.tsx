@@ -224,10 +224,10 @@ const VocuhersTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
           <Thead>
             <Tr>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
-                Voucher
+                User
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
-                Worth
+                Voucher
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Code
@@ -243,8 +243,8 @@ const VocuhersTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
           <Tbody>
             {vouchers.map((v) => (
               <Tr fontSize={"xs"} key={v.code}>
-                <Td fontSize={"xs"}>{v.Name} </Td>
-                <Td fontSize={"xs"}>{formatCurrency(v.worth)}</Td>
+                <Td fontSize={"xs"}>{v.User} </Td>
+                <Td fontSize={"xs"}>{v.Name}</Td>
                 <Td fontSize={"xs"}>{v.code}</Td>
                 <Td fontSize={"xs"}>{formatCurrency(v.amount)}</Td>
 

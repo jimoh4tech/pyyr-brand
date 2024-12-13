@@ -71,9 +71,7 @@ const NavItem = ({
           onClick={() => navigate(href)}
           _hover={{ bg: "#E0D5FF" }}
         >
-          <Box>
-            <Image src={`${icon}`} />
-          </Box>
+          <Box>{typeof icon === "string" && <Image src={`${icon}`} />}</Box>
           <Text color={"black"}>{label}</Text>
           {tag && (
             <Tag size={"sm"} variant="solid" colorScheme="purple">
@@ -104,6 +102,11 @@ export const MerchantSidebarContent = ({
       label: "Gifts",
       icon: customer,
       href: "/merchant/gifts",
+    },
+    {
+      label: "Customers",
+      icon: customer,
+      href: "/merchant/customers",
     },
     {
       label: "Campaigns",
