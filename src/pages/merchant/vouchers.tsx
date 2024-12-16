@@ -159,12 +159,15 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
         <Stack gap={4}>
           <Flex gap={4} alignItems={"center"}>
             <Avatar src={voucher.image} name={voucher.Name} />
-            <Stack>
+            <Stack width={"200px"}>
               <Text
                 fontSize={"xs"}
                 fontWeight={"bold"}
+                isTruncated
               >{`${voucher.Name} | ${voucher.code}`}</Text>
-              <Text fontSize={"xs"}>{voucher.promotional_title}</Text>
+              <Text fontSize={"xs"} isTruncated>
+                {voucher.promotional_title}
+              </Text>
             </Stack>
           </Flex>
 

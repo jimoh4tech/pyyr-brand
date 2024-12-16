@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Button,
   Center,
   Divider,
@@ -51,6 +52,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import customersService from "../../services/customers";
 import { GrDocumentUpload } from "react-icons/gr";
 import { LuUpload } from "react-icons/lu";
+import { formatCurrency } from "../../util/format-currency.util";
 
 const AddCustomerModal = ({
   refetch,
@@ -386,7 +388,7 @@ const ImportCustomerModal = ({
         console.log({ res });
         if (res.responseCode == 200) {
           toast({
-            title: "Customer Successfully Added",
+            title: "Customers Successfully Imported",
             description: res.responseMessage,
             status: "success",
             duration: 9000,
@@ -583,9 +585,20 @@ const CustomerTable = ({
                     </Stack>
                   </Td>
                   <Td fontSize={"xs"}>{t.email}</Td>
-                  <Td fontSize={"xs"}>{t.gender}</Td>
+                  <Td fontSize={"xs"}>{formatCurrency(t.amount)}</Td>
                   <Td fontSize={"xs"}>{t.date}</Td>
-                  <Td fontSize={"xs"}>{t.state}</Td>
+                  <Td fontSize={"xs"}>
+                    <Badge
+                      textTransform={"capitalize"}
+                      rounded={"lg"}
+                      colorScheme={`${
+                        t.status === "Inactive" ? "red" : "green"
+                      }`}
+                    >
+                      {" "}
+                      {t.status}
+                    </Badge>{" "}
+                  </Td>
                   <Td>
                     {" "}
                     <Flex justifyContent={"center"} alignItems={"center"}>
@@ -628,16 +641,23 @@ const CustomerTable = ({
 
 export const CustomerPage = () => {
   const [customers, setCustomers] = useState<ICustomer[]>([]);
+  const [cData, setCData] = useState<{
+    total_active: string;
+    total_customer: number;
+    total_reward: string;
+  } | null>(null);
 
   const [refetch, setRefetch] = useState(true);
   const fetchCustomers = async () => {
     try {
       const token = localStorage.getItem("PYMAILYR") || "";
+
       const res = await customersService.getAllCustomers({
         list_customer: token,
       });
       console.log({ res });
-      setCustomers(res[0]);
+      setCData(res[0]);
+      setCustomers(res[1]);
     } catch (error) {
       console.log(error);
     }
@@ -651,17 +671,17 @@ export const CustomerPage = () => {
       {" "}
       <Flex gap={{ base: 1, md: 3 }}>
         <DisplayCard
-          value="5,200"
+          value={cData?.total_customer || 0}
           label="Total No of Customers"
           isChecked={true}
         />
         <DisplayCard
-          value="700 "
+          value={cData?.total_reward || 0}
           label="Total No of Customers Rewarded "
           isChecked={true}
         />
         <DisplayCard
-          value="200"
+          value={cData?.total_active || 0}
           label="Total No Active Customers"
           isChecked={true}
         />

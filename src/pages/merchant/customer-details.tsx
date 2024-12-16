@@ -23,56 +23,12 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
 const CustomersDetailsChart = () => {
-  const data = [
-    {
-      name: "Nov 12",
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: "Nov 14",
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: "Nov 16",
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: "Nov 18",
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: "Nov 23",
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: "Nov 24",
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: "Nov 11",
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
   return (
     <ResponsiveContainer width="99%" height="99%">
       <AreaChart
         width={500}
         height={400}
-        data={data}
+        data={[]}
         margin={{
           top: 5,
           right: 0,
@@ -127,13 +83,7 @@ const CustomerRewardTable = () => {
                 <Td fontSize={"xs"}>{v.price}</Td>
                 <Td fontSize={"xs"}>
                   <Badge
-                    bgColor={
-                      v.visibility === "Not Redeemed"
-                        ? "#ffd5d0"
-                        : v.visibility === "Partially Redeemed"
-                        ? "#ffe3b2"
-                        : "#d4f7e1"
-                    }
+                    colorScheme="red"
                     textTransform={"capitalize"}
                     borderRadius={"10px"}
                   >
@@ -172,7 +122,11 @@ export const CustomerDetails = () => {
           <Text fontSize={"xs"} fontWeight={"bold"}>{`Demi Charlse`}</Text>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>{`Email:        demi@gmail.com`}</Text>
-            <Badge w={"60px"} fontSize={"xs"} borderRadius={"lg"}>
+            <Badge
+              textTransform={"capitalize"}
+              rounded={"lg"}
+              colorScheme="red"
+            >
               Active
             </Badge>
           </Flex>

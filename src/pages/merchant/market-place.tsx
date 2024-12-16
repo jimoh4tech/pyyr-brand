@@ -69,21 +69,27 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
           <ModalCloseButton />
           <ModalBody>
             <Stack>
-              <Flex justifyContent={"space-between"}>
+              <Flex justifyContent={"space-between"} width={"400px"}>
                 <Text fontSize={"small"}>Name:</Text>
-                <Text fontSize={"small"}>{voucher.Name}</Text>
+                <Text fontSize={"small"} isTruncated>
+                  {voucher.Name}
+                </Text>
               </Flex>
               <Flex justifyContent={"space-between"}>
                 <Text fontSize={"small"}>Code:</Text>
                 <Text fontSize={"small"}>{voucher.code}</Text>
               </Flex>
-              <Flex justifyContent={"space-between"}>
+              <Flex justifyContent={"space-between"} width={"400px"}>
                 <Text fontSize={"small"}>Title:</Text>
-                <Text fontSize={"small"}>{voucher.promotional_title}</Text>
+                <Text fontSize={"small"} isTruncated>
+                  {voucher.promotional_title}
+                </Text>
               </Flex>
-              <Flex justifyContent={"space-between"}>
+              <Flex justifyContent={"space-between"} width={"400px"}>
                 <Text fontSize={"small"}>Description:</Text>
-                <Text fontSize={"small"}>{voucher.description}</Text>
+                <Text fontSize={"small"} isTruncated>
+                  {voucher.description}
+                </Text>
               </Flex>
               <Flex justifyContent={"space-between"}>
                 <Text fontSize={"small"}>Visibility:</Text>
@@ -168,12 +174,15 @@ const MarketPlaceCard = ({
         <Stack gap={4}>
           <Flex gap={4} alignItems={"center"}>
             <Avatar src={voucher.image} name={voucher.Name} />
-            <Stack>
+            <Stack width={"200px"}>
               <Text
+                isTruncated
                 fontSize={"xs"}
                 fontWeight={"bold"}
               >{`${voucher.Name} | ${voucher.code}`}</Text>
-              <Text fontSize={"xs"}>{voucher.promotional_title}</Text>
+              <Text fontSize={"xs"} isTruncated>
+                {voucher.promotional_title}
+              </Text>
             </Stack>
           </Flex>
 

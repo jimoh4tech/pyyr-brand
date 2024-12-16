@@ -9,6 +9,8 @@ export interface ICustomer {
   lname: string;
   state: string;
   twitter: string;
+  status: string;
+  amount: string | number;
 }
 
 export interface IManager {

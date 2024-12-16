@@ -269,6 +269,7 @@ const Form1 = ({
                     name={"voucher_name"}
                     type="text"
                     size={"xs"}
+                    maxLength={30}
                     value={formik.values.voucher_name}
                     onChange={formik.handleChange}
                     placeholder="Enter the name you’d like to display on this voucher"
@@ -285,6 +286,7 @@ const Form1 = ({
                     name={"promotional_title"}
                     type="text"
                     size={"xs"}
+                    maxLength={50}
                     value={formik.values.promotional_title}
                     onChange={formik.handleChange}
                     placeholder="Additional subtext that’d catch the attention of your merchants"
@@ -300,6 +302,7 @@ const Form1 = ({
                     id={"description"}
                     name={"voucher_des"}
                     size={"xs"}
+                    maxLength={100}
                     value={formik.values.voucher_des}
                     onChange={formik.handleChange}
                     placeholder="Give more context to the value of this voucher card. E.g Perfect for Staff, Customers and friends incentives"
@@ -919,10 +922,11 @@ IVoucherTable) => {
           <DrawerBody>
             <Stack gap={5}>
               <Avatar name={Name} />
-              <Flex justifyContent={"space-between"}>
+              <Flex justifyContent={"space-between"} width={"400px"}>
                 <Text
                   fontSize={"xs"}
                   fontWeight={"bold"}
+                  isTruncated
                 >{`${Name} Voucher ${code}`}</Text>
                 <HStack px={"3"} borderRadius={"lg"} boxShadow={"md"}>
                   <Image src={verified} alt={Name} />
@@ -1073,7 +1077,7 @@ const VoucherTable = ({
         });
       }
     } catch (error) {
-      /* empty */
+      console.log(error);
     }
   };
   return (
@@ -1085,18 +1089,14 @@ const VoucherTable = ({
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Voucher Name
               </Th>
-              {/* <Th fontSize={'xs'} textTransform={'capitalize'}>
-								Voucher Type
-							</Th> */}
+
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Worth
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Voucher ID
               </Th>
-              {/* <Th fontSize={'xs'} textTransform={'capitalize'}>
-								Quantity Sold
-							</Th> */}
+
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Sales Price
               </Th>
@@ -1111,11 +1111,17 @@ const VoucherTable = ({
           <Tbody>
             {vouchers?.map((v) => (
               <Tr fontSize={"xs"} key={v.code}>
-                <Td fontSize={"xs"}>{v.Name}</Td>
-                {/* <Td fontSize={'xs'}>{v.redemption}</Td> */}
+                <Td fontSize={"xs"} isTruncated>
+                  <Stack width={"100px"}>
+                    <Text fontSize={"xs"} isTruncated>
+                      {v.Name}
+                    </Text>
+                  </Stack>
+                </Td>
+
                 <Td fontSize={"xs"}>{formatCurrency(v.worth)}</Td>
                 <Td fontSize={"xs"}>{v.code}</Td>
-                {/* <Td fontSize={'xs'}>{v.qty}</Td> */}
+
                 <Td fontSize={"xs"}>{formatCurrency(v.amount)}</Td>
                 <Td fontSize={"xs"}>
                   <Badge
