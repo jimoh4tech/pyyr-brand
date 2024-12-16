@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Box,
   BoxProps,
   Button,
@@ -8,14 +9,14 @@ import {
   Flex,
   Image,
   Stack,
-  Tag,
   Text,
 } from "@chakra-ui/react";
 import pyyr from "../../assets/pyyr.svg";
 import dashboard from "../../assets/dashboard.svg";
 import market from "../../assets/market.svg";
 import profile from "../../assets/profile.svg";
-import customer from "../../assets/customer.svg";
+import group from "../../assets/group.svg";
+import control from "../../assets/control.svg";
 import wallet from "../../assets/wallet.svg";
 import campaign from "../../assets/campaign.svg";
 import notification from "../../assets/voucher.svg";
@@ -71,12 +72,19 @@ const NavItem = ({
           onClick={() => navigate(href)}
           _hover={{ bg: "#E0D5FF" }}
         >
-          <Box>{typeof icon === "string" && <Image src={`${icon}`} />}</Box>
+          <Box width={6}>
+            <Image src={icon} />
+          </Box>
           <Text color={"black"}>{label}</Text>
           {tag && (
-            <Tag size={"sm"} variant="solid" colorScheme="purple">
+            <Badge
+              size={"sm"}
+              fontSize={"x-small"}
+              variant="solid"
+              colorScheme="purple"
+            >
               {tag}
-            </Tag>
+            </Badge>
           )}
         </Flex>
       </Flex>
@@ -100,12 +108,12 @@ export const MerchantSidebarContent = ({
     },
     {
       label: "Gifts",
-      icon: customer,
+      icon: control,
       href: "/merchant/gifts",
     },
     {
       label: "Customers",
-      icon: customer,
+      icon: group,
       href: "/merchant/customers",
     },
     {

@@ -321,6 +321,18 @@ const AddCustomerModal = ({
 };
 const DeactivateCustomerModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+
+  const handleDeleteCustomer = () => {
+    toast({
+      title: "Coming Soon",
+      description: "Feature is under development! Try again later.",
+      duration: 9000,
+      status: "info",
+      position: "top-right",
+    });
+    onClose();
+  };
   return (
     <>
       <MenuItem onClick={onOpen}>
@@ -354,7 +366,11 @@ const DeactivateCustomerModal = () => {
             <Button variant={"outline"} mr={3} onClick={onClose} size={"xs"}>
               Cancel
             </Button>
-            <Button colorScheme="red" size={"xs"} onClick={onClose}>
+            <Button
+              colorScheme="red"
+              size={"xs"}
+              onClick={handleDeleteCustomer}
+            >
               Yes, Deactivate
             </Button>
           </ModalFooter>
