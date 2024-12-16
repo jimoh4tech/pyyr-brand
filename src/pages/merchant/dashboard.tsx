@@ -124,6 +124,7 @@ export const DisplayCard = ({
         py={3}
         gap={3}
         justifyContent={"space-between"}
+        minW={"115px"}
       >
         <Heading size={{ base: "xs", md: "sm" }} color={"#825EE4"}>
           {" "}
