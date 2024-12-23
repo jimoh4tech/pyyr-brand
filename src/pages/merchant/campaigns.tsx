@@ -1,5 +1,6 @@
 import {
   Avatar,
+  AvatarGroup,
   Badge,
   Button,
   Center,
@@ -13,10 +14,8 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Menu,
-  MenuButton,
-  MenuList,
   Progress,
+  Select,
   Stack,
   Table,
   TableContainer,
@@ -38,12 +37,19 @@ import {
   FaLongArrowAltLeft,
   FaLongArrowAltRight,
 } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { ICampaign } from "../../interface/campaigns";
 import { ItemCheck } from "./kyc";
 import { useFormik } from "formik";
 import { GrDocumentUpload } from "react-icons/gr";
+import { Select as MultiSelect } from "chakra-react-select";
+import customersService from "../../services/customers";
+import { ICustomer } from "../../interface/customer";
+import { IVoucherTable } from "../../interface/voucher";
+import voucherService from "../../services/voucher";
+import { getDaysBetweenDates } from "../../util/format-date.util";
+import campaignService from "../../services/campaign";
 
 const CampaignEmpty = ({
   setStatus,
@@ -101,7 +107,7 @@ const Form1 = ({
     if (files && files.length > 0) {
       setFileName(files[0].name);
       formik.setFieldValue(
-        "customerFile",
+        "image",
         event.currentTarget.files && event.currentTarget.files[0]
       );
     }
@@ -131,6 +137,7 @@ const Form1 = ({
                 <Input
                   type="file"
                   ref={inputRef}
+                  name="image"
                   display="none"
                   onChange={handleFileChange}
                 />
@@ -142,31 +149,31 @@ const Form1 = ({
                 </Flex>
               </Stack>
               <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"worth"}>
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_name"}>
                   Title
                 </FormLabel>
                 <InputGroup>
                   <Input
-                    id={"worth"}
-                    name={"worth"}
+                    id={"campaign_name"}
+                    name={"campaign_name"}
                     type="text"
                     size={"xs"}
-                    value={formik.values.worth}
+                    value={formik.values.campaign_name}
                     onChange={formik.handleChange}
                     placeholder="Enter title"
                   />
                 </InputGroup>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"amount"}>
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_des"}>
                   Description
                 </FormLabel>
                 <InputGroup>
                   <Textarea
-                    id={"amount"}
-                    name={"amount"}
+                    id={"campaign_des"}
+                    name={"campaign_des"}
                     size={"xs"}
-                    value={formik.values.amount}
+                    value={formik.values.campaign_des}
                     onChange={formik.handleChange}
                     placeholder="Enter description"
                   />
@@ -174,32 +181,34 @@ const Form1 = ({
               </FormControl>
               <Flex gap={3}>
                 <FormControl isRequired>
-                  <FormLabel fontSize={"xs"} htmlFor={"startdate"}>
+                  <FormLabel fontSize={"xs"} htmlFor={"sdate"}>
                     Start date
                   </FormLabel>
                   <InputGroup>
                     <Input
-                      id={"startdate"}
-                      name={"startdate"}
+                      id={"sdate"}
+                      name={"sdate"}
                       type="date"
                       size={"xs"}
-                      value={formik.values.worth}
+                      value={formik.values.sdate}
                       onChange={formik.handleChange}
+                      min={new Date().toISOString().slice(0, -14)}
                     />
                   </InputGroup>
                 </FormControl>
                 <FormControl isRequired>
-                  <FormLabel fontSize={"xs"} htmlFor={"startdate"}>
+                  <FormLabel fontSize={"xs"} htmlFor={"edate"}>
                     End date
                   </FormLabel>
                   <InputGroup>
                     <Input
-                      id={"startdate"}
-                      name={"startdate"}
+                      id={"edate"}
+                      name={"edate"}
                       type="date"
                       size={"xs"}
-                      value={formik.values.worth}
+                      value={formik.values.edate}
                       onChange={formik.handleChange}
+                      min={new Date().toISOString().slice(0, -14)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -225,53 +234,61 @@ const Form1 = ({
 const Form2 = ({
   setStep,
   formik,
+  customers,
+  vouchers,
 }: {
   setStep: (num: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
+  customers: ICustomer[];
+  vouchers: IVoucherTable[];
 }) => {
+  const [value, setValue] = useState<
+    readonly { label: string; value: string }[]
+  >([]);
+  const customerList = customers.map((c) => {
+    return { label: c.email, value: c.email };
+  });
   return (
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
         <Flex p={5} flexDir={"column"} gap={3}>
-          <Heading fontSize={"sm"}>Pricing</Heading>
+          <Heading fontSize={"sm"}>Add Customers</Heading>
           <Text fontSize={"xs"}>
-            Kindly Provide the information below to create your campaign
+            Select one or more customers and assign them to your campaign
           </Text>
           <Divider />
-          <Flex p={5} bg={"white"}>
+          <Flex p={2} bg={"white"}>
             <Flex flexDir={"column"} gap={3} w={"100%"}>
               <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"worth"}>
-                  Customers
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_voucher"}>
+                  Assign customers to vouchers
                 </FormLabel>
-                <InputGroup>
-                  <Input
-                    id={"worth"}
-                    name={"worth"}
-                    type="text"
-                    size={"xs"}
-                    value={formik.values.worth}
+                <Flex gap={1}>
+                  <Select
+                    placeholder="Select voucher"
+                    size={"sm"}
                     onChange={formik.handleChange}
-                    placeholder="Select"
+                    w={"60"}
+                    name="campaign_voucher"
+                  >
+                    {vouchers.map((v) => (
+                      <option key={v.code} value={v.code}>
+                        {`${v.Name} | ${v.amount}`}
+                      </option>
+                    ))}
+                  </Select>
+                  <MultiSelect
+                    isMulti
+                    placeholder="Select customers"
+                    name="campaign_customers"
+                    options={customerList}
+                    closeMenuOnSelect={false}
+                    value={value}
+                    onChange={setValue}
+                    size={"sm"}
                   />
-                </InputGroup>
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"amount"}>
-                  Voucher
-                </FormLabel>
-                <InputGroup>
-                  <Input
-                    id={"amount"}
-                    name={"amount"}
-                    type="text"
-                    size={"xs"}
-                    value={formik.values.amount}
-                    onChange={formik.handleChange}
-                    placeholder="Select"
-                  />
-                </InputGroup>
+                </Flex>
               </FormControl>
             </Flex>
           </Flex>
@@ -290,7 +307,14 @@ const Form2 = ({
               colorScheme="purple"
               rightIcon={<FaLongArrowAltRight />}
               size={"xs"}
-              onClick={() => setStep(3)}
+              onClick={() => {
+                formik.setValues({
+                  ...formik.values,
+                  campaign_customer: value.map((v) => v.value),
+                });
+                // console.log(formik.values)
+                setStep(3);
+              }}
             >
               Next
             </Button>
@@ -303,12 +327,22 @@ const Form2 = ({
 const Form3 = ({
   setStep,
   formik,
+  vouchers,
 }: {
   setStep: (num: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
+  vouchers: IVoucherTable[];
 }) => {
-  const toast = useToast();
+  const [upload, setUpload] = useState<string | undefined>(undefined);
+  const reader = new FileReader();
+  reader.onload = () => {
+    setUpload(reader.result as string);
+  };
+  reader.readAsDataURL(formik.values.image);
+  const selectedVoucher = vouchers.find(
+    (v) => v.code === formik.values.campaign_voucher
+  );
   return (
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
@@ -327,30 +361,32 @@ const Form3 = ({
               border={"1px solid #e4e4e4"}
               w={"full"}
             >
-              <Avatar name="Wedding" />
+              <Avatar name={formik.values.campaign_name} src={upload} />
               <Flex justifyContent={"space-between"}>
                 <Text fontSize={"small"} color={"gray"}>
-                  Wedding
+                  {formik.values.campaign_name}
                 </Text>
                 <Text fontSize={"small"} color={"gray"}>
                   Duration
                 </Text>
               </Flex>
-              <Flex justifyContent={"space-between"}>
-                <Text fontSize={"small"}>#13433535</Text>
+              <Flex justifyContent={"flex-end"}>
                 <Flex gap={1}>
                   <Badge textTransform={"capitalize"} size={"sm"}>
-                    1 week
+                    {`${getDaysBetweenDates(
+                      formik.values.sdate,
+                      formik.values.edate
+                    )} days`}
                   </Badge>
                   <Badge textTransform={"capitalize"} size={"sm"}>
-                    12-03-
+                    {`${formik.values.sdate} - ${formik.values.edate}`}
                   </Badge>
                 </Flex>
               </Flex>
             </Stack>
             <Text fontSize={"small"}>Description</Text>
             <Text fontSize={"small"} color={"gray"}>
-              The wedding is one that is
+              {formik.values.campaign_des}
             </Text>
             <Text fontSize={"small"}>Customers</Text>
             <Stack
@@ -363,9 +399,16 @@ const Form3 = ({
               <Text fontSize={"small"} color={"gray"}>
                 No. of customers added
               </Text>
-              <Text fontSize={"small"} fontWeight={"semibold"}>
-                129,000
-              </Text>
+              <Flex justifyContent={"space-between"}>
+                <Text fontSize={"small"} fontWeight={"semibold"}>
+                  {formik.values.campaign_customer.length}
+                </Text>
+                <AvatarGroup size="xs" max={5}>
+                  {formik.values.campaign_customer?.map((c: string) => (
+                    <Avatar name={c} key={c} />
+                  ))}
+                </AvatarGroup>
+              </Flex>
             </Stack>
             <Text fontSize={"small"}>Voucher Details</Text>
             <Flex>
@@ -373,15 +416,15 @@ const Form3 = ({
                 Name
               </Text>
               <Text fontSize={"x-small"} color={"gray"}>
-                Emerand
+                {selectedVoucher?.Name}
               </Text>
             </Flex>
             <Flex>
               <Text fontSize={"x-small"} color={"gray"} w={28}>
-                Brand
+                Description
               </Text>
               <Text fontSize={"x-small"} color={"gray"}>
-                Spotify
+                {selectedVoucher?.description}
               </Text>
             </Flex>
             <Flex>
@@ -389,7 +432,7 @@ const Form3 = ({
                 Redeemable at
               </Text>
               <Text fontSize={"x-small"} color={"gray"}>
-                www.google.com
+                {selectedVoucher?.redemption}
               </Text>
             </Flex>
           </Flex>
@@ -408,27 +451,8 @@ const Form3 = ({
               colorScheme="purple"
               rightIcon={<FaLongArrowAltRight />}
               size={"xs"}
-              onClick={() => {
-                if (
-                  formik.values.amount &&
-                  formik.values.worth &&
-                  formik.values.visibility &&
-                  formik.values.promotional_title &&
-                  formik.values.visibility &&
-                  formik.values.voucher_name
-                )
-                  setStep(4);
-                else {
-                  toast({
-                    title: "Error",
-                    description: "Some required fields are empty",
-                    status: "error",
-                    duration: 9000,
-                    isClosable: true,
-                    position: "top-right",
-                  });
-                }
-              }}
+              type="submit"
+              isLoading={formik.isSubmitting}
             >
               Launch Campaign
             </Button>
@@ -443,60 +467,99 @@ const CreateCampaign = ({
 }: {
   setStatus: (status: "list" | "create") => void;
 }) => {
+  const toast = useToast();
   const [step, setStep] = useState(1);
   const [isLessThan600] = useMediaQuery("(max-width: 600px)");
+  const [customers, setCustomers] = useState<ICustomer[]>([]);
+  const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+
+  const fetchCustomers = async () => {
+    try {
+      const token = localStorage.getItem("PYMAILYR") || "";
+
+      const res = await customersService.getAllCustomers({
+        list_customer: token,
+      });
+
+      console.log({ res });
+      setCustomers(res[1]);
+      const resV = await voucherService.getAllMerchantVouchers({
+        list_voucher: token,
+      });
+
+      console.log({ resV });
+      setVouchers(resV[1]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
-      voucher_name: "",
-      promotional_title: "",
-      voucher_des: "",
-      redemption: "",
-      visibility: "",
-      worth: "",
-      amount: "",
+      campaign_name: "",
+      campaign_des: "",
+      sdate: "",
+      edate: "",
       image: "",
-      location_name: [],
-      url: "",
-      description: "",
-      redeem: "",
-      video: "",
+      campaign_voucher: "",
+      campaign_customer: [],
     },
     async onSubmit(values) {
       try {
+        if (
+          !formik.values.campaign_name &&
+          !formik.values.campaign_des &&
+          !formik.values.sdate &&
+          !formik.values.edate &&
+          !formik.values.image &&
+          !formik.values.campaign_customer &&
+          !formik.values.campaign_voucher
+        ) {
+          toast({
+            title: "Error",
+            description: "Some required fields are empty",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+        }
         const token = localStorage.getItem("PYMAILYR") || "";
         const newVal = {
           ...values,
-          add_voucher: token,
+          user_campaign: token,
         };
         console.log({ newVal });
-        setStatus("create");
 
-        // const res = await voucherService.createVoucher(newVal);
-        // console.log(res);
+        const res = await campaignService.addCampaign(newVal);
+        console.log(res);
 
-        // if (res.responseCode == 200) {
-        //   toast({
-        //     title: "Vocuher successfully created.",
-        //     description: res.responseMessage,
-        //     status: "success",
-        //     duration: 9000,
-        //     isClosable: true,
-        //     position: "top-right",
-        //   });
-        //   setStatus("list");
-        // } else {
-        //   toast({
-        //     title: "Error",
-        //     description:
-        //       res.responseMessage ||
-        //       "Opps! Something went wrong, try again later",
-        //     status: "error",
-        //     duration: 9000,
-        //     isClosable: true,
-        //     position: "top-right",
-        //   });
-        // }
+        if (res.responseCode == 200) {
+          toast({
+            title: "Campaign successfully created.",
+            description: res.responseMessage,
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+          setStatus("list");
+        } else {
+          toast({
+            title: "Error",
+            description:
+              res.responseMessage ||
+              "Opps! Something went wrong, try again later",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -551,9 +614,14 @@ const CreateCampaign = ({
             {step === 1 ? (
               <Form1 setStep={setStep} formik={formik} />
             ) : step === 2 ? (
-              <Form2 setStep={setStep} formik={formik} />
+              <Form2
+                setStep={setStep}
+                formik={formik}
+                customers={customers}
+                vouchers={vouchers}
+              />
             ) : (
-              <Form3 setStep={setStep} formik={formik} />
+              <Form3 setStep={setStep} formik={formik} vouchers={vouchers} />
             )}
           </form>
         </Flex>
@@ -567,6 +635,7 @@ const CampaignList = ({
   setStatus: (status: "list" | "create") => void;
 }) => {
   const [filterText, setFilterText] = useState("");
+
   const campaigns: ICampaign[] = [
     {
       amount: "20000",
@@ -650,12 +719,12 @@ const CampaignList = ({
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Brand
               </Th>
-              <Th fontSize={"xs"} textTransform={"capitalize"}>
+              {/* <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Status
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Action
-              </Th>
+              </Th> */}
             </Tr>
           </Thead>
           <Tbody>
@@ -697,7 +766,7 @@ const CampaignList = ({
                   <Td fontSize={"xs"} color={"gray"}>
                     {t.brand}
                   </Td>
-                  <Td fontSize={"xs"} color={"gray"}>
+                  {/* <Td fontSize={"xs"} color={"gray"}>
                     <Badge
                       textTransform={"capitalize"}
                       rounded={"lg"}
@@ -708,8 +777,8 @@ const CampaignList = ({
                       {" "}
                       {t.status}
                     </Badge>{" "}
-                  </Td>
-                  <Td>
+                  </Td> */}
+                  {/* <Td>
                     {" "}
                     <Flex justifyContent={"center"} alignItems={"center"}>
                       <Menu>
@@ -725,7 +794,7 @@ const CampaignList = ({
                           </Flex>
                         </MenuButton>
                         <MenuList>
-                          {/* <MenuItem
+                          <MenuItem
                             onClick={() =>
                               navigate(`/merchant/customers/${t.city}`)
                             }
@@ -735,11 +804,11 @@ const CampaignList = ({
                               <Text fontSize={"small"}>View</Text>
                             </Flex>
                           </MenuItem>
-                          <DeactivateCustomerModal /> */}
+                          <DeactivateCustomerModal />
                         </MenuList>
                       </Menu>
                     </Flex>
-                  </Td>
+                  </Td> */}
                 </Tr>
               ))}
           </Tbody>
@@ -750,6 +819,28 @@ const CampaignList = ({
 };
 export const CampaignPage = () => {
   const [status, setStatus] = useState<"list" | "create">("list");
+  const [cData, setCData] = useState<{
+    active: number;
+    customers: string;
+    redeemed: string;
+    unredeemed: string;
+  } | null>(null);
+  const fetchCampaigns = async () => {
+    try {
+      const token = localStorage.getItem("PYMAILYR") || "";
+      const res = await campaignService.getAllCampaigns({
+        list_campaign: token,
+      });
+      console.log({ res });
+      setCData(res[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCampaigns();
+  }, []);
   return (
     // <Flex justifyContent={"center"} alignItems={"center"} h={"80vh"}>
     //   <Text color={"purple"} fontSize={"x-large"} fontWeight={"semibold"}>
@@ -761,19 +852,23 @@ export const CampaignPage = () => {
       {status === "list" ? (
         <>
           <Flex gap={{ base: 1, md: 3 }} flexWrap={"wrap"}>
-            <DisplayCard value={0} label="Active Campaigns" isChecked={true} />
             <DisplayCard
-              value={0}
+              value={cData?.active || 0}
+              label="Active Campaigns"
+              isChecked={true}
+            />
+            <DisplayCard
+              value={cData?.customers || 0}
               label="Qualified Customers"
               isChecked={true}
             />
             <DisplayCard
-              value={formatCurrency(0)}
+              value={formatCurrency(cData?.redeemed || 0)}
               label="Redeemed Vouchers"
               isChecked={true}
             />
             <DisplayCard
-              value={formatCurrency(0)}
+              value={formatCurrency(cData?.unredeemed || 0)}
               label="Unredeemed Vouchers"
               isChecked={true}
             />
