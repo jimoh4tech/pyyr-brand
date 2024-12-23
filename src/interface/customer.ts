@@ -10,6 +10,7 @@ export interface ICustomer {
   state: string;
   twitter: string;
   status: string;
+  code: string;
   amount: string | number;
 }
 

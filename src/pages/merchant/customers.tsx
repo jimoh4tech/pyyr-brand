@@ -592,7 +592,7 @@ const CustomerTable = ({
                   c.lname.toLowerCase().includes(filterText.toLowerCase())
               )
               .map((t) => (
-                <Tr fontSize={"xs"} key={t.email}>
+                <Tr fontSize={"xs"} key={t.code}>
                   <Td fontSize={"xs"}>
                     <Stack gap={2}>
                       <Text fontSize={"xs"} fontWeight={"semibold"}>

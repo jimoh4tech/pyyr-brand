@@ -30,7 +30,6 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { DisplayCard } from "./dashboard";
-import { formatCurrency } from "../../util/format-currency.util";
 import { MdOutlineCampaign } from "react-icons/md";
 import {
   FaDotCircle,
@@ -247,7 +246,7 @@ const Form2 = ({
     readonly { label: string; value: string }[]
   >([]);
   const customerList = customers.map((c) => {
-    return { label: c.email, value: c.email };
+    return { label: c.email, value: c.code };
   });
   return (
     <>
@@ -631,42 +630,15 @@ const CreateCampaign = ({
 };
 const CampaignList = ({
   setStatus,
+  campaigns,
 }: {
   setStatus: (status: "list" | "create") => void;
+  campaigns: ICampaign[] | null;
 }) => {
   const [filterText, setFilterText] = useState("");
 
-  const campaigns: ICampaign[] = [
-    {
-      amount: "20000",
-      brand: "Spotify",
-      endDate: "12-03-2023",
-      startDate: "12-04-2024",
-      name: "Wedding",
-      noOfCustomers: "120",
-      status: "Claimed",
-    },
-    {
-      amount: "20000",
-      brand: "Nike",
-      endDate: "12-03-2023",
-      startDate: "12-04-2024",
-      name: "Lover's Day",
-      noOfCustomers: "4",
-      status: "Claimed",
-    },
-    {
-      amount: "20000",
-      brand: "Slot",
-      endDate: "12-03-2023",
-      startDate: "12-04-2024",
-      name: "Make a child happy",
-      noOfCustomers: "35",
-      status: "Claimed",
-    },
-  ];
-
-  if (campaigns.length === 0) return <CampaignEmpty setStatus={setStatus} />;
+  if (campaigns && campaigns?.length === 0)
+    return <CampaignEmpty setStatus={setStatus} />;
   return (
     <Stack p={2} bgColor={"white"} boxShadow={"lg"} borderRadius={"lg"}>
       <Flex justifyContent={"space-between"} flexWrap={"wrap"} gap={2}>
@@ -732,8 +704,7 @@ const CampaignList = ({
               ?.filter(
                 (c) =>
                   c.name.toLowerCase().includes(filterText.toLowerCase()) ||
-                  c.brand.toLowerCase().includes(filterText.toLowerCase()) ||
-                  c.noOfCustomers
+                  c.businessName
                     .toLowerCase()
                     .includes(filterText.toLowerCase()) ||
                   c.amount.toLowerCase().includes(filterText.toLowerCase())
@@ -752,19 +723,22 @@ const CampaignList = ({
                     </Stack>
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.startDate}
+                    {t.sdate}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.endDate}
+                    {t.edate}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.noOfCustomers}
+                    {t.no_customer}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {formatCurrency(t.amount)}
+                    {`₦${t.amount}`}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.brand}
+                    <Flex alignItems={"center"} gap={1}>
+                      <Avatar src={t.logo} size={"xs"} />
+                      <Text fontSize={"x-small"}>{t.businessName}</Text>
+                    </Flex>
                   </Td>
                   {/* <Td fontSize={"xs"} color={"gray"}>
                     <Badge
@@ -819,6 +793,7 @@ const CampaignList = ({
 };
 export const CampaignPage = () => {
   const [status, setStatus] = useState<"list" | "create">("list");
+  const [campaigns, setCampaigns] = useState<ICampaign[] | null>(null);
   const [cData, setCData] = useState<{
     active: number;
     customers: string;
@@ -833,6 +808,7 @@ export const CampaignPage = () => {
       });
       console.log({ res });
       setCData(res[0]);
+      setCampaigns(res[1]);
     } catch (error) {
       console.log(error);
     }
@@ -863,17 +839,17 @@ export const CampaignPage = () => {
               isChecked={true}
             />
             <DisplayCard
-              value={formatCurrency(cData?.redeemed || 0)}
+              value={`₦${cData?.redeemed}`}
               label="Redeemed Vouchers"
               isChecked={true}
             />
             <DisplayCard
-              value={formatCurrency(cData?.unredeemed || 0)}
+              value={`₦${cData?.unredeemed}`}
               label="Unredeemed Vouchers"
               isChecked={true}
             />
           </Flex>
-          <CampaignList setStatus={setStatus} />
+          <CampaignList setStatus={setStatus} campaigns={campaigns} />
         </>
       ) : (
         <CreateCampaign setStatus={setStatus} />

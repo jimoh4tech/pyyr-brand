@@ -1,9 +1,9 @@
 export interface ICampaign {
   name: string;
-  startDate: string;
-  endDate: string;
-  noOfCustomers: string;
+  sdate: string;
+  edate: string;
+  no_customer: number;
   amount: string;
-  brand: string;
-  status: string;
+  businessName: string;
+  logo: string;
 }
