@@ -88,8 +88,10 @@ const CampaignEmpty = ({
 const Form1 = ({
   setStep,
   formik,
+  setStatus,
 }: {
   setStep: (num: number) => void;
+  setStatus: (status: "list" | "create") => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
 }) => {
@@ -216,6 +218,15 @@ const Form1 = ({
           </Flex>
           <Divider />
           <Flex justifyContent={"flex-end"} gap={3}>
+          <Button
+              onClick={() => setStatus("list")}
+              colorScheme="purple"
+              leftIcon={<FaLongArrowAltLeft />}
+              size={"xs"}
+              variant={"ghost"}
+            >
+              Back
+            </Button>
             <Button
               colorScheme="purple"
               rightIcon={<FaLongArrowAltRight />}
@@ -346,7 +357,7 @@ const Form3 = ({
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
         <Flex p={5} flexDir={"column"} gap={3}>
-          <Heading fontSize={"sm"}>Pricing</Heading>
+          <Heading fontSize={"sm"}>Preview</Heading>
           <Text fontSize={"xs"}>
             Please perform an error check on the information provided before
             launching the campaign.
@@ -611,7 +622,7 @@ const CreateCampaign = ({
         <Flex bg={"#fbfbfb"} flex={3} p={isLessThan600 ? 1 : 5}>
           <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
             {step === 1 ? (
-              <Form1 setStep={setStep} formik={formik} />
+              <Form1 setStep={setStep} formik={formik} setStatus={setStatus}/>
             ) : step === 2 ? (
               <Form2
                 setStep={setStep}

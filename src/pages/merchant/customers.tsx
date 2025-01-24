@@ -338,7 +338,7 @@ const DeactivateCustomerModal = () => {
       <MenuItem onClick={onOpen}>
         <Flex gap={5}>
           <RiDeleteBin6Line size={"15px"} color="red" cursor={"pointer"} />
-          <Text fontSize={"small"}>Delete</Text>
+          <Text fontSize={"small"}>Deactivate</Text>
         </Flex>
       </MenuItem>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -412,8 +412,10 @@ const ImportCustomerModal = ({
             position: "top-right",
           });
           onClose();
+          setFileName("");
           setRefetch(!refetch);
         } else {
+          setFileName("");
           toast({
             title: "Error",
             description:
@@ -426,6 +428,7 @@ const ImportCustomerModal = ({
           });
         }
       } catch (error) {
+        setFileName("");
         console.log(error);
       }
     },
@@ -592,7 +595,7 @@ const CustomerTable = ({
                   c.lname.toLowerCase().includes(filterText.toLowerCase())
               )
               .map((t) => (
-                <Tr fontSize={"xs"} key={t.code}>
+                <Tr fontSize={"xs"} key={t.email}>
                   <Td fontSize={"xs"}>
                     <Stack gap={2}>
                       <Text fontSize={"xs"} fontWeight={"semibold"}>
