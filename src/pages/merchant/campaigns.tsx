@@ -702,12 +702,6 @@ const CampaignList = ({
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Brand
               </Th>
-              {/* <Th fontSize={"xs"} textTransform={"capitalize"}>
-                Status
-              </Th>
-              <Th fontSize={"xs"} textTransform={"capitalize"}>
-                Action
-              </Th> */}
             </Tr>
           </Thead>
           <Tbody>
