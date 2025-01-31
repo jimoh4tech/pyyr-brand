@@ -85,4 +85,29 @@ const getAllCustomers = async ({
   return res.data;
 };
 
-export default { addCustomer, addCustomersFromFile, getAllCustomers };
+const viewCustomerDetails = async ({
+  view_customer,
+  id,
+}: {
+  view_customer: string;
+  id: string;
+}) => {
+  const res = await axios.post(
+    `${baseUrl}`,
+    {
+      view_customer,
+      id,
+    },
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+  return res.data;
+};
+
+export default {
+  addCustomer,
+  addCustomersFromFile,
+  getAllCustomers,
+  viewCustomerDetails,
+};

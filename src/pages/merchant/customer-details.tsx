@@ -16,11 +16,13 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { IVoucherTable } from "../../interface/voucher";
 import { IoIosArrowBack } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import customersService from "../../services/customers";
+import { ICustomer } from "../../interface/customer";
 
 const CustomersDetailsChart = () => {
   return (
@@ -102,6 +104,21 @@ const CustomerRewardTable = () => {
 export const CustomerDetails = () => {
   const navigate = useNavigate();
   const [toDate, setToDate] = useState(moment().format("YYYY-MM-DD"));
+  const [customer, setCustomer] = useState<ICustomer | null>(null);
+  const { id } = useParams();
+
+  const fetchDetails = async () => {
+    const token = localStorage.getItem("PYMAILYR") || "";
+    const res = await customersService.viewCustomerDetails({
+      id: id || "",
+      view_customer: token,
+    });
+    console.log(res[0]);
+    setCustomer(res[0]);
+  };
+  useEffect(() => {
+    fetchDetails();
+  }, []);
   return (
     <>
       <Stack gap={3} bgColor={"white"}>
@@ -118,10 +135,13 @@ export const CustomerDetails = () => {
         </Flex>
 
         <Stack p={5}>
-          <Avatar name="Adams Umar" size={"sm"} />
-          <Text fontSize={"xs"} fontWeight={"bold"}>{`Demi Charlse`}</Text>
+          <Avatar name={`${customer?.fname} ${customer?.lname}`} size={"sm"} />
+          <Text
+            fontSize={"xs"}
+            fontWeight={"bold"}
+          >{`${customer?.fname} ${customer?.lname}`}</Text>
           <Flex justifyContent={"space-between"}>
-            <Text fontSize={"xs"}>{`Email:        demi@gmail.com`}</Text>
+            <Text fontSize={"xs"}>{`Email:        ${customer?.email}`}</Text>
             <Badge
               textTransform={"capitalize"}
               rounded={"lg"}

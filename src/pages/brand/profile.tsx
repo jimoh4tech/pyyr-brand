@@ -30,6 +30,7 @@ import { CiEdit, CiLocationOn, CiMobile2 } from "react-icons/ci";
 import { CurrentUserContext } from "../../context/user.context";
 import userService from "../../services/user";
 import { QRCodeCanvas } from "qrcode.react";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 const Form1 = () => {
   const { currentUser } = useContext(CurrentUserContext);
@@ -610,6 +611,10 @@ export const Profile = () => {
           </Text>
           {/* Temporarily diabled edit profile */}
           {currentUser?.email === "2" && <EditProfileDrawer />}
+
+          <Button rightIcon={<HiOutlineExternalLink />} size={"sm"}>
+            Redemption Location
+          </Button>
         </Flex>
 
         <Flex gap={4} alignItems={"center"}>

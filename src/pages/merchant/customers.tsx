@@ -450,6 +450,11 @@ const ImportCustomerModal = ({
       );
     }
   };
+
+  const handleClose = () => {
+    onClose();
+    setFileName("");
+  };
   return (
     <>
       <Button size={"xs"} leftIcon={<LuUpload />} onClick={onOpen}>
@@ -507,8 +512,8 @@ const ImportCustomerModal = ({
             </ModalBody>
 
             <ModalFooter>
-              <Button variant={"outline"} mr={3} onClick={onClose} size={"xs"}>
-                Cancel
+              <Button variant={"outline"} mr={3} onClick={handleClose} size={"xs"}>
+                Close
               </Button>
               <Button
                 colorScheme="purple"
@@ -595,7 +600,7 @@ const CustomerTable = ({
                   c.lname.toLowerCase().includes(filterText.toLowerCase())
               )
               .map((t) => (
-                <Tr fontSize={"xs"} key={t.email}>
+                <Tr fontSize={"xs"} key={t.code}>
                   <Td fontSize={"xs"}>
                     <Stack gap={2}>
                       <Text fontSize={"xs"} fontWeight={"semibold"}>
@@ -636,7 +641,7 @@ const CustomerTable = ({
                         <MenuList>
                           <MenuItem
                             onClick={() =>
-                              navigate(`/merchant/customers/${t.city}`)
+                              navigate(`/merchant/customers/${t.code}`)
                             }
                           >
                             <Flex gap={4} alignItems={"center"}>
@@ -696,7 +701,7 @@ export const CustomerPage = () => {
         />
         <DisplayCard
           value={cData?.total_reward || 0}
-          label="Total No of Customers Rewarded "
+          label="Total No of Customers Rewarded"
           isChecked={true}
         />
         <DisplayCard
