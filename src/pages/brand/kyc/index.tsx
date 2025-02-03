@@ -53,6 +53,7 @@ import transactionsService from "../../../services/transactions";
 import userServices from "../../../services/user";
 import { CurrentUserContext } from "../../../context/user.context";
 import { IManager } from "../../../interface/customer";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const NoConsentModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -913,9 +914,10 @@ const ManagerTable = ({
                   fontSize={"x-small"}
                   cursor={"pointer"}
                   textDecor={"underline"}
+                  alignItems={"center"}
                   onClick={() => handleRemoveManager(m.code)}
                 >
-                  remove
+                  <RiDeleteBinLine color="red" size="15px" />
                 </Td>
               </Tr>
             ))
@@ -927,7 +929,7 @@ const ManagerTable = ({
     </TableContainer>
   );
 };
-const Form6 = ({
+export const Form6 = ({
   setStep,
   formik,
 }: {
@@ -1056,7 +1058,11 @@ const Form6 = ({
             </Flex>
           </Flex>
           <Divider />
-          <Flex justifyContent={"flex-end"} gap={3}>
+          <Flex
+            justifyContent={"flex-end"}
+            gap={3}
+            display={formik === null ? "none" : "flex"}
+          >
             <Button
               onClick={() => setStep(5)}
               colorScheme="purple"
@@ -1069,7 +1075,7 @@ const Form6 = ({
               colorScheme="purple"
               size={"xs"}
               type="submit"
-              isLoading={formik.isSubmitting}
+              isLoading={formik?.isSubmitting}
             >
               Submit
             </Button>

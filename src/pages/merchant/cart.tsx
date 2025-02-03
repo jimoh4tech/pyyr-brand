@@ -2,7 +2,9 @@ import {
   Button,
   CloseButton,
   Flex,
+  Image,
   Link,
+  Stack,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -103,7 +105,7 @@ const QuantitySelect = ({
     }
   };
   return (
-    <Flex justifyContent={"space-between"} alignItems="center" minW={"90px"}>
+    <Flex gap={2} alignItems="center" minW={"90px"}>
       <Button
         colorScheme="purple"
         isDisabled={voucher.qty === 1}
@@ -184,17 +186,26 @@ export const CartItem = ({
       justify="space-between"
       align="center"
     >
-      <Flex flexDir={"column"} width={"70%"}>
-        <Text fontWeight={"bold"} fontSize={"sm"}>
-          {voucher.Name}
-        </Text>
-        <Text fontSize={"xs"}>{`Code: ${voucher.code}`}</Text>
+      <Flex width={"full"} gap={2}>
+        <Image
+          boxSize="100px"
+          objectFit="cover"
+          src={voucher.image}
+          alt={voucher.Name}
+        />
+        <Stack>
+          <Text fontWeight={"bold"} fontSize={"sm"}>
+            {voucher.Name}
+          </Text>
+          <Text fontSize={"xs"}>{`Code: ${voucher.code}`}</Text>
+        </Stack>
       </Flex>
 
       {/* Desktop */}
       <Flex
         width="full"
-        justify="space-between"
+        gap={2}
+        alignItems={"center"}
         display={{ base: "none", md: "flex" }}
       >
         <QuantitySelect
