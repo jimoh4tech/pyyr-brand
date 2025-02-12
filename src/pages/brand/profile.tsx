@@ -15,6 +15,7 @@ import {
   Input,
   InputGroup,
   Modal,
+  ModalCloseButton,
   ModalContent,
   ModalOverlay,
   Select,
@@ -627,6 +628,7 @@ export const Profile = () => {
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
+              <ModalCloseButton />
               <Form6 formik={null} setStep={() => null} />
             </ModalContent>
           </Modal>

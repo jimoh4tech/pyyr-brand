@@ -791,23 +791,7 @@ const Form5 = ({
                   }}
                 />
               </FormControl>
-              {/* <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"cac"}>
-                  {"Form CAC"}
-                </FormLabel>
-                <Input
-                  id={"cac"}
-                  name={"cac"}
-                  type="file"
-                  size={"xs"}
-                  onChange={(event) => {
-                    formik.setFieldValue(
-                      "cac",
-                      event.currentTarget.files && event.currentTarget.files[0]
-                    );
-                  }}
-                />
-              </FormControl> */}
+
               <FormControl isRequired>
                 <FormLabel fontSize={"xs"} htmlFor={"id"}>
                   {"National Identity"}
@@ -894,7 +878,7 @@ const ManagerTable = ({
   };
   return (
     <TableContainer>
-      <Table size="sm">
+      <Table size="sm" overflow={"scroll"}>
         <Thead>
           <Tr>
             <Th fontSize={"x-small"}>Name</Th>
@@ -943,6 +927,16 @@ export const Form6 = ({
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const [managers, setManagers] = useState<IManager[]>([]);
+
+  useEffect(() => {
+    const fetchManagers = async () => {
+      const token = localStorage.getItem("PYMAILYR") || "";
+      const res = await authService.getManagers({ get_managers: token });
+      console.log(res);
+      setManagers(res[1]);
+    };
+    fetchManagers();
+  }, []);
 
   const handleAddManager = async () => {
     try {
