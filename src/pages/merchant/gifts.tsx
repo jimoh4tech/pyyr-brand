@@ -249,6 +249,9 @@ const GiftTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
                 Name
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
+                Brand
+              </Th>
+              <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Code
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
@@ -271,9 +274,14 @@ const GiftTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
           <Tbody>
             {vouchers?.map((v) => (
               <Tr fontSize={"xs"} key={v.code}>
-                <Td fontSize={"xs"} maxW={"300px"}>
+                <Td fontSize={"xs"} maxW={"200px"}>
                   <Text fontSize={"xs"} isTruncated>
                     {v.Name}
+                  </Text>
+                </Td>
+                <Td fontSize={"xs"} maxW={"200px"}>
+                  <Text fontSize={"xs"} isTruncated>
+                    {v.brand}
                   </Text>
                 </Td>
                 <Td fontSize={"xs"}>

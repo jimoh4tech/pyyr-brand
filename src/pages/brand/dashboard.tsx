@@ -264,6 +264,7 @@ const DashboardContent = () => {
     total_purchase: string;
     total_used: string;
     wallet_balance: string;
+    ledger_balance: string;
   } | null>(null);
   const [graphData, setGraphData] = useState<
     { voucher: string; amount: number }[]
@@ -309,8 +310,8 @@ const DashboardContent = () => {
           isChecked={true}
         />
         <DisplayCard
-          value={formatCurrency(vData?.total_purchase.replace(",", "") || "")}
-          label="Total Sold"
+          value={formatCurrency(vData?.ledger_balance.replace(",", "") || "")}
+          label="Ledger Balance"
           isChecked={true}
         />
         <DisplayCard

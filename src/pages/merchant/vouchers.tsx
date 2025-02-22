@@ -166,7 +166,7 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
                 isTruncated
               >{`${voucher.Name} | ${voucher.code}`}</Text>
               <Text fontSize={"xs"} isTruncated>
-                {voucher.promotional_title}
+                {voucher.brand}
               </Text>
             </Stack>
           </Flex>
