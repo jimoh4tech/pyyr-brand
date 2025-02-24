@@ -23,7 +23,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Spacer,
   Stack,
   Text,
   useDisclosure,
@@ -246,6 +245,9 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [cartItems, setCartItems] = useState<IVoucherTable[]>([]);
   const [total, setTotal] = useState("0");
+  const [commission, setCommission] = useState("0");
+  const [vat, setVat] = useState("0");
+  const [subTotal, setSubTotal] = useState("0");
   const [refetchCart, setRefetchCart] = useState(true);
   const [isLoading, toggleLoading] = useState(false);
   const [exp, setExp] = useState(
@@ -258,9 +260,12 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
         const res = await voucherService.getAllCartVouchers({
           get_cart: email,
         });
-        console.log({ res, data: res[1], am: res[0]?.cartTotal });
+        console.log({ res });
         setCartItems(res[1]);
-        setTotal(res[0]?.cartTotal?.replace(",", "") || "0");
+        setTotal(res[0]?.total?.replace(",", "") || "0");
+        setCommission(res[0]?.commission?.replace(",", "") || "0");
+        setVat(res[0]?.vat?.replace(",", "") || "0");
+        setSubTotal(res[0]?.cartTotal?.replace(",", "") || "0");
       } catch (error) {
         console.log(error);
       }
@@ -373,9 +378,28 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
                 />
               </Flex>
               <Divider />
-              <Flex>
-                <Spacer />
-                <Text fontWeight={"bold"}>Total: {formatCurrency(total)}</Text>
+              <Flex flexDir={"column"}>
+                <Flex justifyContent={"space-between"}>
+                  Sub Total:
+                  <Text fontWeight={"semibold"}>
+                    {formatCurrency(subTotal)}
+                  </Text>
+                </Flex>
+                <Flex justifyContent={"space-between"}>
+                  Commission:
+                  <Text fontWeight={"semibold"}>
+                    {formatCurrency(commission)}
+                  </Text>
+                </Flex>
+                <Flex justifyContent={"space-between"}>
+                  Tax:
+                  <Text fontWeight={"semibold"}>{formatCurrency(vat)}</Text>
+                </Flex>
+                <Divider mt={2} />
+                <Flex justifyContent={"space-between"} mt={2}>
+                  Total:
+                  <Text fontWeight={"bold"}>{formatCurrency(total)}</Text>
+                </Flex>
               </Flex>
             </Stack>
           </DrawerBody>
