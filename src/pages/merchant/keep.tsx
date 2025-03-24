@@ -23,6 +23,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Spacer,
   Stack,
   Text,
   useDisclosure,
@@ -40,8 +41,6 @@ import {
 } from "react-icons/md";
 import { CartItem } from "./cart";
 import { FiSearch } from "react-icons/fi";
-import { toPng } from "html-to-image";
-import pyyr from "../../assets/pyyr.svg";
 
 export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -109,9 +108,9 @@ export const VocuherDetailModal = ({ voucher }: { voucher: IVoucherTable }) => {
                 <Text fontSize={"small"}>{voucher.redemption}</Text>
               </Flex>
               {/* <Flex justifyContent={'space-between'}>
-								<Text fontSize={'small'}>Quantity Used:</Text>
-								<Text fontSize={'small'}>{voucher.qty_used}</Text>
-							</Flex> */}
+                                <Text fontSize={'small'}>Quantity Used:</Text>
+                                <Text fontSize={'small'}>{voucher.qty_used}</Text>
+                            </Flex> */}
               <Flex justifyContent={"space-between"}>
                 <Text fontSize={"small"}>Expiration Date:</Text>
                 <Text fontSize={"small"}>{voucher?.exp}</Text>
@@ -226,14 +225,11 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [cartItems, setCartItems] = useState<IVoucherTable[]>([]);
   const [total, setTotal] = useState("0");
-  const [commission, setCommission] = useState("0");
-  const [vat, setVat] = useState("0");
-  const [subTotal, setSubTotal] = useState("0");
   const [refetchCart, setRefetchCart] = useState(true);
   const [isLoading, toggleLoading] = useState(false);
-  const toast = useToast();
-  const [exp] = useState(moment().add(60, "days").format("YYYY-MM-DDTHH:mm"));
-  const [isCheckout, setIsCheckout] = useState(false);
+  const [exp, setExp] = useState(
+    moment().add(60, "days").format("YYYY-MM-DDTHH:mm")
+  );
   useEffect(() => {
     const fetchCartVouchers = async () => {
       try {
@@ -241,12 +237,9 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
         const res = await voucherService.getAllCartVouchers({
           get_cart: email,
         });
-        console.log({ res });
+        console.log({ res, data: res[1], am: res[0]?.cartTotal });
         setCartItems(res[1]);
-        setTotal(res[0]?.total?.replace(",", "") || "0");
-        setCommission(res[0]?.commission?.replace(",", "") || "0");
-        setVat(res[0]?.vat?.replace(",", "") || "0");
-        setSubTotal(res[0]?.cartTotal?.replace(",", "") || "0");
+        setTotal(res[0]?.cartTotal?.replace(",", "") || "0");
       } catch (error) {
         console.log(error);
       }
@@ -254,6 +247,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
     fetchCartVouchers();
   }, [refetchCart, isOpen]);
 
+  const toast = useToast();
   const handleCheckout = async () => {
     if (!exp) return;
     if (total == "0.00") {
@@ -287,7 +281,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
           position: "top-right",
         });
         toggleLoading(false);
-        setIsCheckout(true);
+        onClose();
       } else {
         toggleLoading(false);
         toast({
@@ -303,48 +297,6 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
       }
     } catch (error) {
       console.log(error);
-    }
-  };
-  const downloadInvoiceAsImage = async () => {
-    const node = document.getElementById("invoice");
-
-    if (!node) return;
-
-    try {
-      // Wait for fonts and images to load
-      await document.fonts.ready;
-
-      // Wait for all images inside the container to load
-      const images = node.getElementsByTagName("img");
-      await Promise.all(
-        Array.from(images).map(
-          (img) =>
-            new Promise((resolve) => {
-              if (img.complete) resolve(true);
-              else img.onload = img.onerror = () => resolve(true);
-            })
-        )
-      );
-
-      // Add a short delay to ensure all styles apply correctly
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Capture the image
-      const dataUrl = await toPng(node, {
-        quality: 1,
-        cacheBust: true, // Helps to prevent caching issues
-        backgroundColor: "#ffffff", // Ensures background color consistency
-      });
-
-      // Trigger download
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = "invoice.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("❌ Failed to capture image", error);
     }
   };
   return (
@@ -377,23 +329,9 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Your {isCheckout ? "invoice" : "cart"}</DrawerHeader>
+          <DrawerHeader>Your cart</DrawerHeader>
           <DrawerBody>
-            <Stack gap={10} id="invoice" p={isCheckout ? 4 : 0}>
-              {isCheckout && (
-                <Flex justify="space-between" align="center" mb={4}>
-                  <Image src={pyyr} alt="Pyyr Logo" h="50px" />
-                  <Box textAlign="right">
-                    <Text fontWeight="bold" fontSize="lg">
-                      Pyyr Technologies Limited
-                    </Text>
-                    <Text fontSize="xs" color="gray.500">
-                      Issued Date: {moment().format("lll")}
-                    </Text>
-                  </Box>
-                </Flex>
-              )}
-
+            <Stack gap={10}>
               <Flex flexDir={"column"} gap={4}>
                 {cartItems.map((it: IVoucherTable) => (
                   <CartItem
@@ -401,11 +339,10 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
                     voucher={it}
                     setRefetchCart={setRefetchCart}
                     refetchCart={refetchCart}
-                    isCheckout={isCheckout}
                   />
                 ))}
               </Flex>
-              {/* <Flex gap={3} alignItems={"center"}>
+              <Flex gap={3} alignItems={"center"}>
                 <Text fontSize={"sm"}>Expiration</Text>
                 <Input
                   size={"sm"}
@@ -414,29 +351,10 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
                   onChange={(e) => setExp(e.target.value)}
                 />
               </Flex>
-              <Divider /> */}
-              <Flex flexDir={"column"}>
-                <Flex justifyContent={"space-between"}>
-                  Sub Total:
-                  <Text fontWeight={"semibold"}>
-                    {formatCurrency(subTotal)}
-                  </Text>
-                </Flex>
-                <Flex justifyContent={"space-between"}>
-                  Commission:
-                  <Text fontWeight={"semibold"}>
-                    {formatCurrency(commission)}
-                  </Text>
-                </Flex>
-                <Flex justifyContent={"space-between"}>
-                  Tax:
-                  <Text fontWeight={"semibold"}>{formatCurrency(vat)}</Text>
-                </Flex>
-                <Divider mt={2} />
-                <Flex justifyContent={"space-between"} mt={2}>
-                  Total:
-                  <Text fontWeight={"bold"}>{formatCurrency(total)}</Text>
-                </Flex>
+              <Divider />
+              <Flex>
+                <Spacer />
+                <Text fontWeight={"bold"}>Total: {formatCurrency(total)}</Text>
               </Flex>
             </Stack>
           </DrawerBody>
@@ -445,23 +363,13 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
             <Button variant="outline" mr={3} onClick={onClose}>
               Close
             </Button>
-            {isCheckout ? (
-              <Button
-                colorScheme="green"
-                onClick={downloadInvoiceAsImage}
-                isLoading={isLoading}
-              >
-                Download
-              </Button>
-            ) : (
-              <Button
-                colorScheme="purple"
-                onClick={handleCheckout}
-                isLoading={isLoading}
-              >
-                Checkout
-              </Button>
-            )}
+            <Button
+              colorScheme="purple"
+              onClick={handleCheckout}
+              isLoading={isLoading}
+            >
+              Checkout
+            </Button>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
@@ -509,22 +417,21 @@ export const MarketPlacePage = () => {
             justifyContent={"space-between"}
             width={"100%"}
           >
-            <Text fontSize={"xs"}>Brands</Text>
+            <InputGroup p={1}>
+              <InputLeftElement alignItems={"center"}>
+                <FiSearch size={"15px"} />
+              </InputLeftElement>
+              <Input
+                placeholder="Search"
+                size={"sm"}
+                borderRadius={"30px"}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+            </InputGroup>
             <CartDrawer cartCount={cartCount} />
           </Flex>
         </Flex>
-        <InputGroup p={1}>
-          <InputLeftElement alignItems={"center"}>
-            <FiSearch size={"15px"} />
-          </InputLeftElement>
-          <Input
-            placeholder="Search"
-            size={"sm"}
-            borderRadius={"30px"}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-        </InputGroup>
         <MarketPlaceCardList
           vouchers={vouchers.filter((v) => v.Name.includes(searchText))}
           setCartCount={setCartCount}

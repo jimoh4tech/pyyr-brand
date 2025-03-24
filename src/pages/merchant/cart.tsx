@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   CloseButton,
   Flex,
@@ -135,11 +136,13 @@ export const CartItem = ({
   voucher,
   setRefetchCart,
   refetchCart,
+  isCheckout,
 }: {
   voucher: IVoucherTable;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setRefetchCart: any;
   refetchCart: boolean;
+  isCheckout?: boolean;
 }) => {
   const [qty, setQty] = useState(voucher.qty);
   const [loading, setLoading] = useState(false);
@@ -233,12 +236,16 @@ export const CartItem = ({
         align="center"
       >
         <Flex width={"full"} gap={2}>
-          <Image
-            boxSize="100px"
-            objectFit="cover"
-            src={voucher.image}
-            alt={voucher.Name}
-          />
+          {isCheckout ? (
+            <Box w="80px" h="80px" bg="gray.200" borderRadius="md" />
+          ) : (
+            <Image
+              boxSize="100px"
+              objectFit="cover"
+              src={voucher.image}
+              alt={voucher.Name}
+            />
+          )}
           <Stack>
             <Text fontWeight={"bold"} fontSize={"sm"}>
               {voucher.Name}
