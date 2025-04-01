@@ -16,7 +16,7 @@ const addCampaign = async ({
   sdate: string;
   edate: string;
   image: string;
-  campaign_voucher: string;
+  campaign_voucher: string[];
   campaign_customer: string[];
   user_campaign: string;
 }) => {

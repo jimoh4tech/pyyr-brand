@@ -15,7 +15,6 @@ import {
   InputGroup,
   InputLeftElement,
   Progress,
-  Select,
   Stack,
   Table,
   TableContainer,
@@ -218,7 +217,7 @@ const Form1 = ({
           </Flex>
           <Divider />
           <Flex justifyContent={"flex-end"} gap={3}>
-          <Button
+            <Button
               onClick={() => setStatus("list")}
               colorScheme="purple"
               leftIcon={<FaLongArrowAltLeft />}
@@ -244,61 +243,50 @@ const Form1 = ({
 const Form2 = ({
   setStep,
   formik,
-  customers,
   vouchers,
 }: {
   setStep: (num: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
-  customers: ICustomer[];
   vouchers: IVoucherTable[];
 }) => {
   const [value, setValue] = useState<
     readonly { label: string; value: string }[]
   >([]);
-  const customerList = customers.map((c) => {
-    return { label: c.email, value: c.code };
+
+  const vouchersList = vouchers.map((v) => {
+    return { label: `${v.Name} | ₦${v.amount}`, value: v.code };
   });
   return (
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
         <Flex p={5} flexDir={"column"} gap={3}>
-          <Heading fontSize={"sm"}>Add Customers</Heading>
+          <Heading fontSize={"sm"}>Add Vouchers</Heading>
           <Text fontSize={"xs"}>
-            Select one or more customers and assign them to your campaign
+            Select one or more vouchers for your campaign
           </Text>
           <Divider />
           <Flex p={2} bg={"white"}>
-            <Flex flexDir={"column"} gap={3} w={"100%"}>
+            <Flex
+              flexDir={"column"}
+              gap={3}
+              w={"100%"}
+              maxW={{ base: "80vw", md: "40vw" }}
+            >
               <FormControl isRequired>
                 <FormLabel fontSize={"xs"} htmlFor={"campaign_voucher"}>
-                  Assign customers to vouchers
+                  Select vouchers to gift customers
                 </FormLabel>
-                <Flex gap={1}>
-                  <Select
-                    placeholder="Select voucher"
-                    size={"sm"}
-                    onChange={formik.handleChange}
-                    w={"60"}
-                    name="campaign_voucher"
-                  >
-                    {vouchers.map((v) => (
-                      <option key={v.code} value={v.code}>
-                        {`${v.Name} | ${v.amount}`}
-                      </option>
-                    ))}
-                  </Select>
-                  <MultiSelect
-                    isMulti
-                    placeholder="Select customers"
-                    name="campaign_customers"
-                    options={customerList}
-                    closeMenuOnSelect={false}
-                    value={value}
-                    onChange={setValue}
-                    size={"sm"}
-                  />
-                </Flex>
+                <MultiSelect
+                  isMulti
+                  placeholder="Select vouchers"
+                  name="campaign_voucher"
+                  options={vouchersList}
+                  closeMenuOnSelect={false}
+                  value={value}
+                  onChange={setValue}
+                  size={"sm"}
+                />
               </FormControl>
             </Flex>
           </Flex>
@@ -320,7 +308,7 @@ const Form2 = ({
               onClick={() => {
                 formik.setValues({
                   ...formik.values,
-                  campaign_customer: value.map((v) => v.value),
+                  campaign_voucher: value.map((v) => v.value),
                 });
                 // console.log(formik.values)
                 setStep(3);
@@ -337,22 +325,97 @@ const Form2 = ({
 const Form3 = ({
   setStep,
   formik,
-  vouchers,
+  customers,
 }: {
   setStep: (num: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
-  vouchers: IVoucherTable[];
+  customers: ICustomer[];
+}) => {
+  const [value, setValue] = useState<
+    readonly { label: string; value: string }[]
+  >([]);
+  const customerList = customers.map((c) => {
+    return { label: c.email, value: c.code };
+  });
+  return (
+    <>
+      <Flex bg={"white"} flex={1} flexDir={"column"}>
+        <Flex p={5} flexDir={"column"} gap={3}>
+          <Heading fontSize={"sm"}>Add Customers</Heading>
+          <Text fontSize={"xs"}>
+            Select one or more customers and assign them to your campaign
+          </Text>
+          <Divider />
+          <Flex p={2} bg={"white"}>
+            <Flex flexDir={"column"} gap={3} w={"100%"}>
+              <FormControl isRequired>
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_voucher"}>
+                  Select customers to gift vouchers
+                </FormLabel>
+                <MultiSelect
+                  isMulti
+                  placeholder="Select customers"
+                  name="campaign_customers"
+                  options={customerList}
+                  closeMenuOnSelect={false}
+                  value={value}
+                  onChange={setValue}
+                  size={"sm"}
+                />
+              </FormControl>
+            </Flex>
+          </Flex>
+          <Divider />
+          <Flex justifyContent={"flex-end"} gap={3}>
+            <Button
+              onClick={() => setStep(2)}
+              colorScheme="purple"
+              leftIcon={<FaLongArrowAltLeft />}
+              size={"xs"}
+              variant={"ghost"}
+            >
+              Back
+            </Button>
+            <Button
+              colorScheme="purple"
+              rightIcon={<FaLongArrowAltRight />}
+              size={"xs"}
+              onClick={() => {
+                formik.setValues({
+                  ...formik.values,
+                  campaign_customer: value.map((v) => v.value),
+                });
+                // console.log(formik.values)
+                setStep(4);
+              }}
+            >
+              Next
+            </Button>
+          </Flex>
+        </Flex>
+      </Flex>
+    </>
+  );
+};
+
+const Form4 = ({
+  setStep,
+  formik,
+}: {
+  setStep: (num: number) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formik: any;
 }) => {
   const [upload, setUpload] = useState<string | undefined>(undefined);
   const reader = new FileReader();
   reader.onload = () => {
     setUpload(reader.result as string);
   };
-  reader.readAsDataURL(formik.values.image);
-  const selectedVoucher = vouchers.find(
-    (v) => v.code === formik.values.campaign_voucher
-  );
+  if (formik.values.image) {
+    reader.readAsDataURL(formik.values.image);
+  }
+
   return (
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
@@ -420,36 +483,33 @@ const Form3 = ({
                 </AvatarGroup>
               </Flex>
             </Stack>
-            <Text fontSize={"small"}>Voucher Details</Text>
-            <Flex>
-              <Text fontSize={"x-small"} color={"gray"} w={28}>
-                Name
+            <Text fontSize={"small"}>Vouchers</Text>
+            <Stack
+              bgColor={"#fdfdfd"}
+              rounded={"lg"}
+              p={3}
+              border={"1px solid #e4e4e4"}
+              w={"full"}
+            >
+              <Text fontSize={"small"} color={"gray"}>
+                No. of vouchers added
               </Text>
-              <Text fontSize={"x-small"} color={"gray"}>
-                {selectedVoucher?.Name}
-              </Text>
-            </Flex>
-            <Flex>
-              <Text fontSize={"x-small"} color={"gray"} w={28}>
-                Description
-              </Text>
-              <Text fontSize={"x-small"} color={"gray"}>
-                {selectedVoucher?.description}
-              </Text>
-            </Flex>
-            <Flex>
-              <Text fontSize={"x-small"} color={"gray"} w={28}>
-                Redeemable at
-              </Text>
-              <Text fontSize={"x-small"} color={"gray"}>
-                {selectedVoucher?.redemption}
-              </Text>
-            </Flex>
+              <Flex justifyContent={"space-between"}>
+                <Text fontSize={"small"} fontWeight={"semibold"}>
+                  {formik.values.campaign_voucher.length}
+                </Text>
+                <AvatarGroup size="xs" max={5}>
+                  {formik.values.campaign_voucher?.map((c: string) => (
+                    <Avatar name={c} key={c} />
+                  ))}
+                </AvatarGroup>
+              </Flex>
+            </Stack>
           </Flex>
           <Divider />
           <Flex justifyContent={"flex-end"} gap={3}>
             <Button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
               colorScheme="purple"
               leftIcon={<FaLongArrowAltLeft />}
               size={"xs"}
@@ -486,19 +546,18 @@ const CreateCampaign = ({
   const fetchCustomers = async () => {
     try {
       const token = localStorage.getItem("PYMAILYR") || "";
-
-      const res = await customersService.getAllCustomers({
-        list_customer: token,
-      });
-
-      console.log({ res });
-      setCustomers(res[1]);
       const resV = await voucherService.getAllMerchantVouchers({
         list_voucher: token,
       });
 
       console.log({ resV });
       setVouchers(resV[1]);
+      const res = await customersService.getAllCustomers({
+        list_customer: token,
+      });
+
+      console.log({ res });
+      setCustomers(res[1]);
     } catch (error) {
       console.log(error);
     }
@@ -515,7 +574,7 @@ const CreateCampaign = ({
       sdate: "",
       edate: "",
       image: "",
-      campaign_voucher: "",
+      campaign_voucher: [],
       campaign_customer: [],
     },
     async onSubmit(values) {
@@ -587,9 +646,9 @@ const CreateCampaign = ({
     >
       <Text>New Campaign</Text>
       <Flex justify={"center"} display={isLessThan600 ? "flex" : "none"}>
-        <CircularProgress value={step * 34} size={"70px"} color="#825ee4">
+        <CircularProgress value={step * 25} size={"70px"} color="#825ee4">
           <CircularProgressLabel fontSize={"xs"}>
-            {step} of 3
+            {step} of 4
           </CircularProgressLabel>
         </CircularProgress>
       </Flex>
@@ -606,32 +665,30 @@ const CreateCampaign = ({
           <Text>Steps</Text>
           <Flex alignItems={"center"} gap={2} justifyContent={"space-between"}>
             <Progress
-              value={step * 34}
+              value={step * 25}
               colorScheme="purple"
               w="130px"
               size="xs"
               borderRadius={"md"}
             />
-            <Text width={"32px"}>{step} of 3</Text>
+            <Text width={"32px"}>{step} of 4</Text>
           </Flex>
 
           <ItemCheck label="Campaign Details" value={1} step={step} />
-          <ItemCheck label="Add Customers" value={2} step={step} />
-          <ItemCheck label="Preview" value={3} step={step} />
+          <ItemCheck label="Add Vouchers" value={2} step={step} />
+          <ItemCheck label="Add Customers" value={3} step={step} />
+          <ItemCheck label="Preview" value={4} step={step} />
         </Flex>
         <Flex bg={"#fbfbfb"} flex={3} p={isLessThan600 ? 1 : 5}>
           <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
             {step === 1 ? (
-              <Form1 setStep={setStep} formik={formik} setStatus={setStatus}/>
+              <Form1 setStep={setStep} formik={formik} setStatus={setStatus} />
             ) : step === 2 ? (
-              <Form2
-                setStep={setStep}
-                formik={formik}
-                customers={customers}
-                vouchers={vouchers}
-              />
+              <Form2 setStep={setStep} formik={formik} vouchers={vouchers} />
+            ) : step === 3 ? (
+              <Form3 setStep={setStep} formik={formik} customers={customers} />
             ) : (
-              <Form3 setStep={setStep} formik={formik} vouchers={vouchers} />
+              <Form4 setStep={setStep} formik={formik} />
             )}
           </form>
         </Flex>
@@ -823,12 +880,6 @@ export const CampaignPage = () => {
     fetchCampaigns();
   }, []);
   return (
-    // <Flex justifyContent={"center"} alignItems={"center"} h={"80vh"}>
-    //   <Text color={"purple"} fontSize={"x-large"} fontWeight={"semibold"}>
-    //     Coming Soon
-    //   </Text>
-    // </Flex>
-
     <Flex direction={"column"} gap={5}>
       {status === "list" ? (
         <>
@@ -844,12 +895,12 @@ export const CampaignPage = () => {
               isChecked={true}
             />
             <DisplayCard
-              value={`₦${cData?.redeemed}`}
+              value={`₦${cData?.redeemed || 0}`}
               label="Redeemed Vouchers"
               isChecked={true}
             />
             <DisplayCard
-              value={`₦${cData?.unredeemed}`}
+              value={`₦${cData?.unredeemed || 0}`}
               label="Unredeemed Vouchers"
               isChecked={true}
             />
