@@ -58,21 +58,6 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
           <Text width={"135px"}>{currentNav}</Text>
         </Flex>
         <Flex gap={3} alignItems={"center"}>
-          {/* <Stack
-            direction={"row"}
-            alignItems={"center"}
-            gap={0}
-            display={{ base: "none", md: "flex" }}
-          >
-            <Avatar size="2xs" src={help} />
-            <Link
-              fontSize={"xs"}
-              textDecoration={"underline"}
-              href="mailto:help@pyyr.io"
-            >
-              Get helps
-            </Link>
-          </Stack> */}
           <Popover>
             <PopoverTrigger>
               <Button
