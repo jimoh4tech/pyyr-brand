@@ -22,10 +22,11 @@ import { useContext, useEffect, useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { IoNotificationsOutline } from "react-icons/io5";
 import usersService from "../../services/user";
+import { INotification } from "../../interface/notification";
 
 export const Header = ({ currentNav }: { currentNav: string }) => {
   const { currentUser } = useContext(CurrentUserContext);
-  const [notifications, setNotifications] = useState<any>([]);
+  const [notifications, setNotifications] = useState<INotification[]>([]);
 
   const fetchNotifications = async () => {
     const token = localStorage.getItem("PYMAILYR") || "";
@@ -69,7 +70,7 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
               </Button>
             </PopoverTrigger>
             <Portal>
-              <PopoverContent>
+              <PopoverContent maxH={"400px"} overflowY={"auto"} w={"300px"}>
                 <PopoverArrow />
                 <PopoverHeader color={"black"}>
                   <Flex gap={2} alignItems={"center"}>
@@ -78,40 +79,38 @@ export const Header = ({ currentNav }: { currentNav: string }) => {
                       Notifications
                     </Text>
                     <Text fontSize={"xs"} color={"gray"}>
-                      {notifications.length} unread
+                      {notifications?.length || 0} unread
                     </Text>
                   </Flex>
                 </PopoverHeader>
                 <PopoverCloseButton />
                 <PopoverBody>
-                  {notifications.length === 0 ? (
+                  {notifications?.length === 0 ? (
                     <Text fontSize={"xs"}>No notifications</Text>
                   ) : (
-                    <Card maxW="md">
-                      <CardBody>
-                        <Flex gap={4}>
-                          <Flex gap="4" alignItems="center">
-                            {/* <Avatar
-                              name="Segun Adebayo"
-                              src="https://bit.ly/sage-adebayo"
-                            /> */}
-
-                            <Stack>
-                              <Text fontSize={"xs"} color={"gray"}>
-                                May 18, 2023 - 10:00 AM
-                              </Text>
-                              <Heading size="xs">
-                                Voucher purchase successful
-                              </Heading>
-                              <Text fontSize={"xs"}>
-                                You've successfully purchase a voucher for 50%
-                                off
-                              </Text>
-                            </Stack>
-                          </Flex>
-                        </Flex>
-                      </CardBody>
-                    </Card>
+                    <Stack>
+                      {notifications?.map((notification) => (
+                        <Card maxW="md">
+                          <CardBody>
+                            <Flex gap={4}>
+                              <Flex gap="4" alignItems="center">
+                                <Stack>
+                                  <Text fontSize={"xs"} color={"gray"}>
+                                    {notification?.date}
+                                  </Text>
+                                  <Heading size="xs">
+                                    {notification?.title}
+                                  </Heading>
+                                  <Text fontSize={"xs"}>
+                                    {notification?.description}
+                                  </Text>
+                                </Stack>
+                              </Flex>
+                            </Flex>
+                          </CardBody>
+                        </Card>
+                      ))}
+                    </Stack>
                   )}
                 </PopoverBody>
               </PopoverContent>
