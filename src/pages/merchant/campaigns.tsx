@@ -279,13 +279,14 @@ const Form2 = ({
                 </FormLabel>
                 <MultiSelect
                   isMulti
-                  placeholder="Select vouchers"
+                  placeholder="Select up to 3 vouchers"
                   name="campaign_voucher"
                   options={vouchersList}
                   closeMenuOnSelect={false}
                   value={value}
                   onChange={setValue}
                   size={"sm"}
+                  isOptionDisabled={() => value.length >= 3}
                 />
               </FormControl>
             </Flex>
