@@ -243,10 +243,10 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
         });
         console.log({ res });
         setCartItems(res[1]);
-        setTotal(res[0]?.total?.replace(",", "") || "0");
-        setCommission(res[0]?.commission?.replace(",", "") || "0");
-        setVat(res[0]?.vat?.replace(",", "") || "0");
-        setSubTotal(res[0]?.cartTotal?.replace(",", "") || "0");
+        setTotal(res[0]?.total || "0");
+        setCommission(res[0]?.commission || "0");
+        setVat(res[0]?.vat || "0");
+        setSubTotal(res[0]?.cartTotal || "0");
       } catch (error) {
         console.log(error);
       }
@@ -343,6 +343,15 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      toast({
+        title: "Invoice Downloaded",
+        description: "Invoice downloaded successfully.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
+      });
     } catch (error) {
       console.error("❌ Failed to capture image", error);
     }
@@ -418,24 +427,20 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
               <Flex flexDir={"column"}>
                 <Flex justifyContent={"space-between"}>
                   Sub Total:
-                  <Text fontWeight={"semibold"}>
-                    {formatCurrency(subTotal)}
-                  </Text>
+                  <Text fontWeight={"semibold"}>₦{subTotal}</Text>
                 </Flex>
                 <Flex justifyContent={"space-between"}>
                   Commission:
-                  <Text fontWeight={"semibold"}>
-                    {formatCurrency(commission)}
-                  </Text>
+                  <Text fontWeight={"semibold"}>₦{commission}</Text>
                 </Flex>
                 <Flex justifyContent={"space-between"}>
                   Tax:
-                  <Text fontWeight={"semibold"}>{formatCurrency(vat)}</Text>
+                  <Text fontWeight={"semibold"}>₦{vat}</Text>
                 </Flex>
                 <Divider mt={2} />
                 <Flex justifyContent={"space-between"} mt={2}>
                   Total:
-                  <Text fontWeight={"bold"}>{formatCurrency(total)}</Text>
+                  <Text fontWeight={"bold"}>₦{total}</Text>
                 </Flex>
               </Flex>
             </Stack>

@@ -297,6 +297,9 @@ export const CartItem = ({
         </Flex>
       </Flex>
       <Flex gap={2} alignItems="center" minW={"90px"}>
+        <Text fontSize={"small"} w={"170px"}>
+          Voucher Quantity:
+        </Text>
         <Input
           placeholder="Enter Quantity"
           size={"xs"}
