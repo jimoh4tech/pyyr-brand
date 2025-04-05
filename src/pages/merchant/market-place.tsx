@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardBody,
+  Center,
   Circle,
   Divider,
   Drawer,
@@ -23,6 +24,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
@@ -475,7 +477,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
 };
 
 export const MarketPlacePage = () => {
-  const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+  const [vouchers, setVouchers] = useState<IVoucherTable[] | null>(null);
   const [searchText, setSearchText] = useState("");
   const [cartCount, setCartCount] = useState(0);
 
@@ -530,10 +532,22 @@ export const MarketPlacePage = () => {
             onChange={(e) => setSearchText(e.target.value)}
           />
         </InputGroup>
-        <MarketPlaceCardList
-          vouchers={vouchers.filter((v) => v.Name.includes(searchText))}
-          setCartCount={setCartCount}
-        />
+        {!vouchers ? (
+          <Center mt={20}>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="purple.500"
+              size="xl"
+            />
+          </Center>
+        ) : (
+          <MarketPlaceCardList
+            vouchers={vouchers.filter((v) => v.Name.includes(searchText))}
+            setCartCount={setCartCount}
+          />
+        )}
       </Flex>
     </Stack>
   );

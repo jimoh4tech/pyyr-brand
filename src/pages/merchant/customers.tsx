@@ -24,6 +24,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Spinner,
   Stack,
   Table,
   TableContainer,
@@ -512,7 +513,12 @@ const ImportCustomerModal = ({
             </ModalBody>
 
             <ModalFooter>
-              <Button variant={"outline"} mr={3} onClick={handleClose} size={"xs"}>
+              <Button
+                variant={"outline"}
+                mr={3}
+                onClick={handleClose}
+                size={"xs"}
+              >
                 Close
               </Button>
               <Button
@@ -664,7 +670,7 @@ const CustomerTable = ({
 };
 
 export const CustomerPage = () => {
-  const [customers, setCustomers] = useState<ICustomer[]>([]);
+  const [customers, setCustomers] = useState<ICustomer[] | null>(null);
   const [cData, setCData] = useState<{
     total_active: string;
     total_customer: number;
@@ -710,11 +716,23 @@ export const CustomerPage = () => {
           isChecked={true}
         />
       </Flex>
-      <CustomerTable
-        customers={customers}
-        refetch={refetch}
-        setRefetch={setRefetch}
-      />
+      {!customers ? (
+        <Center mt={20}>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="purple.500"
+            size="xl"
+          />
+        </Center>
+      ) : (
+        <CustomerTable
+          customers={customers}
+          refetch={refetch}
+          setRefetch={setRefetch}
+        />
+      )}
     </Stack>
   );
 };

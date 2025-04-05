@@ -15,6 +15,7 @@ import {
   InputGroup,
   InputLeftElement,
   Progress,
+  Spinner,
   Stack,
   Table,
   TableContainer,
@@ -906,7 +907,19 @@ export const CampaignPage = () => {
               isChecked={true}
             />
           </Flex>
-          <CampaignList setStatus={setStatus} campaigns={campaigns} />
+          {!campaigns ? (
+            <Center mt={20}>
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="purple.500"
+                size="xl"
+              />
+            </Center>
+          ) : (
+            <CampaignList setStatus={setStatus} campaigns={campaigns} />
+          )}
         </>
       ) : (
         <CreateCampaign setStatus={setStatus} />
