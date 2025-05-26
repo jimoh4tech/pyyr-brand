@@ -23,4 +23,5 @@ export interface IVoucherTable {
   redemption: string;
   // usage_limit: string;
   visibility: string;
+  brand?: string;
 }

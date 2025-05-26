@@ -53,6 +53,7 @@ import transactionsService from "../../../services/transactions";
 import userServices from "../../../services/user";
 import { CurrentUserContext } from "../../../context/user.context";
 import { IManager } from "../../../interface/customer";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 const NoConsentModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -790,23 +791,7 @@ const Form5 = ({
                   }}
                 />
               </FormControl>
-              {/* <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"cac"}>
-                  {"Form CAC"}
-                </FormLabel>
-                <Input
-                  id={"cac"}
-                  name={"cac"}
-                  type="file"
-                  size={"xs"}
-                  onChange={(event) => {
-                    formik.setFieldValue(
-                      "cac",
-                      event.currentTarget.files && event.currentTarget.files[0]
-                    );
-                  }}
-                />
-              </FormControl> */}
+
               <FormControl isRequired>
                 <FormLabel fontSize={"xs"} htmlFor={"id"}>
                   {"National Identity"}
@@ -893,7 +878,7 @@ const ManagerTable = ({
   };
   return (
     <TableContainer>
-      <Table size="sm">
+      <Table size="sm" overflow={"scroll"}>
         <Thead>
           <Tr>
             <Th fontSize={"x-small"}>Name</Th>
@@ -913,9 +898,10 @@ const ManagerTable = ({
                   fontSize={"x-small"}
                   cursor={"pointer"}
                   textDecor={"underline"}
+                  alignItems={"center"}
                   onClick={() => handleRemoveManager(m.code)}
                 >
-                  remove
+                  <RiDeleteBinLine color="red" size="15px" />
                 </Td>
               </Tr>
             ))
@@ -927,7 +913,7 @@ const ManagerTable = ({
     </TableContainer>
   );
 };
-const Form6 = ({
+export const Form6 = ({
   setStep,
   formik,
 }: {
@@ -941,6 +927,16 @@ const Form6 = ({
   const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const [managers, setManagers] = useState<IManager[]>([]);
+
+  useEffect(() => {
+    const fetchManagers = async () => {
+      const token = localStorage.getItem("PYMAILYR") || "";
+      const res = await authService.getManagers({ get_managers: token });
+      console.log(res);
+      setManagers(res[1]);
+    };
+    fetchManagers();
+  }, []);
 
   const handleAddManager = async () => {
     try {
@@ -1056,7 +1052,11 @@ const Form6 = ({
             </Flex>
           </Flex>
           <Divider />
-          <Flex justifyContent={"flex-end"} gap={3}>
+          <Flex
+            justifyContent={"flex-end"}
+            gap={3}
+            display={formik === null ? "none" : "flex"}
+          >
             <Button
               onClick={() => setStep(5)}
               colorScheme="purple"
@@ -1069,7 +1069,7 @@ const Form6 = ({
               colorScheme="purple"
               size={"xs"}
               type="submit"
-              isLoading={formik.isSubmitting}
+              isLoading={formik?.isSubmitting}
             >
               Submit
             </Button>

@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardBody,
+  Center,
   Flex,
   Input,
   InputGroup,
@@ -14,6 +15,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spacer,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
@@ -166,7 +168,7 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
                 isTruncated
               >{`${voucher.Name} | ${voucher.code}`}</Text>
               <Text fontSize={"xs"} isTruncated>
-                {voucher.promotional_title}
+                {voucher.brand}
               </Text>
             </Stack>
           </Flex>
@@ -198,7 +200,7 @@ const VoucherCard = ({ voucher }: { voucher: IVoucherTable }) => {
 };
 
 export const MerchantVoucherPage = () => {
-  const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+  const [vouchers, setVouchers] = useState<IVoucherTable[] | null>(null);
   const [searchText, setSearchText] = useState("");
   const [vData, setVData] = useState<{
     total_purchase: string;
@@ -279,14 +281,25 @@ export const MerchantVoucherPage = () => {
             onChange={(e) => setSearchText(e.target.value)}
           />
         </InputGroup>
-
-        <Flex flexWrap={"wrap"} gap={3} justifyContent={"center"}>
-          {vouchers
-            .filter((v) => v.Name.includes(searchText))
-            .map((v) => (
-              <VoucherCard key={v.code} voucher={v} />
-            ))}
-        </Flex>
+        {!vouchers ? (
+          <Center mt={20}>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="purple.500"
+              size="xl"
+            />
+          </Center>
+        ) : (
+          <Flex flexWrap={"wrap"} gap={3} justifyContent={"center"}>
+            {vouchers
+              .filter((v) => v.Name.includes(searchText))
+              .map((v) => (
+                <VoucherCard key={v.code} voucher={v} />
+              ))}
+          </Flex>
+        )}
       </Flex>
     </Stack>
   );

@@ -24,6 +24,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Spinner,
   Stack,
   Table,
   TableContainer,
@@ -338,7 +339,7 @@ const DeactivateCustomerModal = () => {
       <MenuItem onClick={onOpen}>
         <Flex gap={5}>
           <RiDeleteBin6Line size={"15px"} color="red" cursor={"pointer"} />
-          <Text fontSize={"small"}>Delete</Text>
+          <Text fontSize={"small"}>Deactivate</Text>
         </Flex>
       </MenuItem>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -412,8 +413,10 @@ const ImportCustomerModal = ({
             position: "top-right",
           });
           onClose();
+          setFileName("");
           setRefetch(!refetch);
         } else {
+          setFileName("");
           toast({
             title: "Error",
             description:
@@ -426,6 +429,7 @@ const ImportCustomerModal = ({
           });
         }
       } catch (error) {
+        setFileName("");
         console.log(error);
       }
     },
@@ -446,6 +450,11 @@ const ImportCustomerModal = ({
         event.currentTarget.files && event.currentTarget.files[0]
       );
     }
+  };
+
+  const handleClose = () => {
+    onClose();
+    setFileName("");
   };
   return (
     <>
@@ -504,8 +513,13 @@ const ImportCustomerModal = ({
             </ModalBody>
 
             <ModalFooter>
-              <Button variant={"outline"} mr={3} onClick={onClose} size={"xs"}>
-                Cancel
+              <Button
+                variant={"outline"}
+                mr={3}
+                onClick={handleClose}
+                size={"xs"}
+              >
+                Close
               </Button>
               <Button
                 colorScheme="purple"
@@ -592,7 +606,7 @@ const CustomerTable = ({
                   c.lname.toLowerCase().includes(filterText.toLowerCase())
               )
               .map((t) => (
-                <Tr fontSize={"xs"} key={t.email}>
+                <Tr fontSize={"xs"} key={t.code}>
                   <Td fontSize={"xs"}>
                     <Stack gap={2}>
                       <Text fontSize={"xs"} fontWeight={"semibold"}>
@@ -633,7 +647,7 @@ const CustomerTable = ({
                         <MenuList>
                           <MenuItem
                             onClick={() =>
-                              navigate(`/merchant/customers/${t.city}`)
+                              navigate(`/merchant/customers/${t.code}`)
                             }
                           >
                             <Flex gap={4} alignItems={"center"}>
@@ -656,7 +670,7 @@ const CustomerTable = ({
 };
 
 export const CustomerPage = () => {
-  const [customers, setCustomers] = useState<ICustomer[]>([]);
+  const [customers, setCustomers] = useState<ICustomer[] | null>(null);
   const [cData, setCData] = useState<{
     total_active: string;
     total_customer: number;
@@ -693,7 +707,7 @@ export const CustomerPage = () => {
         />
         <DisplayCard
           value={cData?.total_reward || 0}
-          label="Total No of Customers Rewarded "
+          label="Total No of Customers Rewarded"
           isChecked={true}
         />
         <DisplayCard
@@ -702,11 +716,23 @@ export const CustomerPage = () => {
           isChecked={true}
         />
       </Flex>
-      <CustomerTable
-        customers={customers}
-        refetch={refetch}
-        setRefetch={setRefetch}
-      />
+      {!customers ? (
+        <Center mt={20}>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="purple.500"
+            size="xl"
+          />
+        </Center>
+      ) : (
+        <CustomerTable
+          customers={customers}
+          refetch={refetch}
+          setRefetch={setRefetch}
+        />
+      )}
     </Stack>
   );
 };

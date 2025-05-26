@@ -1,5 +1,6 @@
 import {
   Button,
+  Center,
   Flex,
   Input,
   Modal,
@@ -16,6 +17,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Spacer,
+  Spinner,
   Stack,
   Table,
   TableContainer,
@@ -249,6 +251,9 @@ const GiftTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
                 Name
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
+                Brand
+              </Th>
+              <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Code
               </Th>
               <Th fontSize={"xs"} textTransform={"capitalize"}>
@@ -271,8 +276,15 @@ const GiftTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
           <Tbody>
             {vouchers?.map((v) => (
               <Tr fontSize={"xs"} key={v.code}>
-                <Td fontSize={"xs"}>
-                  <Text fontSize={"xs"}>{v.Name}</Text>
+                <Td fontSize={"xs"} maxW={"200px"}>
+                  <Text fontSize={"xs"} isTruncated>
+                    {v.Name}
+                  </Text>
+                </Td>
+                <Td fontSize={"xs"} maxW={"200px"}>
+                  <Text fontSize={"xs"} isTruncated>
+                    {v.brand}
+                  </Text>
                 </Td>
                 <Td fontSize={"xs"}>
                   <Text fontSize={"xs"}>{v.code}</Text>
@@ -309,7 +321,7 @@ const GiftTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 };
 
 export const GiftsPage = () => {
-  const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+  const [vouchers, setVouchers] = useState<IVoucherTable[] | null>(null);
   const [giftValue, setGiftValue] = useState<{
     total_gifted: string;
     total_redeemed: string;
@@ -372,7 +384,19 @@ export const GiftsPage = () => {
           Gift Multiple
         </Button>
       </Flex>
-      <GiftTable vouchers={vouchers} />
+      {!vouchers ? (
+        <Center mt={20}>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="purple.500"
+            size="xl"
+          />
+        </Center>
+      ) : (
+        <GiftTable vouchers={vouchers} />
+      )}
     </Stack>
   );
 };

@@ -223,10 +223,13 @@ const Empty = ({ setStatus }: { setStatus: any }) => {
 const Form1 = ({
   setStep,
   formik,
+  setStatus,
 }: {
   setStep: (num: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setStatus: any;
 }) => {
   return (
     <>
@@ -309,20 +312,6 @@ const Form1 = ({
                   />
                 </InputGroup>
               </FormControl>
-              {/* <FormControl isRequired>
-								<FormLabel fontSize={'xs'} htmlFor={'role'}>
-									{'Voucher Redemption Type'}
-								</FormLabel>
-								<Select
-									size={'xs'}
-									name='redemption'
-									placeholder='Select Voucher'
-									onChange={formik.handleChange}
-								>
-									<option value='Single use Voucher'>Single use Voucher</option>
-									<option value='Multi-use Voucher'>Multi-use Voucher</option>
-								</Select>
-							</FormControl> */}
               <FormControl isRequired>
                 <FormLabel fontSize={"xs"} htmlFor={"role"}>
                   {"Visibility"}
@@ -338,43 +327,19 @@ const Form1 = ({
                   <option value="Public">Public</option>
                 </Select>
               </FormControl>
-              {/* <FormControl isRequired>
-								<FormLabel fontSize={'xs'} htmlFor={'role'}>
-									{'Redeem/Usage Window'}
-								</FormLabel>
-								<Input
-									id='exp'
-									type='datetime-local'
-									name='usage_limit'
-									value={formik.values.usage_limit}
-									onChange={formik.handleChange}
-								/>
-							</FormControl> */}
-              {/* <FormControl isRequired>
-								<FormLabel fontSize={'xs'} htmlFor={'Live'}>
-									{'When would you like to go live?'}
-								</FormLabel>
-								<Input
-									id='Live'
-									type='datetime-local'
-									name='live'
-									value={formik.values.live}
-									onChange={formik.handleChange}
-								/>
-							</FormControl> */}
             </Flex>
           </Flex>
           <Divider />
           <Flex justifyContent={"flex-end"} gap={3}>
-            {/* <Button
-								onClick={() => setStep(1)}
-								colorScheme='purple'
-								size={'xs'}
-								variant={'ghost'}
-								disabled={true}
-							>
-								Back
-							</Button> */}
+            <Button
+              onClick={() => setStatus("list")}
+              colorScheme="purple"
+              size={"xs"}
+              variant={"ghost"}
+              disabled={true}
+            >
+              Back
+            </Button>
             <Button colorScheme="purple" size={"xs"} onClick={() => setStep(2)}>
               Proceed
             </Button>
@@ -883,7 +848,11 @@ const CreateVoucher = ({ setStatus }: { setStatus: any }) => {
           <Flex bg={"#fbfbfb"} flex={3} p={isLessThan600 ? 1 : 5}>
             <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
               {step === 1 ? (
-                <Form1 setStep={setStep} formik={formik} />
+                <Form1
+                  setStep={setStep}
+                  formik={formik}
+                  setStatus={setStatus}
+                />
               ) : step === 2 ? (
                 <Form2 setStep={setStep} formik={formik} managers={managers} />
               ) : step === 3 ? (

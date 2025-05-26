@@ -124,6 +124,28 @@ const addVoucherToCart = async ({
   );
   return res.data;
 };
+const updateCartVoucher = async ({
+  update_cart,
+  email,
+  qty,
+}: {
+  update_cart: string;
+  email: string;
+  qty: string;
+}) => {
+  const res = await axios.post(
+    `${baseUrl}`,
+    {
+      update_cart,
+      email,
+      qty,
+    },
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+  return res.data;
+};
 
 const reduceQtyVoucherFromCart = async ({
   reduce_cart,
@@ -308,4 +330,5 @@ export default {
   viewGiftVoucher,
   checkoutOrder,
   toggleVoucherAvailabiility,
+  updateCartVoucher,
 };

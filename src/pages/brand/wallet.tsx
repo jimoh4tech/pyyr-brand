@@ -613,7 +613,7 @@ export const Wallet = () => {
       const res = await transactionsService.walletBalance({
         pyyr_accounts: token,
       });
-      // console.log(res);
+      console.log(res);
       setBalance(res.currentBalance);
       setEarnings(Number(res?.earnings));
     };
@@ -692,11 +692,6 @@ export const Wallet = () => {
         >
           <Flex gap={2} alignItems={"center"}>
             <Text fontSize={"xs"}>Transaction History</Text>
-            {/* <Select placeholder="This Week" size={"xs"}>
-              <option value="option1">This Week</option>
-              <option value="option2">Last Week</option>
-              <option value="option3">Last Month</option>
-            </Select> */}
           </Flex>
           <WithdrawalModal balance={balance} accountDetails={accountDetails} />
         </Flex>

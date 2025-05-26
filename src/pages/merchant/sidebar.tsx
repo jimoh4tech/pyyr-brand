@@ -120,7 +120,7 @@ export const MerchantSidebarContent = ({
       label: "Campaigns",
       icon: campaign,
       href: "/merchant/campaigns",
-      tag: "Coming soon",
+      tag: "New",
     },
     {
       href: "/merchant/wallet",

@@ -170,7 +170,9 @@ const VoucherCard = ({
         >
           <Flex gap={3} alignItems={"center"}>
             <Avatar size={{ base: "xs", md: "sm" }} src={icon} name={label} />
-            <Text>{label}</Text>
+            <Stack maxW={"200px"}>
+              <Text isTruncated>{label}</Text>
+            </Stack>
           </Flex>
           <Text>{value}</Text>
         </Flex>
@@ -229,7 +231,11 @@ const VocuhersTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
           <Tbody>
             {vouchers.map((v) => (
               <Tr fontSize={"xs"} key={v.code}>
-                <Td fontSize={"xs"}>{v.Name} </Td>
+                <Stack width={"100px"}>
+                  <Td fontSize={"xs"} isTruncated>
+                    {v.Name}{" "}
+                  </Td>
+                </Stack>
                 <Td fontSize={"xs"}>{formatCurrency(v.worth)}</Td>
                 <Td fontSize={"xs"}>{v.code}</Td>
                 <Td fontSize={"xs"}>{formatCurrency(v.amount)}</Td>

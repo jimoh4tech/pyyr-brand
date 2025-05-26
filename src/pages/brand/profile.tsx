@@ -14,6 +14,10 @@ import {
   HStack,
   Input,
   InputGroup,
+  Modal,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
   Select,
   Stack,
   Tab,
@@ -30,6 +34,8 @@ import { CiEdit, CiLocationOn, CiMobile2 } from "react-icons/ci";
 import { CurrentUserContext } from "../../context/user.context";
 import userService from "../../services/user";
 import { QRCodeCanvas } from "qrcode.react";
+import { HiOutlineExternalLink } from "react-icons/hi";
+import { Form6 } from "./kyc";
 
 const Form1 = () => {
   const { currentUser } = useContext(CurrentUserContext);
@@ -570,6 +576,7 @@ const EditProfileDrawer = () => {
 
 export const Profile = () => {
   const { currentUser } = useContext(CurrentUserContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [accountDetails, setAccountDetails] = useState([]);
   const downloadQRCode = () => {
@@ -610,6 +617,21 @@ export const Profile = () => {
           </Text>
           {/* Temporarily diabled edit profile */}
           {currentUser?.email === "2" && <EditProfileDrawer />}
+
+          <Button
+            rightIcon={<HiOutlineExternalLink />}
+            size={"sm"}
+            onClick={onOpen}
+          >
+            Redemption Location
+          </Button>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalCloseButton />
+              <Form6 formik={null} setStep={() => null} />
+            </ModalContent>
+          </Modal>
         </Flex>
 
         <Flex gap={4} alignItems={"center"}>

@@ -1,5 +1,6 @@
 import {
   Avatar,
+  AvatarGroup,
   Badge,
   Button,
   Center,
@@ -13,10 +14,8 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Menu,
-  MenuButton,
-  MenuList,
   Progress,
+  Spinner,
   Stack,
   Table,
   TableContainer,
@@ -31,19 +30,25 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { DisplayCard } from "./dashboard";
-import { formatCurrency } from "../../util/format-currency.util";
 import { MdOutlineCampaign } from "react-icons/md";
 import {
   FaDotCircle,
   FaLongArrowAltLeft,
   FaLongArrowAltRight,
 } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { ICampaign } from "../../interface/campaigns";
 import { ItemCheck } from "./kyc";
 import { useFormik } from "formik";
 import { GrDocumentUpload } from "react-icons/gr";
+import { Select as MultiSelect } from "chakra-react-select";
+import customersService from "../../services/customers";
+import { ICustomer } from "../../interface/customer";
+import { IVoucherTable } from "../../interface/voucher";
+import voucherService from "../../services/voucher";
+import { getDaysBetweenDates } from "../../util/format-date.util";
+import campaignService from "../../services/campaign";
 
 const CampaignEmpty = ({
   setStatus,
@@ -83,8 +88,10 @@ const CampaignEmpty = ({
 const Form1 = ({
   setStep,
   formik,
+  setStatus,
 }: {
   setStep: (num: number) => void;
+  setStatus: (status: "list" | "create") => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
 }) => {
@@ -101,7 +108,7 @@ const Form1 = ({
     if (files && files.length > 0) {
       setFileName(files[0].name);
       formik.setFieldValue(
-        "customerFile",
+        "image",
         event.currentTarget.files && event.currentTarget.files[0]
       );
     }
@@ -131,6 +138,7 @@ const Form1 = ({
                 <Input
                   type="file"
                   ref={inputRef}
+                  name="image"
                   display="none"
                   onChange={handleFileChange}
                 />
@@ -142,31 +150,31 @@ const Form1 = ({
                 </Flex>
               </Stack>
               <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"worth"}>
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_name"}>
                   Title
                 </FormLabel>
                 <InputGroup>
                   <Input
-                    id={"worth"}
-                    name={"worth"}
+                    id={"campaign_name"}
+                    name={"campaign_name"}
                     type="text"
                     size={"xs"}
-                    value={formik.values.worth}
+                    value={formik.values.campaign_name}
                     onChange={formik.handleChange}
                     placeholder="Enter title"
                   />
                 </InputGroup>
               </FormControl>
               <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"amount"}>
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_des"}>
                   Description
                 </FormLabel>
                 <InputGroup>
                   <Textarea
-                    id={"amount"}
-                    name={"amount"}
+                    id={"campaign_des"}
+                    name={"campaign_des"}
                     size={"xs"}
-                    value={formik.values.amount}
+                    value={formik.values.campaign_des}
                     onChange={formik.handleChange}
                     placeholder="Enter description"
                   />
@@ -174,32 +182,34 @@ const Form1 = ({
               </FormControl>
               <Flex gap={3}>
                 <FormControl isRequired>
-                  <FormLabel fontSize={"xs"} htmlFor={"startdate"}>
+                  <FormLabel fontSize={"xs"} htmlFor={"sdate"}>
                     Start date
                   </FormLabel>
                   <InputGroup>
                     <Input
-                      id={"startdate"}
-                      name={"startdate"}
+                      id={"sdate"}
+                      name={"sdate"}
                       type="date"
                       size={"xs"}
-                      value={formik.values.worth}
+                      value={formik.values.sdate}
                       onChange={formik.handleChange}
+                      min={new Date().toISOString().slice(0, -14)}
                     />
                   </InputGroup>
                 </FormControl>
                 <FormControl isRequired>
-                  <FormLabel fontSize={"xs"} htmlFor={"startdate"}>
+                  <FormLabel fontSize={"xs"} htmlFor={"edate"}>
                     End date
                   </FormLabel>
                   <InputGroup>
                     <Input
-                      id={"startdate"}
-                      name={"startdate"}
+                      id={"edate"}
+                      name={"edate"}
                       type="date"
                       size={"xs"}
-                      value={formik.values.worth}
+                      value={formik.values.edate}
                       onChange={formik.handleChange}
+                      min={new Date().toISOString().slice(0, -14)}
                     />
                   </InputGroup>
                 </FormControl>
@@ -208,6 +218,15 @@ const Form1 = ({
           </Flex>
           <Divider />
           <Flex justifyContent={"flex-end"} gap={3}>
+            <Button
+              onClick={() => setStatus("list")}
+              colorScheme="purple"
+              leftIcon={<FaLongArrowAltLeft />}
+              size={"xs"}
+              variant={"ghost"}
+            >
+              Back
+            </Button>
             <Button
               colorScheme="purple"
               rightIcon={<FaLongArrowAltRight />}
@@ -225,53 +244,51 @@ const Form1 = ({
 const Form2 = ({
   setStep,
   formik,
+  vouchers,
 }: {
   setStep: (num: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
+  vouchers: IVoucherTable[];
 }) => {
+  const [value, setValue] = useState<
+    readonly { label: string; value: string }[]
+  >([]);
+
+  const vouchersList = vouchers.map((v) => {
+    return { label: `${v.Name} | ₦${v.amount}`, value: v.code };
+  });
   return (
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
         <Flex p={5} flexDir={"column"} gap={3}>
-          <Heading fontSize={"sm"}>Pricing</Heading>
+          <Heading fontSize={"sm"}>Add Vouchers</Heading>
           <Text fontSize={"xs"}>
-            Kindly Provide the information below to create your campaign
+            Select one or more vouchers for your campaign
           </Text>
           <Divider />
-          <Flex p={5} bg={"white"}>
-            <Flex flexDir={"column"} gap={3} w={"100%"}>
+          <Flex p={2} bg={"white"}>
+            <Flex
+              flexDir={"column"}
+              gap={3}
+              w={"100%"}
+              maxW={{ base: "80vw", md: "40vw" }}
+            >
               <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"worth"}>
-                  Customers
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_voucher"}>
+                  Select vouchers to gift customers
                 </FormLabel>
-                <InputGroup>
-                  <Input
-                    id={"worth"}
-                    name={"worth"}
-                    type="text"
-                    size={"xs"}
-                    value={formik.values.worth}
-                    onChange={formik.handleChange}
-                    placeholder="Select"
-                  />
-                </InputGroup>
-              </FormControl>
-              <FormControl isRequired>
-                <FormLabel fontSize={"xs"} htmlFor={"amount"}>
-                  Voucher
-                </FormLabel>
-                <InputGroup>
-                  <Input
-                    id={"amount"}
-                    name={"amount"}
-                    type="text"
-                    size={"xs"}
-                    value={formik.values.amount}
-                    onChange={formik.handleChange}
-                    placeholder="Select"
-                  />
-                </InputGroup>
+                <MultiSelect
+                  isMulti
+                  placeholder="Select up to 3 vouchers"
+                  name="campaign_voucher"
+                  options={vouchersList}
+                  closeMenuOnSelect={false}
+                  value={value}
+                  onChange={setValue}
+                  size={"sm"}
+                  isOptionDisabled={() => value.length >= 3}
+                />
               </FormControl>
             </Flex>
           </Flex>
@@ -290,7 +307,14 @@ const Form2 = ({
               colorScheme="purple"
               rightIcon={<FaLongArrowAltRight />}
               size={"xs"}
-              onClick={() => setStep(3)}
+              onClick={() => {
+                formik.setValues({
+                  ...formik.values,
+                  campaign_voucher: value.map((v) => v.value),
+                });
+                // console.log(formik.values)
+                setStep(3);
+              }}
             >
               Next
             </Button>
@@ -303,17 +327,102 @@ const Form2 = ({
 const Form3 = ({
   setStep,
   formik,
+  customers,
+}: {
+  setStep: (num: number) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formik: any;
+  customers: ICustomer[];
+}) => {
+  const [value, setValue] = useState<
+    readonly { label: string; value: string }[]
+  >([]);
+  const customerList = customers.map((c) => {
+    return { label: c.email, value: c.code };
+  });
+  return (
+    <>
+      <Flex bg={"white"} flex={1} flexDir={"column"}>
+        <Flex p={5} flexDir={"column"} gap={3}>
+          <Heading fontSize={"sm"}>Add Customers</Heading>
+          <Text fontSize={"xs"}>
+            Select one or more customers and assign them to your campaign
+          </Text>
+          <Divider />
+          <Flex p={2} bg={"white"}>
+            <Flex flexDir={"column"} gap={3} w={"100%"}>
+              <FormControl isRequired>
+                <FormLabel fontSize={"xs"} htmlFor={"campaign_voucher"}>
+                  Select customers to gift vouchers
+                </FormLabel>
+                <MultiSelect
+                  isMulti
+                  placeholder="Select customers"
+                  name="campaign_customers"
+                  options={customerList}
+                  closeMenuOnSelect={false}
+                  value={value}
+                  onChange={setValue}
+                  size={"sm"}
+                />
+              </FormControl>
+            </Flex>
+          </Flex>
+          <Divider />
+          <Flex justifyContent={"flex-end"} gap={3}>
+            <Button
+              onClick={() => setStep(2)}
+              colorScheme="purple"
+              leftIcon={<FaLongArrowAltLeft />}
+              size={"xs"}
+              variant={"ghost"}
+            >
+              Back
+            </Button>
+            <Button
+              colorScheme="purple"
+              rightIcon={<FaLongArrowAltRight />}
+              size={"xs"}
+              onClick={() => {
+                formik.setValues({
+                  ...formik.values,
+                  campaign_customer: value.map((v) => v.value),
+                });
+                // console.log(formik.values)
+                setStep(4);
+              }}
+            >
+              Next
+            </Button>
+          </Flex>
+        </Flex>
+      </Flex>
+    </>
+  );
+};
+
+const Form4 = ({
+  setStep,
+  formik,
 }: {
   setStep: (num: number) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik: any;
 }) => {
-  const toast = useToast();
+  const [upload, setUpload] = useState<string | undefined>(undefined);
+  const reader = new FileReader();
+  reader.onload = () => {
+    setUpload(reader.result as string);
+  };
+  if (formik.values.image) {
+    reader.readAsDataURL(formik.values.image);
+  }
+
   return (
     <>
       <Flex bg={"white"} flex={1} flexDir={"column"}>
         <Flex p={5} flexDir={"column"} gap={3}>
-          <Heading fontSize={"sm"}>Pricing</Heading>
+          <Heading fontSize={"sm"}>Preview</Heading>
           <Text fontSize={"xs"}>
             Please perform an error check on the information provided before
             launching the campaign.
@@ -327,30 +436,32 @@ const Form3 = ({
               border={"1px solid #e4e4e4"}
               w={"full"}
             >
-              <Avatar name="Wedding" />
+              <Avatar name={formik.values.campaign_name} src={upload} />
               <Flex justifyContent={"space-between"}>
                 <Text fontSize={"small"} color={"gray"}>
-                  Wedding
+                  {formik.values.campaign_name}
                 </Text>
                 <Text fontSize={"small"} color={"gray"}>
                   Duration
                 </Text>
               </Flex>
-              <Flex justifyContent={"space-between"}>
-                <Text fontSize={"small"}>#13433535</Text>
+              <Flex justifyContent={"flex-end"}>
                 <Flex gap={1}>
                   <Badge textTransform={"capitalize"} size={"sm"}>
-                    1 week
+                    {`${getDaysBetweenDates(
+                      formik.values.sdate,
+                      formik.values.edate
+                    )} days`}
                   </Badge>
                   <Badge textTransform={"capitalize"} size={"sm"}>
-                    12-03-
+                    {`${formik.values.sdate} - ${formik.values.edate}`}
                   </Badge>
                 </Flex>
               </Flex>
             </Stack>
             <Text fontSize={"small"}>Description</Text>
             <Text fontSize={"small"} color={"gray"}>
-              The wedding is one that is
+              {formik.values.campaign_des}
             </Text>
             <Text fontSize={"small"}>Customers</Text>
             <Stack
@@ -363,40 +474,44 @@ const Form3 = ({
               <Text fontSize={"small"} color={"gray"}>
                 No. of customers added
               </Text>
-              <Text fontSize={"small"} fontWeight={"semibold"}>
-                129,000
-              </Text>
+              <Flex justifyContent={"space-between"}>
+                <Text fontSize={"small"} fontWeight={"semibold"}>
+                  {formik.values.campaign_customer.length}
+                </Text>
+                <AvatarGroup size="xs" max={5}>
+                  {formik.values.campaign_customer?.map((c: string) => (
+                    <Avatar name={c} key={c} />
+                  ))}
+                </AvatarGroup>
+              </Flex>
             </Stack>
-            <Text fontSize={"small"}>Voucher Details</Text>
-            <Flex>
-              <Text fontSize={"x-small"} color={"gray"} w={28}>
-                Name
+            <Text fontSize={"small"}>Vouchers</Text>
+            <Stack
+              bgColor={"#fdfdfd"}
+              rounded={"lg"}
+              p={3}
+              border={"1px solid #e4e4e4"}
+              w={"full"}
+            >
+              <Text fontSize={"small"} color={"gray"}>
+                No. of vouchers added
               </Text>
-              <Text fontSize={"x-small"} color={"gray"}>
-                Emerand
-              </Text>
-            </Flex>
-            <Flex>
-              <Text fontSize={"x-small"} color={"gray"} w={28}>
-                Brand
-              </Text>
-              <Text fontSize={"x-small"} color={"gray"}>
-                Spotify
-              </Text>
-            </Flex>
-            <Flex>
-              <Text fontSize={"x-small"} color={"gray"} w={28}>
-                Redeemable at
-              </Text>
-              <Text fontSize={"x-small"} color={"gray"}>
-                www.google.com
-              </Text>
-            </Flex>
+              <Flex justifyContent={"space-between"}>
+                <Text fontSize={"small"} fontWeight={"semibold"}>
+                  {formik.values.campaign_voucher.length}
+                </Text>
+                <AvatarGroup size="xs" max={5}>
+                  {formik.values.campaign_voucher?.map((c: string) => (
+                    <Avatar name={c} key={c} />
+                  ))}
+                </AvatarGroup>
+              </Flex>
+            </Stack>
           </Flex>
           <Divider />
           <Flex justifyContent={"flex-end"} gap={3}>
             <Button
-              onClick={() => setStep(2)}
+              onClick={() => setStep(3)}
               colorScheme="purple"
               leftIcon={<FaLongArrowAltLeft />}
               size={"xs"}
@@ -408,27 +523,8 @@ const Form3 = ({
               colorScheme="purple"
               rightIcon={<FaLongArrowAltRight />}
               size={"xs"}
-              onClick={() => {
-                if (
-                  formik.values.amount &&
-                  formik.values.worth &&
-                  formik.values.visibility &&
-                  formik.values.promotional_title &&
-                  formik.values.visibility &&
-                  formik.values.voucher_name
-                )
-                  setStep(4);
-                else {
-                  toast({
-                    title: "Error",
-                    description: "Some required fields are empty",
-                    status: "error",
-                    duration: 9000,
-                    isClosable: true,
-                    position: "top-right",
-                  });
-                }
-              }}
+              type="submit"
+              isLoading={formik.isSubmitting}
             >
               Launch Campaign
             </Button>
@@ -443,60 +539,98 @@ const CreateCampaign = ({
 }: {
   setStatus: (status: "list" | "create") => void;
 }) => {
+  const toast = useToast();
   const [step, setStep] = useState(1);
   const [isLessThan600] = useMediaQuery("(max-width: 600px)");
+  const [customers, setCustomers] = useState<ICustomer[]>([]);
+  const [vouchers, setVouchers] = useState<IVoucherTable[]>([]);
+
+  const fetchCustomers = async () => {
+    try {
+      const token = localStorage.getItem("PYMAILYR") || "";
+      const resV = await voucherService.getAllMerchantVouchers({
+        list_voucher: token,
+      });
+
+      console.log({ resV });
+      setVouchers(resV[1]);
+      const res = await customersService.getAllCustomers({
+        list_customer: token,
+      });
+
+      console.log({ res });
+      setCustomers(res[1]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
-      voucher_name: "",
-      promotional_title: "",
-      voucher_des: "",
-      redemption: "",
-      visibility: "",
-      worth: "",
-      amount: "",
+      campaign_name: "",
+      campaign_des: "",
+      sdate: "",
+      edate: "",
       image: "",
-      location_name: [],
-      url: "",
-      description: "",
-      redeem: "",
-      video: "",
+      campaign_voucher: [],
+      campaign_customer: [],
     },
     async onSubmit(values) {
       try {
+        if (
+          !formik.values.campaign_name &&
+          !formik.values.campaign_des &&
+          !formik.values.sdate &&
+          !formik.values.edate &&
+          !formik.values.image &&
+          !formik.values.campaign_customer &&
+          !formik.values.campaign_voucher
+        ) {
+          toast({
+            title: "Error",
+            description: "Some required fields are empty",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+        }
         const token = localStorage.getItem("PYMAILYR") || "";
         const newVal = {
           ...values,
-          add_voucher: token,
+          user_campaign: token,
         };
         console.log({ newVal });
-        setStatus("create");
 
-        // const res = await voucherService.createVoucher(newVal);
-        // console.log(res);
+        const res = await campaignService.addCampaign(newVal);
+        console.log(res);
 
-        // if (res.responseCode == 200) {
-        //   toast({
-        //     title: "Vocuher successfully created.",
-        //     description: res.responseMessage,
-        //     status: "success",
-        //     duration: 9000,
-        //     isClosable: true,
-        //     position: "top-right",
-        //   });
-        //   setStatus("list");
-        // } else {
-        //   toast({
-        //     title: "Error",
-        //     description:
-        //       res.responseMessage ||
-        //       "Opps! Something went wrong, try again later",
-        //     status: "error",
-        //     duration: 9000,
-        //     isClosable: true,
-        //     position: "top-right",
-        //   });
-        // }
+        if (res.responseCode == 200) {
+          toast({
+            title: "Campaign successfully created.",
+            description: res.responseMessage,
+            status: "success",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+          setStatus("list");
+        } else {
+          toast({
+            title: "Error",
+            description:
+              res.responseMessage ||
+              "Opps! Something went wrong, try again later",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+            position: "top-right",
+          });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -514,9 +648,9 @@ const CreateCampaign = ({
     >
       <Text>New Campaign</Text>
       <Flex justify={"center"} display={isLessThan600 ? "flex" : "none"}>
-        <CircularProgress value={step * 34} size={"70px"} color="#825ee4">
+        <CircularProgress value={step * 25} size={"70px"} color="#825ee4">
           <CircularProgressLabel fontSize={"xs"}>
-            {step} of 3
+            {step} of 4
           </CircularProgressLabel>
         </CircularProgress>
       </Flex>
@@ -533,27 +667,30 @@ const CreateCampaign = ({
           <Text>Steps</Text>
           <Flex alignItems={"center"} gap={2} justifyContent={"space-between"}>
             <Progress
-              value={step * 34}
+              value={step * 25}
               colorScheme="purple"
               w="130px"
               size="xs"
               borderRadius={"md"}
             />
-            <Text width={"32px"}>{step} of 3</Text>
+            <Text width={"32px"}>{step} of 4</Text>
           </Flex>
 
           <ItemCheck label="Campaign Details" value={1} step={step} />
-          <ItemCheck label="Add Customers" value={2} step={step} />
-          <ItemCheck label="Preview" value={3} step={step} />
+          <ItemCheck label="Add Vouchers" value={2} step={step} />
+          <ItemCheck label="Add Customers" value={3} step={step} />
+          <ItemCheck label="Preview" value={4} step={step} />
         </Flex>
         <Flex bg={"#fbfbfb"} flex={3} p={isLessThan600 ? 1 : 5}>
           <form onSubmit={formik.handleSubmit} style={{ width: "100%" }}>
             {step === 1 ? (
-              <Form1 setStep={setStep} formik={formik} />
+              <Form1 setStep={setStep} formik={formik} setStatus={setStatus} />
             ) : step === 2 ? (
-              <Form2 setStep={setStep} formik={formik} />
+              <Form2 setStep={setStep} formik={formik} vouchers={vouchers} />
+            ) : step === 3 ? (
+              <Form3 setStep={setStep} formik={formik} customers={customers} />
             ) : (
-              <Form3 setStep={setStep} formik={formik} />
+              <Form4 setStep={setStep} formik={formik} />
             )}
           </form>
         </Flex>
@@ -563,41 +700,15 @@ const CreateCampaign = ({
 };
 const CampaignList = ({
   setStatus,
+  campaigns,
 }: {
   setStatus: (status: "list" | "create") => void;
+  campaigns: ICampaign[] | null;
 }) => {
   const [filterText, setFilterText] = useState("");
-  const campaigns: ICampaign[] = [
-    {
-      amount: "20000",
-      brand: "Spotify",
-      endDate: "12-03-2023",
-      startDate: "12-04-2024",
-      name: "Wedding",
-      noOfCustomers: "120",
-      status: "Claimed",
-    },
-    {
-      amount: "20000",
-      brand: "Nike",
-      endDate: "12-03-2023",
-      startDate: "12-04-2024",
-      name: "Lover's Day",
-      noOfCustomers: "4",
-      status: "Claimed",
-    },
-    {
-      amount: "20000",
-      brand: "Slot",
-      endDate: "12-03-2023",
-      startDate: "12-04-2024",
-      name: "Make a child happy",
-      noOfCustomers: "35",
-      status: "Claimed",
-    },
-  ];
 
-  if (campaigns.length === 0) return <CampaignEmpty setStatus={setStatus} />;
+  if (campaigns && campaigns?.length === 0)
+    return <CampaignEmpty setStatus={setStatus} />;
   return (
     <Stack p={2} bgColor={"white"} boxShadow={"lg"} borderRadius={"lg"}>
       <Flex justifyContent={"space-between"} flexWrap={"wrap"} gap={2}>
@@ -650,12 +761,6 @@ const CampaignList = ({
               <Th fontSize={"xs"} textTransform={"capitalize"}>
                 Brand
               </Th>
-              <Th fontSize={"xs"} textTransform={"capitalize"}>
-                Status
-              </Th>
-              <Th fontSize={"xs"} textTransform={"capitalize"}>
-                Action
-              </Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -663,8 +768,7 @@ const CampaignList = ({
               ?.filter(
                 (c) =>
                   c.name.toLowerCase().includes(filterText.toLowerCase()) ||
-                  c.brand.toLowerCase().includes(filterText.toLowerCase()) ||
-                  c.noOfCustomers
+                  c.businessName
                     .toLowerCase()
                     .includes(filterText.toLowerCase()) ||
                   c.amount.toLowerCase().includes(filterText.toLowerCase())
@@ -683,21 +787,24 @@ const CampaignList = ({
                     </Stack>
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.startDate}
+                    {t.sdate}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.endDate}
+                    {t.edate}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.noOfCustomers}
+                    {t.no_customer}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {formatCurrency(t.amount)}
+                    {`₦${t.amount}`}
                   </Td>
                   <Td fontSize={"xs"} color={"gray"}>
-                    {t.brand}
+                    <Flex alignItems={"center"} gap={1}>
+                      <Avatar src={t.logo} size={"xs"} />
+                      <Text fontSize={"x-small"}>{t.businessName}</Text>
+                    </Flex>
                   </Td>
-                  <Td fontSize={"xs"} color={"gray"}>
+                  {/* <Td fontSize={"xs"} color={"gray"}>
                     <Badge
                       textTransform={"capitalize"}
                       rounded={"lg"}
@@ -708,8 +815,8 @@ const CampaignList = ({
                       {" "}
                       {t.status}
                     </Badge>{" "}
-                  </Td>
-                  <Td>
+                  </Td> */}
+                  {/* <Td>
                     {" "}
                     <Flex justifyContent={"center"} alignItems={"center"}>
                       <Menu>
@@ -725,7 +832,7 @@ const CampaignList = ({
                           </Flex>
                         </MenuButton>
                         <MenuList>
-                          {/* <MenuItem
+                          <MenuItem
                             onClick={() =>
                               navigate(`/merchant/customers/${t.city}`)
                             }
@@ -735,11 +842,11 @@ const CampaignList = ({
                               <Text fontSize={"small"}>View</Text>
                             </Flex>
                           </MenuItem>
-                          <DeactivateCustomerModal /> */}
+                          <DeactivateCustomerModal />
                         </MenuList>
                       </Menu>
                     </Flex>
-                  </Td>
+                  </Td> */}
                 </Tr>
               ))}
           </Tbody>
@@ -750,35 +857,69 @@ const CampaignList = ({
 };
 export const CampaignPage = () => {
   const [status, setStatus] = useState<"list" | "create">("list");
-  return (
-    // <Flex justifyContent={"center"} alignItems={"center"} h={"80vh"}>
-    //   <Text color={"purple"} fontSize={"x-large"} fontWeight={"semibold"}>
-    //     Coming Soon
-    //   </Text>
-    // </Flex>
+  const [campaigns, setCampaigns] = useState<ICampaign[] | null>(null);
+  const [cData, setCData] = useState<{
+    active: number;
+    customers: string;
+    redeemed: string;
+    unredeemed: string;
+  } | null>(null);
+  const fetchCampaigns = async () => {
+    try {
+      const token = localStorage.getItem("PYMAILYR") || "";
+      const res = await campaignService.getAllCampaigns({
+        list_campaign: token,
+      });
+      console.log({ res });
+      setCData(res[0]);
+      setCampaigns(res[1]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
+    fetchCampaigns();
+  }, []);
+  return (
     <Flex direction={"column"} gap={5}>
       {status === "list" ? (
         <>
           <Flex gap={{ base: 1, md: 3 }} flexWrap={"wrap"}>
-            <DisplayCard value={0} label="Active Campaigns" isChecked={true} />
             <DisplayCard
-              value={0}
+              value={cData?.active || 0}
+              label="Active Campaigns"
+              isChecked={true}
+            />
+            <DisplayCard
+              value={cData?.customers || 0}
               label="Qualified Customers"
               isChecked={true}
             />
             <DisplayCard
-              value={formatCurrency(0)}
+              value={`₦${cData?.redeemed || 0}`}
               label="Redeemed Vouchers"
               isChecked={true}
             />
             <DisplayCard
-              value={formatCurrency(0)}
+              value={`₦${cData?.unredeemed || 0}`}
               label="Unredeemed Vouchers"
               isChecked={true}
             />
           </Flex>
-          <CampaignList setStatus={setStatus} />
+          {!campaigns ? (
+            <Center mt={20}>
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="purple.500"
+                size="xl"
+              />
+            </Center>
+          ) : (
+            <CampaignList setStatus={setStatus} campaigns={campaigns} />
+          )}
         </>
       ) : (
         <CreateCampaign setStatus={setStatus} />
