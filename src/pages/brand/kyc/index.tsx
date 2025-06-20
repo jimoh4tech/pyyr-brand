@@ -1250,7 +1250,7 @@ export const BrandKYC = () => {
             title: "Error",
             description:
               res.responseMessage ||
-              "Opps! Something went wrong, try again later",
+              "Opps! Something went wrong, try again later.",
             status: "error",
             duration: 9000,
             isClosable: true,
