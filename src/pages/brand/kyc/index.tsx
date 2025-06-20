@@ -1215,8 +1215,8 @@ export const BrandKYC = () => {
           return;
         }
         const verifyCAC = await authService.verifyCAC(newVal.rc_number);
+        console.log({ verifyCAC });
         if (verifyCAC?.status && verifyCAC?.data?.company_name) {
-          console.log({ verifyCAC });
           newVal.businessName = verifyCAC?.data?.company_name;
         } else {
           toast({
