@@ -977,8 +977,8 @@ export const MerchantKYC = () => {
           return;
         }
         const verifyCAC = await authService.verifyCAC(newVal.rc_number);
-        if (verifyCAC?.status) {
-          newVal.businessName = verifyCAC?.data?.company_name;
+        if (verifyCAC?.status && verifyCAC?.data[0]?.company_name) {
+          newVal.businessName = verifyCAC?.data[0]?.company_name;
         } else {
           toast({
             title: "Invalid CAC Number",

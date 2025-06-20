@@ -1215,9 +1215,9 @@ export const BrandKYC = () => {
           return;
         }
         const verifyCAC = await authService.verifyCAC(newVal.rc_number);
-        console.log({ verifyCAC });
-        if (verifyCAC?.status && verifyCAC?.data?.company_name) {
-          newVal.businessName = verifyCAC?.data?.company_name;
+        // console.log({ verifyCAC });
+        if (verifyCAC?.status && verifyCAC?.data[0]?.company_name) {
+          newVal.businessName = verifyCAC?.data[0]?.company_name;
         } else {
           toast({
             title: "Invalid CAC Number",
@@ -1230,10 +1230,10 @@ export const BrandKYC = () => {
           return;
         }
 
-        console.log({ newVal });
+        // console.log({ newVal });
         const res = await authService.kyc(newVal);
         const user = await userServices.getFullUserDetail({ full_user: email });
-        console.log({ res, user });
+        // console.log({ res, user });
         setCurrentUser(user);
         if (res.responseCode == 200) {
           toast({
