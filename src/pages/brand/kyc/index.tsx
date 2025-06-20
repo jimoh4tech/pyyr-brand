@@ -1215,7 +1215,8 @@ export const BrandKYC = () => {
           return;
         }
         const verifyCAC = await authService.verifyCAC(newVal.rc_number);
-        if (verifyCAC?.status) {
+        if (verifyCAC?.status && verifyCAC?.data?.company_name) {
+          console.log({ verifyCAC });
           newVal.businessName = verifyCAC?.data?.company_name;
         } else {
           toast({
@@ -1229,7 +1230,6 @@ export const BrandKYC = () => {
           return;
         }
 
-        console.log({ newVal });
         console.log({ newVal });
         const res = await authService.kyc(newVal);
         const user = await userServices.getFullUserDetail({ full_user: email });
