@@ -1230,10 +1230,10 @@ export const BrandKYC = () => {
         }
 
         console.log({ newVal });
-        // console.log({ newVal });
+        console.log({ newVal });
         const res = await authService.kyc(newVal);
         const user = await userServices.getFullUserDetail({ full_user: email });
-        // console.log({ res, user });
+        console.log({ res, user });
         setCurrentUser(user);
         if (res.responseCode == 200) {
           toast({
