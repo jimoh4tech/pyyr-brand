@@ -287,7 +287,7 @@ const DashboardContent = () => {
       setVData(res[0]);
       const processedGraphData = res[1]?.map(
         (d: { voucher: string; amount: string }) => {
-          return { ...d, amount: Number(d.amount?.replace(",", "")) };
+          return { ...d, amount: Number(d?.amount?.replace(",", "")) };
         }
       );
       setGraphData(processedGraphData);
@@ -305,12 +305,12 @@ const DashboardContent = () => {
       {" "}
       <Flex gap={{ base: 1, md: 3 }}>
         <DisplayCard
-          value={formatCurrency(vData?.wallet_balance.replace(",", "") || "")}
+          value={formatCurrency(vData?.wallet_balance?.replace(",", "") || "")}
           label="Available Balance"
           isChecked={true}
         />
         <DisplayCard
-          value={formatCurrency(vData?.ledger_balance.replace(",", "") || "")}
+          value={formatCurrency(vData?.ledger_balance?.replace(",", "") || "")}
           label="Ledger Balance"
           isChecked={true}
         />
