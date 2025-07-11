@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import userService from "../../../services/user";
 import { CurrentUserContext } from "../../../context/user.context";
 import { Form3 } from "../register/forms";
+import LogRocket from "logrocket";
 
 const VerifyOTP = ({
   isOpen,
@@ -81,6 +82,11 @@ export const LoginPage = () => {
         console.log(user);
         if (res.responseCode == 200) {
           setCurrentUser(user);
+          LogRocket.identify(values.username, {
+            name: user?.name,
+            email: values.username,
+            account_type: user?.account_type,
+          });
           toast({
             title: "Login successful.",
             description: res.responseMessage,
