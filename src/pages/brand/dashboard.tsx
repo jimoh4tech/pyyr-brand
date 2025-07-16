@@ -290,8 +290,8 @@ const DashboardContent = () => {
           return { ...d, amount: Number(d?.amount?.replace(",", "")) };
         }
       );
-      setGraphData(processedGraphData);
       // console.log({ res, processedGraphData });
+      setGraphData(processedGraphData);
     };
 
     try {

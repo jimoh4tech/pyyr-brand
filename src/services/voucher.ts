@@ -238,15 +238,18 @@ const getAllMerchantVouchers = async ({
 const checkoutOrder = async ({
   checkout,
   exp,
+  coupon,
 }: {
   checkout: string;
   exp: string;
+  coupon?: string;
 }) => {
   const res = await axios.post(
     `${baseUrl}`,
     {
       checkout,
       exp,
+      coupon,
     },
     {
       headers: { "Content-Type": "multipart/form-data" },

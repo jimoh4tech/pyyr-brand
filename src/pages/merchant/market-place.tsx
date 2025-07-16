@@ -231,6 +231,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
   const [commission, setCommission] = useState("0");
   const [vat, setVat] = useState("0");
   const [subTotal, setSubTotal] = useState("0");
+  const [coupon, setCoupon] = useState("");
   const [refetchCart, setRefetchCart] = useState(true);
   const [isLoading, toggleLoading] = useState(false);
   const toast = useToast();
@@ -275,6 +276,7 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
       const val = {
         checkout: email,
         exp,
+        coupon,
       };
       console.log(val);
       const res = await voucherService.checkoutOrder(val);
@@ -427,6 +429,19 @@ const CartDrawer = ({ cartCount }: { cartCount: number }) => {
               </Flex>
               <Divider /> */}
               <Flex flexDir={"column"}>
+                <Flex
+                  gap={5}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  mb={4}
+                >
+                  Coupon:
+                  <Input
+                    size={"sm"}
+                    placeholder="Enter coupon"
+                    onChange={(e) => setCoupon(e.target.value)}
+                  />
+                </Flex>
                 <Flex justifyContent={"space-between"}>
                   Sub Total:
                   <Text fontWeight={"semibold"}>₦{subTotal}</Text>
