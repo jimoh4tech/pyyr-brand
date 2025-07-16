@@ -28,7 +28,14 @@ import rectangle from "../../assets/rectangle.svg";
 import { IoIosArrowForward } from "react-icons/io";
 import { useContext, useEffect, useState } from "react";
 import moment from "moment";
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { CurrentUserContext } from "../../context/user.context";
 import { useNavigate } from "react-router-dom";
 import dashboardService from "../../services/dashboard";
@@ -180,9 +187,11 @@ const VoucherCard = ({
     </>
   );
 };
-const DashboardChart = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const data: any[] | undefined = [];
+const DashboardChart = ({
+  data,
+}: {
+  data: { voucher: string; amount: number }[];
+}) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart
@@ -196,9 +205,15 @@ const DashboardChart = () => {
           bottom: 0,
         }}
       >
-        <XAxis fontSize={"10px"} dataKey="name" />
+        <XAxis fontSize={"10px"} dataKey="voucher" />
         <Tooltip />
-        <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+        <Area
+          type="monotone"
+          dataKey="amount"
+          stroke="#8884d8"
+          fill="#8884d8"
+        />
+        <YAxis dataKey="amount" fontSize={"8px"} />
       </AreaChart>
     </ResponsiveContainer>
   );
@@ -258,6 +273,9 @@ const DashboardContent = () => {
     total_voucher: string;
   } | null>(null);
   const navigate = useNavigate();
+  const [graphData, setGraphData] = useState<
+    { voucher: string; amount: number }[]
+  >([]);
   const [from, setFrom] = useState(
     moment().subtract(7, "days").format("YYYY-MM-DD")
   );
@@ -274,6 +292,13 @@ const DashboardContent = () => {
       setVouchers(res[1]);
       setVData(res[0]);
       console.log({ res });
+      const processedGraphData = res[1]?.map(
+        (d: { voucher: string; amount: string }) => {
+          return { ...d, amount: Number(d?.amount?.replace(",", "")) };
+        }
+      );
+      // console.log({ res, processedGraphData });
+      setGraphData(processedGraphData);
     };
 
     try {
@@ -336,7 +361,7 @@ const DashboardContent = () => {
               </Stack>
             </Flex>
             <Box minH={"30vh"}>
-              <DashboardChart />
+              <DashboardChart data={graphData} />
             </Box>
           </Flex>
           <Flex
