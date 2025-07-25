@@ -81,7 +81,7 @@ export const LoginPage = () => {
         localStorage.setItem("PYMAILYR", res.token);
         console.log(user);
         if (res.responseCode == 200) {
-          setCurrentUser(user);
+          setCurrentUser({ ...user, token: res.token });
           LogRocket.identify(values.username, {
             name: user?.name,
             email: values.username,
