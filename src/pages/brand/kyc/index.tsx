@@ -12,6 +12,7 @@ import {
   Input,
   InputGroup,
   InputLeftAddon,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -840,6 +841,7 @@ const ManagerTable = ({
   setManagers: any;
 }) => {
   const toast = useToast();
+  const { currentUser } = useContext(CurrentUserContext);
   const handleRemoveManager = async (code: string) => {
     try {
       const email = localStorage.getItem("PYMAILYR") || "";
@@ -884,6 +886,7 @@ const ManagerTable = ({
             <Th fontSize={"x-small"}>Name</Th>
             <Th fontSize={"x-small"}>Phone</Th>
             <Th fontSize={"x-small"}>Location</Th>
+            <Th fontSize={"x-small"}>Weblink</Th>
             <Th fontSize={"x-small"}>Action</Th>
           </Tr>
         </Thead>
@@ -894,6 +897,18 @@ const ManagerTable = ({
                 <Td fontSize={"x-small"}>{m.Name}</Td>
                 <Td fontSize={"x-small"}>{m.phone}</Td>
                 <Td fontSize={"x-small"}>{m.location}</Td>
+                <Td fontSize={"x-small"}>
+                  {" "}
+                  <Link
+                    href={`https://pyyr-manager.vercel.app/dashboard?brandid=${currentUser?.token}&location=${m.code}`}
+                    isExternal
+                    fontSize={"xs"}
+                    color={"purple"}
+                  >
+                    Click here
+                  </Link>
+                </Td>
+
                 <Td
                   fontSize={"x-small"}
                   cursor={"pointer"}

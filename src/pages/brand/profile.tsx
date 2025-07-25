@@ -14,6 +14,7 @@ import {
   HStack,
   Input,
   InputGroup,
+  Link,
   Modal,
   ModalCloseButton,
   ModalContent,
@@ -674,7 +675,16 @@ export const Profile = () => {
           </Flex>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Weblink</Text>
-            <Text fontSize={"xs"}>{currentUser?.website}</Text>
+            <Link
+              href={`https://pyyr-manager.vercel.app/dashboard?brandid=${currentUser?.token}`}
+              isExternal
+              fontSize={"xs"}
+              fontWeight={"bold"}
+              color={"red.500"}
+            >
+              Click here
+            </Link>
+            {/* <Text fontSize={"xs"}></Text> */}
           </Flex>
         </Stack>
       </Stack>
