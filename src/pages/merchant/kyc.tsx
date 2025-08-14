@@ -853,7 +853,6 @@ export const MerchantKYC = () => {
 
   const fetchAccountName = async () => {
     try {
-      // const token = localStorage.getItem('PYMAILYR') || '';
       const bank = formik.values.accountBank.split(":");
       console.log({
         get_account: formik.values.accountNumber,
