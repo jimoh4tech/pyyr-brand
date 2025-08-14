@@ -959,39 +959,39 @@ export const MerchantKYC = () => {
           return;
         }
         // TODO: verify BVN
-        const verify = await authService.verifyBVN(values.bvn || "");
-        console.log(verify);
-        // return;
-        if (verify?.status) {
-          newVal.firstName = verify?.data?.firstName;
-          newVal.lastName = verify?.data?.lastName;
-        } else {
-          toast({
-            title: "Invalid BVN",
-            description: "Kindly Enter a valid BVN",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-            position: "top-right",
-          });
-          return;
-        }
-        const verifyCAC = await authService.verifyCAC(newVal.rc_number);
-        if (verifyCAC?.status && verifyCAC?.data[0]?.company_name) {
-          newVal.businessName = verifyCAC?.data[0]?.company_name;
-        } else {
-          toast({
-            title: "Invalid CAC Number",
-            description: "Kindly Enter a valid CAC Number",
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-            position: "top-right",
-          });
-          return;
-        }
+        // const verify = await authService.verifyBVN(values.bvn || "");
+        // console.log(verify);
+        // // return;
+        // if (verify?.status) {
+        //   newVal.firstName = verify?.data?.firstName;
+        //   newVal.lastName = verify?.data?.lastName;
+        // } else {
+        //   toast({
+        //     title: "Invalid BVN",
+        //     description: "Kindly Enter a valid BVN",
+        //     status: "error",
+        //     duration: 9000,
+        //     isClosable: true,
+        //     position: "top-right",
+        //   });
+        //   return;
+        // }
+        // const verifyCAC = await authService.verifyCAC(newVal.rc_number);
+        // if (verifyCAC?.status && verifyCAC?.data[0]?.company_name) {
+        //   newVal.businessName = verifyCAC?.data[0]?.company_name;
+        // } else {
+        //   toast({
+        //     title: "Invalid CAC Number",
+        //     description: "Kindly Enter a valid CAC Number",
+        //     status: "error",
+        //     duration: 9000,
+        //     isClosable: true,
+        //     position: "top-right",
+        //   });
+        //   return;
+        // }
 
-        console.log({ newVal });
+        // console.log({ newVal });
         const res = await authService.kyc(newVal);
         const user = await userServices.getFullUserDetail({ full_user: email });
         console.log({ res, user });
