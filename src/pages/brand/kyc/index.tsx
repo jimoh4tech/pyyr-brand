@@ -900,7 +900,7 @@ const ManagerTable = ({
                 <Td fontSize={"x-small"}>
                   {" "}
                   <Link
-                    href={`https://pyyr-manager.vercel.app/dashboard?brandid=${currentUser?.token}&location=${m.code}`}
+                    href={`https://manager.pyyr.io/dashboard?brandid=${currentUser?.token}&location=${m.code}`}
                     isExternal
                     fontSize={"xs"}
                     color={"purple"}

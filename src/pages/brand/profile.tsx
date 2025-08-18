@@ -676,7 +676,7 @@ export const Profile = () => {
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Weblink</Text>
             <Link
-              href={`https://pyyr-manager.vercel.app/dashboard?brandid=${currentUser?.token}`}
+              href={`https://manager.pyyr.io/dashboard?brandid=${currentUser?.token}`}
               isExternal
               fontSize={"xs"}
               fontWeight={"bold"}
