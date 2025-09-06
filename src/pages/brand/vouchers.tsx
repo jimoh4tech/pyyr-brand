@@ -17,7 +17,6 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  HStack,
   Heading,
   Image,
   Input,
@@ -51,7 +50,6 @@ import {
 } from "@chakra-ui/react";
 import { IoIosArrowForward } from "react-icons/io";
 import empty from "../../assets/voucher_empty.svg";
-import verified from "../../assets/verified.svg";
 import { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { ItemCheck } from "./kyc/index";
@@ -66,7 +64,6 @@ import { IManager } from "../../interface/customer";
 
 import { Select as MultiSelect } from "chakra-react-select";
 import { CiEdit } from "react-icons/ci";
-import voucher from "../../services/voucher";
 
 const ModalForm1 = () => {
   return (
