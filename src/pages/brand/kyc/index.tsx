@@ -300,8 +300,8 @@ const Form2 = ({
                 >
                   <option value="NIN">NIN</option>
                   <option value="Driver Lisence">Driver's Lisence</option>
-                  <option value="Internation Passport">
-                    Internation Passport
+                  <option value="International Passport">
+                    International Passport
                   </option>
                   <option value="Voter Card">Voter's Card</option>
                 </Select>
@@ -886,7 +886,7 @@ const ManagerTable = ({
             <Th fontSize={"x-small"}>Name</Th>
             <Th fontSize={"x-small"}>Phone</Th>
             <Th fontSize={"x-small"}>Location</Th>
-            <Th fontSize={"x-small"}>Weblink</Th>
+            <Th fontSize={"x-small"}>Store Link</Th>
             <Th fontSize={"x-small"}>Action</Th>
           </Tr>
         </Thead>
@@ -905,7 +905,7 @@ const ManagerTable = ({
                     fontSize={"xs"}
                     color={"purple"}
                   >
-                    Click here
+                    Redemption portal
                   </Link>
                 </Td>
 

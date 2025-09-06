@@ -154,8 +154,8 @@ const Form1 = () => {
                 <option value="NIN">NIN</option>
                 <option value="BVN">BVN</option>
                 <option value="Driver Lisence">Driver's Lisence</option>
-                <option value="Internation Passport">
-                  Internation Passport
+                <option value="International Passport">
+                  International Passport
                 </option>
                 <option value="Voter Card">Voter's Card</option>
               </Select>
@@ -626,7 +626,7 @@ export const Profile = () => {
           >
             Redemption Location
           </Button>
-          <Modal isOpen={isOpen} onClose={onClose}>
+          <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
             <ModalOverlay />
             <ModalContent>
               <ModalCloseButton />
@@ -674,7 +674,7 @@ export const Profile = () => {
             <Text fontSize={"xs"}>{currentUser?.date}</Text>
           </Flex>
           <Flex justifyContent={"space-between"}>
-            <Text fontSize={"xs"}>Weblink</Text>
+            <Text fontSize={"xs"}>Store Link</Text>
             <Link
               href={`https://manager.pyyr.io/dashboard?brandid=${currentUser?.token}`}
               isExternal
@@ -682,7 +682,7 @@ export const Profile = () => {
               fontWeight={"bold"}
               color={"red.500"}
             >
-              Click here
+              Redemption portal
             </Link>
             {/* <Text fontSize={"xs"}></Text> */}
           </Flex>

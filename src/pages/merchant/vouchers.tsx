@@ -99,7 +99,7 @@ const EditVoucherModal = ({ voucher }: { voucher: IVoucherTable }) => {
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader fontSize={"medium"}>Edit Vocuher Details</ModalHeader>
+          <ModalHeader fontSize={"medium"}>Edit Voucher Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Stack>

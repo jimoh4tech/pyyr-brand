@@ -289,8 +289,8 @@ const Form2 = ({
                 >
                   <option value="NIN">NIN</option>
                   <option value="Driver's Lisence">Driver's Lisence</option>
-                  <option value="Internation Passport">
-                    Internation Passport
+                  <option value="International Passport">
+                    International Passport
                   </option>
                   <option value="Voter's Card">Voter's Card</option>
                 </Select>

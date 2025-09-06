@@ -318,6 +318,42 @@ const toggleVoucherAvailabiility = async ({
   );
   return res.data;
 };
+
+const editVoucher = async ({
+  edit_voucher,
+  voucher_name,
+  promotional_title,
+  voucher_des,
+  redemption,
+  voucher_code,
+  image,
+}: {
+  edit_voucher: string;
+  voucher_name?: string;
+  promotional_title?: string;
+  voucher_des?: string;
+  redemption?: string;
+  voucher_code?: string;
+  image?: string;
+}) => {
+  const res = await axios.post(
+    `${baseUrl}`,
+    {
+      edit_voucher,
+      voucher_name,
+      promotional_title,
+      voucher_des,
+      redemption,
+      voucher_code,
+      image,
+    },
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+  return res.data;
+};
+
 export default {
   createVoucher,
   getVouchers,
@@ -334,4 +370,5 @@ export default {
   checkoutOrder,
   toggleVoucherAvailabiility,
   updateCartVoucher,
+  editVoucher,
 };
