@@ -880,6 +880,7 @@ const EditVoucherDrawer = ({
   promotional_title,
 }: // image,
 IVoucherTable) => {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const formik = useFormik({
@@ -893,12 +894,30 @@ IVoucherTable) => {
     },
     async onSubmit(values) {
       console.log(values);
-       const token = localStorage.getItem("PYMAILYR") || "";
+      const token = localStorage.getItem("PYMAILYR") || "";
       const res = await voucherService.editVoucher({
         ...values,
         edit_voucher: token,
       });
-      console.log(res)
+      console.log(res);
+      if (res?.responseCode == 200) {
+        toast({
+          title: "Success",
+          description: "Voucher update successful",
+          position: "top-right",
+          duration: 9000,
+          status: "success",
+        });
+        onClose();
+      } else {
+        toast({
+          title: "Error",
+          description: "Error updating voucher",
+          position: "top-right",
+          duration: 9000,
+          status: "error",
+        });
+      }
     },
   });
 
@@ -915,7 +934,7 @@ IVoucherTable) => {
           <DrawerBody>
             <form onSubmit={formik.handleSubmit}>
               <Flex flexDir={"column"} gap={3} w={"100%"}>
-                <FormControl isRequired>
+                <FormControl >
                   <FormLabel fontSize={"xs"} htmlFor={"image"}>
                     {"Cover Image"}
                   </FormLabel>
@@ -949,6 +968,36 @@ IVoucherTable) => {
                       value={formik.values.voucher_name}
                       onChange={formik.handleChange}
                       placeholder="Enter the name you’d like to display on this voucher"
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl>
+                  <FormLabel fontSize={"xs"} htmlFor={"title"}>
+                    {"Amount"}
+                  </FormLabel>
+                  <InputGroup>
+                    <Input
+                      id={"title"}
+                      type="text"
+                      size={"xs"}
+                      value={amount}
+                      maxLength={30}
+                      disabled
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl>
+                  <FormLabel fontSize={"xs"} htmlFor={"title"}>
+                    {"Worth"}
+                  </FormLabel>
+                  <InputGroup>
+                    <Input
+                      id={"title"}
+                      type="text"
+                      size={"xs"}
+                      value={worth}
+                      maxLength={30}
+                      disabled
                     />
                   </InputGroup>
                 </FormControl>
@@ -1004,9 +1053,15 @@ IVoucherTable) => {
                   </InputGroup>
                 </FormControl>
 
-                <Flex gap={2} justifyContent={"end"} mt={10}>
-                  <Button variant={"outline"}>Close</Button>
-                  <Button colorScheme="purple" type="submit" isLoading={formik.isSubmitting}>
+                <Flex gap={4} justifyContent={"end"} mt={2}>
+                  <Button variant={"outline"} onClick={onClose}>
+                    Close
+                  </Button>
+                  <Button
+                    colorScheme="purple"
+                    type="submit"
+                    isLoading={formik.isSubmitting}
+                  >
                     Save Changes
                   </Button>
                 </Flex>
