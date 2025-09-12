@@ -143,6 +143,32 @@ const changePassword = async ({
   return res.data;
 };
 
+const changePasswordAuth = async ({
+  email,
+  current_password,
+  new_password,
+  confirm_password,
+}: {
+  email: string;
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+}) => {
+  const res = await axios.post(
+    `${baseUrl}`,
+    {
+      email,
+      current_password,
+      new_password,
+      confirm_password,
+    },
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+    }
+  );
+  return res.data;
+};
+
 const kyc = async ({
   logo,
   businessType,
@@ -418,4 +444,5 @@ export default {
   verifyBVN,
   verifyCAC,
   verifyCACImage,
+  changePasswordAuth,
 };

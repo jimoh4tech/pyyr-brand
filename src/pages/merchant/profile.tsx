@@ -11,41 +11,61 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  HStack,
   Input,
   InputGroup,
-  Select,
   Stack,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import { useContext, useEffect, useState } from "react";
 import { CiEdit, CiLocationOn, CiMobile2 } from "react-icons/ci";
 import { CurrentUserContext } from "../../context/user.context";
 import userService from "../../services/user";
+import authService from "../../services/auth";
 import { QRCodeCanvas } from "qrcode.react";
 
-const Form1 = () => {
-  const { currentUser } = useContext(CurrentUserContext);
+const Form1 = ({ onClose }: { onClose: () => void }) => {
+  const toast = useToast();
   const formik = useFormik({
     initialValues: {
-      firstName: currentUser?.firstName || "",
-      lastName: currentUser?.lastName || "",
-      mail: currentUser?.mail || "",
-      phone: currentUser?.phone || "",
-      role: "",
-      dob: currentUser?.dob || "",
-      type: currentUser?.id_type || "",
-      id_number: currentUser?.id_number || "",
+      current_password: "",
+      new_password: "",
+      confirm_password: "",
     },
     async onSubmit(values) {
-      console.log(values);
+      // console.log(values);
+      const token = localStorage.getItem("PYMAILYR") || "";
+      const res = await authService.changePasswordAuth({
+        ...values,
+        email: token,
+      });
+      // console.log(res);
+
+      if (res?.responseCode == 200) {
+        toast({
+          title: "Success",
+          description: res?.responseMessage || "Password successfully changed",
+          status: "success",
+          duration: 9000,
+          position: "top-right",
+        });
+        formik.setValues({
+          confirm_password: "",
+          current_password: "",
+          new_password: "",
+        });
+        onClose();
+      } else {
+        toast({
+          title: "Error",
+          description: res?.responseMessage || "Error changing password",
+          status: "error",
+          duration: 9000,
+          position: "top-right",
+        });
+      }
     },
   });
   return (
@@ -59,121 +79,66 @@ const Form1 = () => {
         >
           <Flex flexDir={"column"} gap={3} w={"100%"}>
             <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"name"}>
-                {"Name"}
-              </FormLabel>
-              <HStack>
-                <Input
-                  id={"name"}
-                  name={"firstName"}
-                  type="text"
-                  w={"full"}
-                  size={"xs"}
-                  value={formik.values.firstName}
-                  onChange={formik.handleChange}
-                  placeholder="First Name"
-                />
-                <Input
-                  id={"name"}
-                  name={"lastName"}
-                  type="text"
-                  w={"full"}
-                  size={"xs"}
-                  value={formik.values.lastName}
-                  onChange={formik.handleChange}
-                  placeholder="Last Name"
-                />
-              </HStack>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"mail"}>
-                {"Email Address"}
+              <FormLabel fontSize={"xs"} htmlFor={"current_password"}>
+                {"Current Password"}
               </FormLabel>
               <InputGroup>
                 <Input
-                  id={"mail"}
-                  name={"mail"}
-                  type="email"
+                  id={"current_password"}
+                  name={"current_password"}
+                  type="password"
                   size={"xs"}
-                  value={formik.values.mail}
+                  value={formik.values.current_password}
                   onChange={formik.handleChange}
-                  placeholder="Enter Email"
+                  placeholder="Enter current password"
                 />
               </InputGroup>
             </FormControl>
             <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"phone"}>
-                {"Phone Number"}
+              <FormLabel fontSize={"xs"} htmlFor={"new_password"}>
+                {"New Password"}
               </FormLabel>
               <InputGroup>
                 <Input
-                  id={"phone"}
-                  name={"phone"}
-                  type="number"
+                  id={"new_password"}
+                  name={"new_password"}
+                  type="password"
                   size={"xs"}
-                  value={formik.values.phone}
+                  value={formik.values.new_password}
                   onChange={formik.handleChange}
-                  placeholder="090908678000"
+                  placeholder="Enter New password"
+                  minLength={6}
                 />
               </InputGroup>
             </FormControl>
             <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"dob"}>
-                {"Date of Birth"}
+              <FormLabel fontSize={"xs"} htmlFor={"confirm_password"}>
+                {"Confirm Password"}
               </FormLabel>
               <InputGroup>
                 <Input
-                  id={"dob"}
-                  name={"dob"}
-                  type="date"
+                  id={"confirm_password"}
+                  name={"confirm_password"}
+                  type="password"
                   size={"xs"}
-                  value={formik.values.dob}
+                  value={formik.values.confirm_password}
                   onChange={formik.handleChange}
-                  placeholder="Enter date"
+                  placeholder="Enter confirm password"
+                  minLength={6}
                 />
               </InputGroup>
             </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"id_type"}>
-                {"Select ID"}
-              </FormLabel>
-
-              <Select
+          </Flex>
+          <Stack gap={5}>
+            <Divider />
+            <Flex justifyContent={"flex-end"} gap={3}>
+              <Button
+                colorScheme="purple"
                 size={"xs"}
-                onChange={formik.handleChange}
-                name="id_type"
-                placeholder="Select option"
+                type="submit"
+                isLoading={formik.isSubmitting}
               >
-                <option value="NIN">NIN</option>
-                <option value="Driver Lisence">Driver's Lisence</option>
-                <option value="International Passport">
-                  International Passport
-                </option>
-                <option value="Voter Card">Voter's Card</option>
-              </Select>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"idNumber"}>
-                {"ID Number"}
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  id={"idNumber"}
-                  name={"id_number"}
-                  type="text"
-                  size={"xs"}
-                  value={formik.values.id_number}
-                  onChange={formik.handleChange}
-                  placeholder="Enter Select ID Number"
-                />
-              </InputGroup>
-            </FormControl>
-          </Flex>
-          <Stack gap={5}>
-            <Divider />
-            <Flex justifyContent={"flex-end"} gap={3}>
-              <Button colorScheme="purple" size={"xs"} type="submit">
-                Update Changes
+                Update Password
               </Button>
             </Flex>
           </Stack>
@@ -183,335 +148,7 @@ const Form1 = () => {
   );
 };
 
-const Form2 = () => {
-  const { currentUser } = useContext(CurrentUserContext);
-  const industries = [
-    "Agricuture",
-    "Commerce",
-    "Finance",
-    "Education",
-    "Gaming",
-    "Health",
-    "Hospitality",
-    "Entertainment",
-    "Logistics",
-    "Travel",
-    "Utility",
-  ];
-
-  const businesses = [
-    "Sole Proprietorship",
-    "Partnership",
-    "Limited Liability Company (LLC)",
-    "Corporation",
-    "Nonprofit Organization",
-    "Cooperative",
-    "Franchise",
-    "Social Enterprise",
-    "Startup",
-  ];
-  const formik = useFormik({
-    initialValues: {
-      brand_name: currentUser?.brand_name || "",
-      businessType: currentUser?.businessType || "",
-      city: currentUser?.city || "",
-      state: currentUser?.state || "",
-      country: currentUser?.country || "",
-      date: currentUser?.date || "",
-      website: currentUser?.website || "",
-      rc_number: currentUser?.rc_number || "",
-      logo: currentUser?.logo || "",
-
-      industry: currentUser?.industry || "",
-      b_mail: currentUser?.mail || "",
-      b_phone: currentUser?.phone || "",
-    },
-    async onSubmit(values) {
-      console.log(values);
-    },
-  });
-  return (
-    <>
-      <form onSubmit={formik.handleSubmit}>
-        <Flex
-          bg={"white"}
-          flexDir={"column"}
-          justifyContent={"space-between"}
-          minH={"75vh"}
-        >
-          <Flex flexDir={"column"} gap={3} w={"100%"}>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"logo"}>
-                {"Business Logo"}
-              </FormLabel>
-              <Text fontSize={"xs"}>Add a business logo</Text>
-              <Input
-                id={"logo"}
-                name={"logo"}
-                type="file"
-                size={"xs"}
-                onChange={(event) => {
-                  formik.setFieldValue(
-                    "logo",
-                    event.currentTarget.files && event.currentTarget.files[0]
-                  );
-                }}
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"brand_name"}>
-                {"Business Name"}
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  id={"brand_name"}
-                  name={"brand_name"}
-                  type="text"
-                  size={"xs"}
-                  value={formik.values.brand_name}
-                  onChange={formik.handleChange}
-                  placeholder="Business Name"
-                />
-              </InputGroup>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"business Type"}>
-                {"Business Type"}
-              </FormLabel>
-              <HStack>
-                <Select
-                  size={"xs"}
-                  name="businessType"
-                  placeholder="Select Type"
-                  onChange={formik.handleChange}
-                >
-                  {businesses.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
-                    </option>
-                  ))}
-                </Select>
-                <Select
-                  size={"xs"}
-                  onChange={formik.handleChange}
-                  name="industry"
-                  placeholder="Industry"
-                >
-                  {industries.map((i) => (
-                    <option key={i} value={i}>
-                      {i}
-                    </option>
-                  ))}
-                </Select>
-              </HStack>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"name"}>
-                {"Location"}
-              </FormLabel>
-              <HStack>
-                <Select
-                  size={"xs"}
-                  onChange={formik.handleChange}
-                  name="city"
-                  placeholder="City"
-                >
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
-                </Select>
-                <Select
-                  size={"xs"}
-                  onChange={formik.handleChange}
-                  name="state"
-                  placeholder="State"
-                >
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
-                </Select>
-                <Select
-                  size={"xs"}
-                  onChange={formik.handleChange}
-                  name="country"
-                  placeholder="Country"
-                >
-                  <option value="option1">Option 1</option>
-                  <option value="option2">Option 2</option>
-                  <option value="option3">Option 3</option>
-                </Select>
-              </HStack>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"date"}>
-                {"Date of Establishment"}
-              </FormLabel>
-              <Input
-                id={"date"}
-                name={"date"}
-                type="date"
-                size={"xs"}
-                value={formik.values.date}
-                onChange={formik.handleChange}
-                placeholder="Enter Date"
-              />
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"email"}>
-                {"Email Address"}
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  id={"email"}
-                  name={"b_mail"}
-                  type="email"
-                  size={"xs"}
-                  value={formik.values.b_mail}
-                  onChange={formik.handleChange}
-                  placeholder="Enter Email"
-                />
-              </InputGroup>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"phone"}>
-                {"Phone Number"}
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  id={"phone"}
-                  name={"b_phone"}
-                  type="number"
-                  size={"xs"}
-                  value={formik.values.b_phone}
-                  onChange={formik.handleChange}
-                  placeholder="090908678000"
-                />
-              </InputGroup>
-            </FormControl>
-            <FormControl>
-              <FormLabel fontSize={"xs"} htmlFor={"website"}>
-                {"Website"}
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  id={"website"}
-                  name={"website"}
-                  type="text"
-                  size={"xs"}
-                  value={formik.values.website}
-                  onChange={formik.handleChange}
-                  placeholder="www.enteryourwebsite.com"
-                />
-              </InputGroup>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"rcNumber"}>
-                {"RC Number"}
-              </FormLabel>
-              <InputGroup>
-                <Input
-                  id={"rcNumber"}
-                  name={"rc_number"}
-                  type="text"
-                  size={"xs"}
-                  value={formik.values.rc_number}
-                  onChange={formik.handleChange}
-                  placeholder="Enter RC Number"
-                />
-              </InputGroup>
-            </FormControl>
-          </Flex>
-          <Stack gap={5}>
-            <Divider />
-            <Flex justifyContent={"flex-end"} gap={3}>
-              <Button colorScheme="purple" size={"xs"} type="submit">
-                Update Changes
-              </Button>
-            </Flex>
-          </Stack>
-        </Flex>
-      </form>
-    </>
-  );
-};
-
-const Form3 = () => {
-  const formik = useFormik({
-    initialValues: {
-      accountNumber: "",
-      bank: "",
-      accountName: "",
-    },
-    async onSubmit(values) {
-      console.log(values);
-    },
-  });
-  return (
-    <>
-      <form onSubmit={formik.handleSubmit}>
-        <Flex
-          bg={"white"}
-          flexDir={"column"}
-          justifyContent={"space-between"}
-          minH={"75vh"}
-        >
-          <Flex flexDir={"column"} gap={3} w={"100%"}>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"name"}>
-                {"Account Number"}
-              </FormLabel>
-              <Input
-                id={"name"}
-                name={"accountNumber"}
-                type="text"
-                w={"full"}
-                size={"xs"}
-                value={formik.values.accountNumber}
-                onChange={formik.handleChange}
-                placeholder="0990987996"
-              />
-            </FormControl>
-
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"bank"}>
-                {"Bank"}
-              </FormLabel>
-              <Select size={"xs"} placeholder="Select option">
-                <option value="option1">GTBank</option>
-                <option value="option2">UBA</option>
-                <option value="option3">Option 3</option>
-              </Select>
-            </FormControl>
-            <FormControl isRequired>
-              <FormLabel fontSize={"xs"} htmlFor={"name"}>
-                {"Account Name"}
-              </FormLabel>
-              <Input
-                id={"name"}
-                name={"accountName"}
-                type="text"
-                w={"full"}
-                size={"xs"}
-                value={formik.values.accountName}
-                onChange={formik.handleChange}
-                placeholder="Spotify Nig Limited"
-              />
-            </FormControl>
-          </Flex>
-          <Stack gap={5}>
-            <Divider />
-            <Flex justifyContent={"flex-end"} gap={3}>
-              <Button colorScheme="purple" size={"xs"} type="submit">
-                Update Changes
-              </Button>
-            </Flex>
-          </Stack>
-        </Flex>
-      </form>
-    </>
-  );
-};
-const EditProfileDrawer = () => {
+const ChangePasswordDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
@@ -521,44 +158,21 @@ const EditProfileDrawer = () => {
         leftIcon={<CiEdit />}
         onClick={onOpen}
       >
-        Edit Details
+        Change Password
       </Button>
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"md"}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader fontSize={"sm"}>
-            Edit Information{" "}
+            Change Password{" "}
             <Text fontSize={"xs"} fontWeight={"light"}>
-              Some information would require you contact Pyyr for edit Access
+              Kindly fill the following fields
             </Text>
           </DrawerHeader>
 
           <DrawerBody>
-            <Tabs variant="soft-rounded" size={"sm"} colorScheme="purple">
-              <TabList
-                bgColor={"#f5f5f4"}
-                borderRadius={"3xl"}
-                p={1}
-                fontSize={"sm"}
-                justifyContent={"space-between"}
-              >
-                <Tab fontSize={"sm"}>Key Contact Info</Tab>
-                <Tab fontSize={"sm"}>Business Details</Tab>
-                <Tab fontSize={"sm"}>Account Info</Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  <Form1 />
-                </TabPanel>
-                <TabPanel>
-                  <Form2 />
-                </TabPanel>
-                <TabPanel>
-                  <Form3 />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+            <Form1 onClose={onClose} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>
@@ -608,7 +222,7 @@ export const MerchantProfile = () => {
             Profile information
           </Text>
           {/* Temporarily diabled edit profile */}
-          {currentUser?.email === "2" && <EditProfileDrawer />}
+          {<ChangePasswordDrawer />}
         </Flex>
 
         <Flex gap={4} alignItems={"center"}>
