@@ -354,6 +354,25 @@ const editVoucher = async ({
   return res.data;
 };
 
+const exportGiftVoucher = async ({
+  start,
+  end,
+  export_giftvoucher,
+}: {
+  start: string;
+  end: string;
+  export_giftvoucher: string;
+}) => {
+  const res = await axios.post(
+    `${baseUrl}`,
+    {
+      start,
+      end,
+      export_giftvoucher,
+    }
+  );
+  return res.data;
+};
 export default {
   createVoucher,
   getVouchers,
@@ -371,4 +390,5 @@ export default {
   toggleVoucherAvailabiility,
   updateCartVoucher,
   editVoucher,
+  exportGiftVoucher,
 };

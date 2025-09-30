@@ -3,10 +3,14 @@ import {
   Center,
   Flex,
   Input,
+  InputGroup,
+  InputLeftAddon,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Popover,
@@ -31,10 +35,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { DisplayCard } from "./dashboard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineFileAdd } from "react-icons/ai";
 import { IVoucherTable } from "../../interface/voucher";
 import voucherService from "../../services/voucher";
+import moment from "moment";
 
 const GiftVoucherModal = ({
   code,
@@ -321,16 +326,23 @@ const GiftTable = ({ vouchers }: { vouchers: IVoucherTable[] }) => {
 };
 
 export const GiftsPage = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const finalRef = useRef(null);
+  const toast = useToast();
   const [vouchers, setVouchers] = useState<IVoucherTable[] | null>(null);
   const [giftValue, setGiftValue] = useState<{
     total_gifted: string;
     total_redeemed: string;
     total_redeemed_amount: string;
   } | null>(null);
+  const [exportFrom, setExportFrom] = useState(
+    moment().subtract(7, "days").format("YYYY-MM-DD")
+  );
+  const [exportTo, setExportTo] = useState(moment().format("YYYY-MM-DD"));
+  const token = localStorage.getItem("PYMAILYR") || "";
 
   useEffect(() => {
     const fetchVouchers = async () => {
-      const token = localStorage.getItem("PYMAILYR") || "";
       const res = await voucherService.getGiftVouchers({
         list_giftvoucher: token,
       });
@@ -342,8 +354,6 @@ export const GiftsPage = () => {
 
     fetchVouchers();
   }, []);
-
-  const toast = useToast();
 
   return (
     <Stack gap={5}>
@@ -367,6 +377,57 @@ export const GiftsPage = () => {
       </Flex>
       <Flex justifyContent={"space-between"} gap={6}>
         <Spacer />
+        <Button size={"sm"} colorScheme="purple" onClick={onOpen}>
+          Export
+        </Button>
+        <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Enter Date Range</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Stack>
+                <InputGroup size="sm">
+                  <InputLeftAddon>From</InputLeftAddon>
+                  <Input
+                    size={"sm"}
+                    placeholder="2025-11-20"
+                    type="date"
+                    value={exportFrom}
+                    onChange={(e) => setExportFrom(e.target.value)}
+                  />
+                </InputGroup>
+                <InputGroup size="sm">
+                  <InputLeftAddon>To</InputLeftAddon>
+                  <Input
+                    size={"sm"}
+                    placeholder="2025-11-30"
+                    type="date"
+                    value={exportTo}
+                    onChange={(e) => setExportTo(e.target.value)}
+                  />
+                </InputGroup>
+              </Stack>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button variant={"outline"} size={"sm"} mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Link
+                href={`https://boltspecta.com/pyyr/app.php?export_history=${token}&start=${exportFrom}&end=${exportTo}`}
+                target="_blank"
+                isExternal
+                as={Button}
+                colorScheme="purple"
+                
+                size={'xs'}
+              >
+                Export
+              </Link>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
         <Button
           size={"sm"}
           rightIcon={<AiOutlineFileAdd />}
