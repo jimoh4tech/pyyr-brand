@@ -415,7 +415,7 @@ export const GiftsPage = () => {
                 Close
               </Button>
               <Link
-                href={`https://boltspecta.com/pyyr/app.php?export_history=${token}&start=${exportFrom}&end=${exportTo}`}
+                href={`https://boltspecta.com/pyyr/app.php?export_giftvoucher=${token}&start=${exportFrom}&end=${exportTo}`}
                 target="_blank"
                 isExternal
                 bgColor={'purple.500'}
