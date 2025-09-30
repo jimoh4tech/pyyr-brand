@@ -418,10 +418,13 @@ export const GiftsPage = () => {
                 href={`https://boltspecta.com/pyyr/app.php?export_history=${token}&start=${exportFrom}&end=${exportTo}`}
                 target="_blank"
                 isExternal
-                as={Button}
-                colorScheme="purple"
-                
-                size={'xs'}
+                bgColor={'purple.500'}
+                color={'white'}
+                fontSize={'small'}
+                px={4}
+                py={2}
+                borderRadius={'7px'}
+                // size={'xs'}
               >
                 Export
               </Link>
