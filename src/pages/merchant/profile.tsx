@@ -301,15 +301,15 @@ export const MerchantProfile = () => {
         <Stack gap={3}>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Account Number</Text>
-            <Text fontSize={"xs"}>{accountDetails[0]}</Text>
+            <Text fontSize={"xs"}>{accountDetails && accountDetails[0]}</Text>
           </Flex>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Bank Name</Text>
-            <Text fontSize={"xs"}>{accountDetails[3]}</Text>
+            <Text fontSize={"xs"}>{accountDetails && accountDetails[3]}</Text>
           </Flex>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Account Name</Text>
-            <Text fontSize={"xs"}>{accountDetails[1]}</Text>
+            <Text fontSize={"xs"}>{accountDetails && accountDetails[1]}</Text>
           </Flex>
         </Stack>
       </Stack>

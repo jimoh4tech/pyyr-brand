@@ -209,16 +209,25 @@ export const Profile = () => {
     document.body.removeChild(downloadLink);
   };
   useEffect(() => {
-    const fetchAccountDetails = async () => {
-      const token = localStorage.getItem("PYMAILYR") || "";
-      const res = await userService.getBankDetails({
-        get_bank: token,
-      });
-      console.log({ res });
-      setAccountDetails(res[1][0]);
-    };
-
-    fetchAccountDetails();
+    try {
+      try {
+        
+        const fetchAccountDetails = async () => {
+          const token = localStorage.getItem("PYMAILYR") || "";
+          const res = await userService.getBankDetails({
+            get_bank: token,
+          });
+          console.log({ res });
+          setAccountDetails(res[1][0]);
+        };
+  
+        fetchAccountDetails();
+      } catch (error) {
+        console.log(error)
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (
@@ -333,15 +342,15 @@ export const Profile = () => {
         <Stack gap={3}>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Account Number</Text>
-            <Text fontSize={"xs"}>{accountDetails[0]}</Text>
+            <Text fontSize={"xs"}>{accountDetails && accountDetails[0]}</Text>
           </Flex>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Bank Name</Text>
-            <Text fontSize={"xs"}>{accountDetails[3]}</Text>
+            <Text fontSize={"xs"}>{accountDetails && accountDetails[3]}</Text>
           </Flex>
           <Flex justifyContent={"space-between"}>
             <Text fontSize={"xs"}>Account Name</Text>
-            <Text fontSize={"xs"}>{accountDetails[1]}</Text>
+            <Text fontSize={"xs"}>{accountDetails && accountDetails[1]}</Text>
           </Flex>
         </Stack>
       </Stack>
